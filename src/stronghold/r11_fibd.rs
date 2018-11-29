@@ -1,0 +1,35 @@
+use crate::utils;
+use crate::utils::Parseable;
+
+/// nth fibonacci number given that a number is active only for m months
+fn mortal_fibonacci(n: u64, m: u64) -> u64 {
+    let mut fib = vec![1u64, 1u64];
+    let mut gen_num = 2;
+    let mut new_generation;
+    while gen_num < n {
+        if gen_num < m {
+            new_generation = fib[fib.len() - 2] + fib[fib.len() - 1];
+        } else if gen_num < m + 2 {
+            new_generation = fib[fib.len() - 2] + fib[fib.len() - 1] - 1;
+        } else {
+            new_generation =
+                fib[fib.len() - 2] + fib[fib.len() - 1] - fib[fib.len() - (m + 1) as usize];
+        }
+        fib.push(new_generation);
+        gen_num += 1;
+    }
+    fib[fib.len() - 1]
+}
+
+/// Mortal Fibonacci Rabbits
+///
+/// Given: Positive integers n≤100 and m≤20.
+///
+/// Return: The total number of pairs of rabbits that will remain after the nth month if all rabbits live for m months.
+pub fn rosalind_fibd() {
+    let contents =
+        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fibd.txt")).unwrap();
+    let n = contents[0];
+    let m = contents[1];
+    println!("{}", mortal_fibonacci(n, m));
+}

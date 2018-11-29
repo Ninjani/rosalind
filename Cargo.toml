@@ -1,0 +1,17 @@
+[package]
+name = "rosalind"
+version = "0.1.0"
+authors = ["Ninjani"]
+edition = "2018"
+
+[dependencies]
+itertools = "0.7.8"
+bio = "0.22.0"
+num = "0.2.0"
+reqwest = "0.8.7"
+regex = "1.0.2"
+radix = "0.4.1"
+ndarray = "0.11.2"
+rand = "0.5.5"
+random_choice = "*"
+petgraph = "0.4.13"

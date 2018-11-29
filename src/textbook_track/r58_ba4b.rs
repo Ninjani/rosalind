@@ -1,0 +1,51 @@
+use crate::stronghold::r2_rna::transcribe;
+use crate::stronghold::r3_revc::reverse_complement;
+use crate::utils;
+
+pub fn rosalind_ba4b() {
+    let contents = utils::input_from_file("data/textbook_track/rosalind_ba4b.txt");
+    let lines: Vec<_> = contents.split('\n').collect();
+    let (dna, protein) = (lines[0], lines[1]);
+    let num_nucleotides = protein.len() * 3;
+    for i in 0..(dna.len() - num_nucleotides) {
+        let current_dna = &dna[i..(i + num_nucleotides)];
+        let revc_dna = reverse_complement(current_dna);
+        let (rna, revc_rna) = (transcribe(&current_dna), transcribe(&revc_dna));
+        match (translate_no_stop(&rna), translate_no_stop(&revc_rna)) {
+            (Some(p1), Some(p2)) => {
+                if p1 == protein || p2 == protein {
+                    println!("{}", current_dna);
+                }
+            }
+            (Some(p1), _) => {
+                if p1 == protein {
+                    println!("{}", current_dna);
+                }
+            }
+            (_, Some(p2)) => {
+                if p2 == protein {
+                    println!("{}", current_dna);
+                }
+            }
+            _ => (),
+        }
+    }
+}
+
+pub fn translate_no_stop(rna: &str) -> Option<String> {
+    let codons = utils::get_codon_to_aa();
+    let mut protein = String::with_capacity(rna.len() / 3);
+    for chunk in utils::sub_strings(rna, 3) {
+        match codons.get(&chunk) {
+            Some(amino_acid) => {
+                if amino_acid == utils::STOP_CODON_AA {
+                    return None;
+                } else {
+                    protein.push_str(amino_acid);
+                }
+            }
+            None => return None,
+        }
+    }
+    Some(protein)
+}
