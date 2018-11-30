@@ -38,18 +38,19 @@ pub fn rosalind_ba11b() {
         graph.add_edge(index_1, index_2, aa);
     }
     for path in all_paths(&graph, node_to_index[&source], node_to_index[&sink]) {
-        let protein = (0..(path.len() - 1))
+        let peptide = (0..(path.len() - 1))
             .map(|i| graph[graph.find_edge(path[i], path[i + 1]).unwrap()])
             .collect::<String>();
-        let ideal_spectrum = get_ideal_spectrum(&protein, &aa_to_mass);
+        let peptide_masses: Vec<_> = peptide.chars().map(|c| aa_to_mass[&c]).collect();
+        let ideal_spectrum = get_ideal_spectrum(&peptide_masses);
         if ideal_spectrum == spectrum {
-            println!("{}", protein);
+            println!("{}", peptide);
         }
     }
 }
 
-pub fn get_ideal_spectrum(peptide: &str, aa_to_mass: &HashMap<char, usize>) -> Vec<usize> {
-    let prefix_masses = get_prefix_masses(peptide, aa_to_mass);
+pub fn get_ideal_spectrum(peptide: &[usize]) -> Vec<usize> {
+    let prefix_masses = get_prefix_masses(peptide);
     let mut spectrum = Vec::new();
     for i in 0..peptide.len() {
         spectrum.push(prefix_masses[peptide.len()] - prefix_masses[i]);

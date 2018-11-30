@@ -1,5 +1,5 @@
-use crate::utils;
 use crate::stronghold::r46_edit::get_edit_distance;
+use crate::utils;
 
 pub fn rosalind_ba5g() {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba5g.txt");

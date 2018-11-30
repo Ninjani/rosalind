@@ -10,10 +10,7 @@ pub fn rosalind_edit() {
     let fasta = utils::read_fasta_file("data/stronghold/rosalind_edit.txt");
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let (string_1, string_2) = (&sequences[0], &sequences[1]);
-    println!(
-        "{}",
-        get_edit_distance(string_1, string_2)
-    );
+    println!("{}", get_edit_distance(string_1, string_2));
 }
 
 pub fn get_edit_distance(string_1: &str, string_2: &str) -> usize {

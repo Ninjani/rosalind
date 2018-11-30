@@ -73,11 +73,11 @@ pub fn global_alignment_backtrack(
     let mut scores = Array2::zeros((chars_1.len() + 1, chars_2.len() + 1));
     let mut backtrack = Array2::zeros((chars_1.len() + 1, chars_2.len() + 1));
     for i in 1..chars_1.len() {
-        scores[(i, 0)] = scores[(i-1, 0)] - parameters.gap_penalty;
+        scores[(i, 0)] = scores[(i - 1, 0)] - parameters.gap_penalty;
         backtrack[(i, 0)] = 1;
     }
     for j in 1..=chars_2.len() {
-        scores[(0, j)] = scores[(0, j-1)] - parameters.gap_penalty;
+        scores[(0, j)] = scores[(0, j - 1)] - parameters.gap_penalty;
         backtrack[(0, j)] = 2;
     }
     for i in 1..=chars_1.len() {
@@ -103,12 +103,18 @@ pub fn global_alignment_backtrack(
     (scores, backtrack)
 }
 
-pub fn align(backtrack: &Array2<usize>, string_1: &[char], string_2: &[char], n: usize, m: usize) -> (String, String) {
+pub fn align(
+    backtrack: &Array2<usize>,
+    string_1: &[char],
+    string_2: &[char],
+    n: usize,
+    m: usize,
+) -> (String, String) {
     let (mut aln_1, mut aln_2) = (String::new(), String::new());
     let (mut n, mut m) = (n, m);
     while !(n == 0 && m == 0) {
         if backtrack[(n, m)] == 0 {
-            break
+            break;
         } else if m == 0 || backtrack[(n, m)] == 1 {
             n -= 1;
             aln_1.push(string_1[n]);
@@ -127,9 +133,20 @@ pub fn align(backtrack: &Array2<usize>, string_1: &[char], string_2: &[char], n:
     (aln_1.chars().rev().collect(), aln_2.chars().rev().collect())
 }
 
-fn global_align(string_1: &str, string_2: &str, parameters: &AlignmentParameters) -> (isize, String, String) {
+fn global_align(
+    string_1: &str,
+    string_2: &str,
+    parameters: &AlignmentParameters,
+) -> (isize, String, String) {
     let (scores, backtrack) = global_alignment_backtrack(string_1, string_2, parameters);
-    let (string_1, string_2): (Vec<_>, Vec<_>) = (string_1.chars().collect(), string_2.chars().collect());
-    let (aln_1, aln_2) = align(&backtrack, &string_1, &string_2, string_1.len(), string_2.len());
+    let (string_1, string_2): (Vec<_>, Vec<_>) =
+        (string_1.chars().collect(), string_2.chars().collect());
+    let (aln_1, aln_2) = align(
+        &backtrack,
+        &string_1,
+        &string_2,
+        string_1.len(),
+        string_2.len(),
+    );
     (scores[(string_1.len(), string_2.len())], aln_1, aln_2)
 }

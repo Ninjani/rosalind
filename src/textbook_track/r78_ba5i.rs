@@ -1,6 +1,6 @@
+use crate::textbook_track::r74_ba5e::{align, read_scoring_matrix, AlignmentParameters};
 use crate::utils;
 use ndarray::{Array, Array2};
-use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix, align};
 use std::isize;
 
 /// Find a Highest-Scoring Overlap Alignment of Two Strings
@@ -17,7 +17,9 @@ pub fn rosalind_ba5i() {
     let (_, amino_acids) = read_scoring_matrix("data/pam250.txt");
     let mut scoring_matrix = Array2::zeros((amino_acids.len(), amino_acids.len()));
     scoring_matrix.fill(-2);
-    scoring_matrix.diag_mut().assign(&Array::from_vec((0..amino_acids.len()).map(|_| 1).collect()));
+    scoring_matrix.diag_mut().assign(&Array::from_vec(
+        (0..amino_acids.len()).map(|_| 1).collect(),
+    ));
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 2);
     let (score, aln_string_1, aln_string_2) = overlap_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);
@@ -33,7 +35,7 @@ pub fn overlap_alignment_backtrack(
     let mut scores = Array2::zeros((chars_1.len() + 1, chars_2.len() + 1));
     let mut backtrack = Array2::zeros((chars_1.len() + 1, chars_2.len() + 1));
     for j in 1..=chars_2.len() {
-        scores[(0, j)] = scores[(0, j-1)] - parameters.gap_penalty;
+        scores[(0, j)] = scores[(0, j - 1)] - parameters.gap_penalty;
         backtrack[(0, j)] = 2;
     }
     for i in 1..=chars_1.len() {
@@ -43,9 +45,9 @@ pub fn overlap_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                    parameters.amino_acid_order[&chars_1[i - 1]],
-                    parameters.amino_acid_order[&chars_2[j - 1]],
-                )]),
+                        parameters.amino_acid_order[&chars_1[i - 1]],
+                        parameters.amino_acid_order[&chars_2[j - 1]],
+                    )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()
@@ -63,9 +65,14 @@ pub fn overlap_alignment_backtrack(
     (scores, backtrack)
 }
 
-fn overlap_align(string_1: &str, string_2: &str, parameters: &AlignmentParameters) -> (isize, String, String) {
+fn overlap_align(
+    string_1: &str,
+    string_2: &str,
+    parameters: &AlignmentParameters,
+) -> (isize, String, String) {
     let (scores, backtrack) = overlap_alignment_backtrack(string_1, string_2, parameters);
-    let (string_1, string_2): (Vec<_>, Vec<_>) = (string_1.chars().collect(), string_2.chars().collect());
+    let (string_1, string_2): (Vec<_>, Vec<_>) =
+        (string_1.chars().collect(), string_2.chars().collect());
     let mut m = 0;
     let mut max_score = isize::MIN;
     for j in 0..=string_2.len() {

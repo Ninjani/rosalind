@@ -1,27 +1,26 @@
+use crate::textbook_track::r66_ba4j::get_prefix_masses;
 use crate::utils;
 use std::collections::HashMap;
 
 pub fn rosalind_ba4c() {
-    let protein = utils::input_from_file("data/textbook_track/rosalind_ba4c.txt");
+    let peptide = utils::input_from_file("data/textbook_track/rosalind_ba4c.txt");
     let aa_to_mass = get_aa_to_mass_usize();
-    utils::print_array(&get_theoretical_cyclic_spectrum(&protein, &aa_to_mass));
+    let peptide_masses: Vec<_> = peptide.trim().chars().map(|c| aa_to_mass[&c]).collect();
+    utils::print_array(&get_cyclic_spectrum(&peptide_masses));
 }
 
-pub fn get_theoretical_cyclic_spectrum(
-    protein: &str,
-    aa_to_mass: &HashMap<char, usize>,
-) -> Vec<usize> {
-    let mut spectrum: Vec<_> = vec![0];
-    for i in 1..protein.len() {
-        let add = protein.chars().collect::<Vec<_>>()[protein.len() - i + 1..]
-            .iter()
-            .collect::<String>();
-        let current_protein = format!("{}{}", add, protein);
-        for chunk in utils::kmerize(&current_protein, i) {
-            spectrum.push(chunk.chars().map(|c| aa_to_mass[&c]).sum::<usize>());
+pub fn get_cyclic_spectrum(peptide: &[usize]) -> Vec<usize> {
+    let prefix_masses = get_prefix_masses(peptide);
+    let peptide_mass = prefix_masses[peptide.len()];
+    let mut spectrum = vec![0];
+    for i in 0..peptide.len() {
+        for j in (i + 1)..=peptide.len() {
+            spectrum.push(prefix_masses[j] - prefix_masses[i]);
+            if i > 0 && j < peptide.len() {
+                spectrum.push(peptide_mass - (prefix_masses[j] - prefix_masses[i]));
+            }
         }
     }
-    spectrum.push(protein.chars().map(|c| aa_to_mass[&c]).sum::<usize>());
     spectrum.sort();
     spectrum
 }

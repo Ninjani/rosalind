@@ -1,6 +1,6 @@
+use crate::textbook_track::r74_ba5e::{align, read_scoring_matrix, AlignmentParameters};
 use crate::utils;
 use ndarray::Array2;
-use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix, align};
 use std::isize;
 
 /// Find a Highest-Scoring Local Alignment of Two Strings
@@ -36,9 +36,9 @@ pub fn local_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                    parameters.amino_acid_order[&chars_1[i - 1]],
-                    parameters.amino_acid_order[&chars_2[j - 1]],
-                )]),
+                        parameters.amino_acid_order[&chars_1[i - 1]],
+                        parameters.amino_acid_order[&chars_2[j - 1]],
+                    )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()
@@ -52,9 +52,14 @@ pub fn local_alignment_backtrack(
     (scores, backtrack)
 }
 
-fn local_align(string_1: &str, string_2: &str, parameters: &AlignmentParameters) -> (isize, String, String) {
+fn local_align(
+    string_1: &str,
+    string_2: &str,
+    parameters: &AlignmentParameters,
+) -> (isize, String, String) {
     let (scores, backtrack) = local_alignment_backtrack(string_1, string_2, parameters);
-    let (string_1, string_2): (Vec<_>, Vec<_>) = (string_1.chars().collect(), string_2.chars().collect());
+    let (string_1, string_2): (Vec<_>, Vec<_>) =
+        (string_1.chars().collect(), string_2.chars().collect());
     let (mut n, mut m) = (0, 0);
     let mut max_score = isize::MIN;
     for i in 0..=string_1.len() {

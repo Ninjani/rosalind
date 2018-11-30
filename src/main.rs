@@ -9,5 +9,5 @@ pub mod textbook_track;
 pub mod utils;
 
 fn main() {
-    textbook_track::r61_ba4e::rosalind_ba4e()
+    textbook_track::r68_ba4l::rosalind_ba4l()
 }

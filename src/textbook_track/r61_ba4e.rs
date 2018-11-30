@@ -1,6 +1,6 @@
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::textbook_track::r59_ba4c::get_theoretical_cyclic_spectrum;
-use crate::textbook_track::r66_ba4j::get_theoretical_spectrum;
+use crate::textbook_track::r59_ba4c::get_cyclic_spectrum;
+use crate::textbook_track::r66_ba4j::get_linear_spectrum;
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::{HashMap, HashSet};
@@ -15,39 +15,45 @@ pub fn rosalind_ba4e() {
         "data/textbook_track/rosalind_ba4e.txt",
     ))
     .unwrap();
-    let peptides: Vec<_> = cyclo_peptide_sequencing(&spectrum)
-        .into_iter()
-        .map(|masses| {
-            masses
-                .into_iter()
-                .map(|mass| mass.to_string())
-                .collect::<Vec<_>>()
-                .join("-")
-        })
-        .collect();
+    let aa_to_mass = &get_aa_to_mass_usize();
+    let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
+    let peptides: Vec<_> =
+        cyclo_peptide_sequencing(&spectrum, &masses.into_iter().collect::<Vec<_>>())
+            .into_iter()
+            .map(|masses| {
+                masses
+                    .into_iter()
+                    .map(|mass| mass.to_string())
+                    .collect::<Vec<_>>()
+                    .join("-")
+            })
+            .collect();
     utils::print_array(&peptides);
 }
 
-fn expand(peptides: &HashSet<String>, amino_acids: &[char]) -> HashSet<String> {
+pub fn expand(peptides: &HashSet<Vec<usize>>, amino_acid_masses: &[usize]) -> HashSet<Vec<usize>> {
     let mut expanded_peptides = HashSet::new();
     for peptide in peptides {
-        for amino_acid in amino_acids {
-            expanded_peptides.insert(format!("{}{}", peptide, amino_acid));
+        for mass in amino_acid_masses {
+            let mut new_peptide = peptide.clone();
+            new_peptide.push(*mass);
+            expanded_peptides.insert(new_peptide);
         }
     }
     expanded_peptides
 }
 
-fn get_mass(peptide: &str, aa_to_mass: &HashMap<char, usize>) -> usize {
-    peptide.chars().map(|a| aa_to_mass[&a]).sum::<usize>()
-}
-
-fn is_consistent(peptide: &str, spectrum: &[usize], aa_to_mass: &HashMap<char, usize>) -> bool {
-    let peptide_spectrum = get_theoretical_spectrum(peptide, aa_to_mass);
+pub fn spectrum_list_to_counts(spectrum: &[usize]) -> HashMap<usize, usize> {
     let mut spectrum_counts = HashMap::new();
     for mass in spectrum {
-        *spectrum_counts.entry(mass).or_insert(0) += 1;
+        *spectrum_counts.entry(*mass).or_insert(0usize) += 1;
     }
+    spectrum_counts
+}
+
+pub fn is_consistent(peptide: &[usize], spectrum: &[usize]) -> bool {
+    let peptide_spectrum = get_linear_spectrum(peptide);
+    let mut spectrum_counts = spectrum_list_to_counts(spectrum);
     for mass in peptide_spectrum {
         match spectrum_counts.get_mut(&mass) {
             Some(count) => *count -= 1,
@@ -57,22 +63,23 @@ fn is_consistent(peptide: &str, spectrum: &[usize], aa_to_mass: &HashMap<char, u
     true
 }
 
-fn cyclo_peptide_sequencing(spectrum: &[usize]) -> HashSet<Vec<usize>> {
-    let aa_to_mass = &get_aa_to_mass_usize();
-    let amino_acids: Vec<_> = aa_to_mass.keys().cloned().collect();
+fn cyclo_peptide_sequencing(
+    spectrum: &[usize],
+    amino_acid_masses: &[usize],
+) -> HashSet<Vec<usize>> {
     let mut peptides = HashSet::new();
-    peptides.insert(String::from(""));
+    peptides.insert(Vec::new());
     let parent_mass = *spectrum.iter().max().unwrap();
     let mut cyclopeptides = HashSet::new();
     while !peptides.is_empty() {
-        peptides = expand(&peptides, &amino_acids);
+        peptides = expand(&peptides, amino_acid_masses);
         for peptide in &peptides.clone() {
-            if get_mass(peptide, aa_to_mass) == parent_mass {
-                if get_theoretical_cyclic_spectrum(peptide, aa_to_mass) == spectrum {
-                    cyclopeptides.insert(peptide.chars().map(|c| aa_to_mass[&c]).collect());
+            if peptide.iter().sum::<usize>() == parent_mass {
+                if get_cyclic_spectrum(peptide) == spectrum {
+                    cyclopeptides.insert(peptide.clone());
                 }
                 peptides.remove(peptide);
-            } else if !is_consistent(peptide, spectrum, aa_to_mass) {
+            } else if !is_consistent(peptide, spectrum) {
                 peptides.remove(peptide);
             }
         }
