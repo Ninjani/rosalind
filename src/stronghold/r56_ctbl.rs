@@ -6,6 +6,7 @@ use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
 use std::collections::HashSet;
+use failure::{Error};
 
 /// Creating a Character Table
 ///
@@ -15,9 +16,9 @@ use std::collections::HashSet;
 /// The columns of the character table should encode the taxa ordered lexicographically;
 /// the rows of the character table may be given in any order. Also, for any given character,
 /// the particular subset of taxa to which 1s are assigned is arbitrary.
-pub fn rosalind_ctbl() {
+pub fn rosalind_ctbl() -> Result<(), Error> {
     let tree_data = utils::input_from_file("data/stronghold/rosalind_ctbl.txt");
-    let tree = parse_newick(&tree_data);
+    let tree = parse_newick(&tree_data)?;
     let mut nodes = tree
         .node_indices()
         .map(|n| (n, tree.node_weight(n).unwrap()))
@@ -38,6 +39,7 @@ pub fn rosalind_ctbl() {
                 .collect::<String>()
         );
     }
+    Ok(())
 }
 
 pub fn traverse<T, U, Ix: IndexType>(

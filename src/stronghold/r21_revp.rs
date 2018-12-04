@@ -1,5 +1,6 @@
 use crate::utils;
 use std::collections::HashMap;
+use failure::{Error, err_msg};
 
 /// Checks if a dna string is a reverse palindrome
 fn check_palindrome(dna: &[char], nucleotide_map: &HashMap<char, char>) -> bool {
@@ -19,10 +20,10 @@ fn check_palindrome(dna: &[char], nucleotide_map: &HashMap<char, char>) -> bool 
 /// Given: A DNA string of length at most 1 kbp in FASTA format.
 ///
 /// Return: The position and length of every reverse palindrome in the string having length between 4 and 12. You may return these pairs in any order.
-pub fn rosalind_revp() {
+pub fn rosalind_revp() -> Result<(), Error> {
     let nucleotide_map: HashMap<_, _> = "ATCG".chars().zip("TAGC".chars()).collect();
     let fasta = utils::read_fasta_file("data/stronghold/rosalind_revp.txt");
-    let dna = fasta.values().next().unwrap().chars().collect::<Vec<_>>();
+    let dna = fasta.values().next().ok_or(err_msg("NoneError"))?.chars().collect::<Vec<_>>();
     for i in 0..dna.len() {
         for length in 4..=12 {
             if i + length > dna.len() {
@@ -35,4 +36,5 @@ pub fn rosalind_revp() {
             }
         }
     }
+    Ok(())
 }

@@ -1,19 +1,19 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// 2SUM
 ///
 /// Given: A positive integer k≤20, a positive integer n≤10^4, and k arrays of size n containing integers from −10^5 to 10^5.
 ///
 /// Return: For each array A[1..n], output two different indices 1≤p<q≤n such that A[p]=−A[q] if exist, and "-1" otherwise.
-pub fn rosalind_2sum() {
+pub fn rosalind_2sum() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_2sum.txt");
     let mut lines = contents.split('\n');
-    let length_input = usize::parse_line(lines.next().unwrap()).unwrap();
+    let length_input = usize::parse_line(lines.next().unwrap())?;
     let length = length_input[1];
     for line in lines {
-        let mut array_indices = isize::parse_line(line)
-            .unwrap()
+        let mut array_indices = isize::parse_line(line)?
             .into_iter()
             .enumerate()
             .collect::<Vec<_>>();
@@ -29,6 +29,7 @@ pub fn rosalind_2sum() {
             None => println!("-1"),
         }
     }
+    Ok(())
 }
 
 fn two_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, usize)> {

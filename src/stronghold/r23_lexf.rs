@@ -3,6 +3,7 @@ use radix::RadixNum;
 use std::char;
 use std::collections::HashMap;
 use std::iter::repeat;
+use failure::Error;
 
 /// Definitely a hack: uses base-10 conversion to convert between decimal and alphabet length
 pub fn enumerate_lex(alphabets: Vec<char>, length: u32) -> impl Iterator<Item = String> {
@@ -53,17 +54,16 @@ pub fn enumerate_lex_2(alphabet: &[char], length: usize) -> Vec<String> {
 /// Given: A collection of at most 10 symbols defining an ordered alphabet, and a positive integer n (n≤10).
 ///
 /// Return: All strings of length n that can be formed from the alphabet, ordered lexicographically (use the standard order of symbols in the English alphabet).
-pub fn rosalind_lexf() {
+pub fn rosalind_lexf() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_lexf.txt");
-    let mut parts = contents.split('\n');
-    let alphabets = parts
-        .next()
-        .unwrap()
+    let parts: Vec<_> = contents.split('\n').collect();
+    let alphabets: Vec<_> = parts[0]
         .split(' ')
         .map(|a| a.chars().next().unwrap())
-        .collect::<Vec<_>>();
-    let length = parts.next().unwrap().parse::<u32>().unwrap();
+        .collect();
+    let length = parts[1].parse::<u32>()?;
     for i_radix_string in enumerate_lex(alphabets, length) {
         println!("{}", i_radix_string);
     }
+    Ok(())
 }

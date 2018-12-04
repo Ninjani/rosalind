@@ -1,17 +1,18 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// Binary Search
 ///
 /// Given: Two positive integers n≤10^5 and m≤10^5, a sorted array A[1..n] of integers from −10^5 to 10^5 and a list of m integers −10^5≤k_1,k_2,…,k_m≤10^5.
 ///
 /// Return: For each k_i, output an index 1≤j≤n s.t. A[j]=k_i or "-1" if there is no such index.
-pub fn rosalind_bins() {
+pub fn rosalind_bins() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_bins.txt");
-    let mut parts = contents.split('\n');
-    let _length_input = usize::parse_line(parts.next().unwrap()).unwrap();
-    let array = isize::parse_line(parts.next().unwrap()).unwrap();
-    let keys = isize::parse_line(parts.next().unwrap()).unwrap();
+    let parts: Vec<_> = contents.split('\n').collect();
+    let _length_input = usize::parse_line(parts[0])?;
+    let array = isize::parse_line(parts[1])?;
+    let keys = isize::parse_line(parts[2])?;
     let mut indices = Vec::new();
     for key in keys {
         match binary_search(0, &array, key) {
@@ -20,6 +21,7 @@ pub fn rosalind_bins() {
         }
     }
     utils::print_array(&indices);
+    Ok(())
 }
 
 fn binary_search<T: PartialOrd + Copy>(mid: usize, array: &[T], key: T) -> Option<usize> {

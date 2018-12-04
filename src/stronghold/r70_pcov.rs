@@ -13,7 +13,7 @@ pub fn rosalind_pcov() {
         cycle
             .into_iter()
             .take(length - 1)
-            .map(|n| n.chars().nth(0).unwrap())
+            .map(|n| n.chars().next().unwrap())
             .collect::<String>()
     );
 }

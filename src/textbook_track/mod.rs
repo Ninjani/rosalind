@@ -59,4 +59,6 @@ pub mod r75_ba5f;
 pub mod r76_ba5g;
 pub mod r77_ba5h;
 pub mod r78_ba5i;
+pub mod r84_ba6a;
+pub mod r85_ba6b;
 //pub mod r5_ba10e;

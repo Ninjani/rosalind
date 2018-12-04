@@ -1,5 +1,6 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// Get the nth fibonacci number, given the series multiplies by k
 pub fn fibonacci(n: u64, k: u64) -> u64 {
@@ -15,10 +16,10 @@ pub fn fibonacci(n: u64, k: u64) -> u64 {
 /// Given: Positive integers n≤40 and k≤5.
 ///
 /// Return: The total number of rabbit pairs that will be present after n months, if we begin with 1 pair and in each generation, every pair of reproduction-age rabbits produces a litter of k rabbit pairs (instead of only 1 pair).
-pub fn rosalind_fib() {
+pub fn rosalind_fib() -> Result<(), Error> {
     let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fib.txt")).unwrap();
-    let n = contents[0];
-    let k = contents[1];
+        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fib.txt"))?;
+    let (n, k) = (contents[0], contents[1]);
     println!("{}", fibonacci(n, k));
+    Ok(())
 }

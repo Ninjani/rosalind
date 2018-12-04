@@ -1,19 +1,20 @@
 use crate::stronghold::r2_rna::transcribe;
 use crate::stronghold::r8_prot::translate;
 use crate::utils;
+use failure::{err_msg, Error};
 
 /// RNA Splicing
 ///
 /// Given: A DNA string s (of length at most 1 kbp) and a collection of substrings of s acting as introns. All strings are given in FASTA format.
 ///
 /// Return: A protein string resulting from transcribing and translating the exons of s. (Note: Only one solution will exist for the dataset provided.)
-pub fn rosalind_splc() {
+pub fn rosalind_splc() -> Result<(), Error> {
     let sequences = utils::read_fasta_file("data/stronghold/rosalind_splc.txt");
     let dna_key = sequences
         .keys()
         .map(|key| (key, sequences[key].len()))
         .max_by(|a, b| a.1.cmp(&b.1))
-        .unwrap()
+        .ok_or(err_msg("NoneError"))?
         .0;
     let intron_keys = sequences
         .keys()
@@ -35,6 +36,7 @@ pub fn rosalind_splc() {
     }
     println!(
         "{}",
-        translate(&transcribe(&exons.iter().collect::<String>())).unwrap()
+        translate(&transcribe(&exons.iter().collect::<String>())).ok_or(err_msg("NoneError"))?
     );
+    Ok(())
 }

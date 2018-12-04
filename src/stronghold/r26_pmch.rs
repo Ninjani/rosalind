@@ -7,8 +7,8 @@ use crate::utils;
 /// Return: The total possible number of perfect matchings of basepair edges in the bonding graph of s.
 pub fn rosalind_pmch() {
     let sequences = utils::read_fasta_file("data/stronghold/rosalind_pmch.txt");
-    let (_, sequence) = sequences.into_iter().next().unwrap();
-    let nucleotide_counts = utils::char_counter(&sequence);
+    let (_, sequence) = sequences.iter().collect::<Vec<_>>()[0];
+    let nucleotide_counts = utils::char_counter(sequence);
     println!(
         "{}",
         utils::factorial(nucleotide_counts[&'A']) * utils::factorial(nucleotide_counts[&'C'])

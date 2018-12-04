@@ -281,7 +281,8 @@ pub fn read_weighted_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usi
     (num_nodes, num_edges, edges)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Fail)]
+#[fail(display = "ParseError")]
 /// ParseIntError or ParseFloatError
 pub struct ParseError;
 

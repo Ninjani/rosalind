@@ -29,7 +29,7 @@ pub fn find_proteins(rna: &str) -> HashSet<String> {
 /// Return: Every distinct candidate protein string that can be translated from ORFs of s. Strings can be returned in any order.
 pub fn rosalind_orf() {
     let fasta = utils::read_fasta_file("data/stronghold/rosalind_orf.txt");
-    let dna = fasta.values().next().unwrap();
+    let dna = fasta.values().collect::<Vec<_>>()[0];
     let revc_dna = reverse_complement(dna);
     let (rna, revc_rna) = (transcribe(&dna), transcribe(&revc_dna));
     for protein in find_proteins(&rna).union(&find_proteins(&revc_rna)) {

@@ -1,19 +1,21 @@
 use crate::utils;
 use crate::utils::Parseable;
 use rand::{thread_rng, Rng};
+use failure::Error;
 
 /// Median
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5, a positive number k≤n.
 ///
 /// Return: The k-th smallest element of A.
-pub fn rosalind_med() {
+pub fn rosalind_med() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_med.txt");
-    let mut lines = contents.split('\n');
-    let length = lines.next().unwrap().parse::<usize>().unwrap();
-    let mut array = isize::parse_line(lines.next().unwrap()).unwrap();
-    let k = lines.next().unwrap().parse::<usize>().unwrap();
-    println!("{}", select(&mut array, 0, length - 1, k - 1))
+    let lines: Vec<_> = contents.split('\n').collect();
+    let length = lines[0].parse::<usize>()?;
+    let mut array = isize::parse_line(lines[1])?;
+    let k = lines[2].parse::<usize>()?;
+    println!("{}", select(&mut array, 0, length - 1, k - 1));
+    Ok(())
 }
 
 fn partition(array: &mut [isize], left: usize, right: usize, pivot_index: usize) -> usize {

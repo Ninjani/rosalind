@@ -3,6 +3,8 @@ use petgraph::algo::dijkstra;
 use petgraph::visit::EdgeRef;
 use petgraph::Direction::Incoming;
 use petgraph::{Graph, Undirected};
+use failure::{Error, err_msg};
+use itertools::Itertools;
 
 /// Distances in Trees
 ///
@@ -11,21 +13,21 @@ use petgraph::{Graph, Undirected};
 ///
 /// Return: A collection of n positive integers, for which the kth integer represents the distance
 /// between xk and yk in Tk.
-pub fn rosalind_nwck() {
+pub fn rosalind_nwck() -> Result<(), Error> {
     let trees_data = utils::input_from_file("data/stronghold/rosalind_nwck.txt");
     let trees = trees_data.split("\n\n");
     let mut path_lengths = Vec::new();
     for tree_data in trees {
         let tree_data: Vec<_> = tree_data.split('\n').collect();
-        let tree = parse_newick(tree_data[0]).into_edge_type::<Undirected>();
-        let start_end: Vec<_> = tree_data[1].split(' ').collect();
-        let (start, end) = (start_end[0], start_end[1]);
+        let tree = parse_newick(tree_data[0])?.into_edge_type::<Undirected>();
+        let (start, end) = tree_data[1].split(' ').collect_tuple().ok_or(err_msg("NoneError"))?;
         match get_path_length(&tree, start, end) {
             Some(path_length) => path_lengths.push(path_length as usize),
             None => panic!("Start/end not found"),
         }
     }
     utils::print_array(&path_lengths);
+    Ok(())
 }
 
 pub fn get_path_length(
@@ -66,7 +68,7 @@ fn tokenize(text: &str, separators: &[char]) -> Vec<String> {
     tokens
 }
 
-pub fn parse_newick(tree_data: &str) -> Graph<String, f64> {
+pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
     let mut tree = Graph::new();
     let mut ancestors = Vec::new();
     let mut node_index = tree.add_node("".to_owned());
@@ -89,13 +91,13 @@ pub fn parse_newick(tree_data: &str) -> Graph<String, f64> {
             }
             ")" => {
                 // Finish current branch
-                node_index = ancestors.pop().unwrap();
+                node_index = ancestors.pop().ok_or(err_msg("NoneError"))?;
             }
             _ => {
                 let x = tokens[i - 1].as_str();
                 if x == ")" || x == "(" || x == "," {
                     // Name
-                    *tree.node_weight_mut(node_index).unwrap() = token.to_owned();
+                    *tree.node_weight_mut(node_index).ok_or(err_msg("NoneError"))? = token.to_owned();
                 } else if x == ":" {
                     // Edge weight
                     let edge_ids: Vec<_> = tree
@@ -103,11 +105,11 @@ pub fn parse_newick(tree_data: &str) -> Graph<String, f64> {
                         .map(|edge| edge.id())
                         .collect();
                     for edge_id in edge_ids {
-                        *tree.edge_weight_mut(edge_id).unwrap() = token.parse::<f64>().unwrap();
+                        *tree.edge_weight_mut(edge_id).ok_or(err_msg("NoneError"))? = token.parse::<f64>()?;
                     }
                 }
             }
         }
     }
-    tree
+    Ok(tree)
 }

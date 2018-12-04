@@ -1,10 +1,11 @@
 use crate::utils;
 use regex::Regex;
 use reqwest;
+use failure::Error;
 
 const UNIPROT: &str = "http://www.uniprot.org/uniprot/";
 
-fn get_fasta_from_uniprot(uniprot_id: &str) -> reqwest::Result<String> {
+fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
     let url = format!("{}{}.fasta", UNIPROT, uniprot_id);
     Ok(reqwest::get(&url)?.text()?)
 }
@@ -36,14 +37,14 @@ fn find_all(motif: &Regex, sequence: &str) -> Vec<usize> {
 /// Given: At most 15 UniProt Protein Database access IDs.
 ///
 /// Return: For each protein possessing the N-glycosylation motif, output its given access ID followed by a list of locations in the protein string where the motif can be found.
-pub fn rosalind_mprt() {
-    let motif = Regex::new("N[^P][ST][^P]").unwrap();
+pub fn rosalind_mprt() -> Result<(), Error> {
+    let motif = Regex::new("N[^P][ST][^P]")?;
     let contents = utils::input_from_file("data/stronghold/rosalind_mprt.txt");
     let uniprot_ids = contents.split('\n').collect::<Vec<&str>>();
-    let sequences = uniprot_ids
+    let sequences: Vec<_> = uniprot_ids
         .iter()
         .map(|key| (*key, parse_sequence(&get_fasta_from_uniprot(key).unwrap())))
-        .collect::<Vec<(&str, String)>>();
+        .collect();
     for (uniprot_id, sequence) in sequences {
         let indices = find_all(&motif, &sequence);
         if !indices.is_empty() {
@@ -51,4 +52,5 @@ pub fn rosalind_mprt() {
             utils::print_array(&indices);
         }
     }
+    Ok(())
 }

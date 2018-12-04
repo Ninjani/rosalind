@@ -65,7 +65,6 @@ pub fn get_longest_path<U: Clone, Ix: IndexType>(
                 topo_nodes.iter().position(|&s| s == sink).unwrap(),
             );
             for node in &topo_nodes {
-                //[(source_index + 1)..=sink_index].iter() {
                 if let Some((max_value, max_predecessor)) = graph
                     .edges_directed(*node, Incoming)
                     .map(|e| (graph[e.source()] + weights[&e.source()], e.source()))

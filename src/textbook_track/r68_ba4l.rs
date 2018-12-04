@@ -25,8 +25,7 @@ pub fn rosalind_ba4l() {
     utils::print_array(
         &trim_leaderboard(&leaderboard, &spectrum, n)
             .into_iter()
-            .map(|masses| {
-               masses_to_peptide[&masses]
-            }).collect::<Vec<_>>(),
+            .map(|masses| masses_to_peptide[&masses])
+            .collect::<Vec<_>>(),
     );
 }

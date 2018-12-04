@@ -1,5 +1,6 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// Calculating Expected Offspring
 ///
@@ -18,9 +19,9 @@ use crate::utils::Parseable;
 ///    aa-aa
 ///
 /// Return: The expected number of offspring displaying the dominant phenotype in the next generation, under the assumption that every couple has exactly two offspring.
-pub fn rosalind_iev() {
+pub fn rosalind_iev() -> Result<(), Error> {
     let contents =
-        f64::parse_line(&utils::input_from_file("data/stronghold/rosalind_iev.txt")).unwrap();
+        f64::parse_line(&utils::input_from_file("data/stronghold/rosalind_iev.txt"))?;
     let percentages = [1., 1., 1., 0.75, 0.5, 0.];
     println!(
         "{}",
@@ -31,4 +32,5 @@ pub fn rosalind_iev() {
             .sum::<f64>()
             * 2.
     );
+    Ok(())
 }

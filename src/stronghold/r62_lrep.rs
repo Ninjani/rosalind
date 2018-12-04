@@ -5,9 +5,10 @@ use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
 use std::collections::HashMap;
+use failure::{Error};
 
 /// W.I.P
-fn make_suffix_tree(lines: &[&str]) -> Graph<String, (usize, usize), Directed, usize> {
+fn make_suffix_tree(lines: &[&str]) -> Result<Graph<String, (usize, usize), Directed, usize>, Error> {
     let mut tree: Graph<String, (usize, usize), Directed, usize> = Graph::default();
     let mut node_to_index = HashMap::new();
     let (mut index_1, mut index_2);
@@ -16,8 +17,8 @@ fn make_suffix_tree(lines: &[&str]) -> Graph<String, (usize, usize), Directed, u
         let (node_1, node_2, start, length) = (
             parts[0],
             parts[1],
-            parts[2].parse::<usize>().unwrap(),
-            parts[3].parse::<usize>().unwrap(),
+            parts[2].parse::<usize>()?,
+            parts[3].parse::<usize>()?,
         );
         index_1 = *node_to_index
             .entry(node_1)
@@ -27,15 +28,15 @@ fn make_suffix_tree(lines: &[&str]) -> Graph<String, (usize, usize), Directed, u
             .or_insert_with(|| tree.add_node(node_2.to_owned()));
         tree.add_edge(index_1, index_2, (start, length));
     }
-    tree
+    Ok(tree)
 }
 
-pub fn rosalind_lrep() {
+pub fn rosalind_lrep() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_lrep.txt");
     let lines: Vec<_> = contents.split('\n').collect();
-    let (dna, k) = (lines[0], lines[1].parse::<usize>().unwrap());
+    let (dna, k) = (lines[0], lines[1].parse::<usize>()?);
     let dna: Vec<_> = dna.chars().collect();
-    let tree = make_suffix_tree(&lines[2..]);
+    let tree = make_suffix_tree(&lines[2..])?;
     let mut substring = (None, 0);
     for node in tree.node_indices() {
         let num_leaves = traverse(&tree, node)
@@ -52,12 +53,12 @@ pub fn rosalind_lrep() {
             }
             if length > substring.1 {
                 substring = (start, length);
-                if start.is_some() {
+                if let Some(start) = start {
                     println!(
                         "{} {} {}",
                         tree.node_weight(node).unwrap(),
                         num_leaves,
-                        &dna[(start.unwrap() - 1)..(start.unwrap() - 1 + length)]
+                        &dna[(start - 1)..(start - 1 + length)]
                             .iter()
                             .collect::<String>()
                     );
@@ -73,4 +74,5 @@ pub fn rosalind_lrep() {
                 .collect::<String>()
         );
     }
+    Ok(())
 }

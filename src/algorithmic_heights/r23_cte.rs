@@ -3,19 +3,19 @@ use crate::utils;
 use crate::utils::Parseable;
 use std::collections::{BinaryHeap, HashMap};
 use std::iter::repeat;
+use failure::Error;
 
 /// Shortest Cycle Through a Given Edge
 ///
 /// Given: A positive integer k≤20 and k simple directed graphs with positive integer edge weights and at most 10^3 vertices in the edge list format.
 ///
 /// Return: For each graph, output the length of a shortest cycle going through the first specified edge if there is a cycle and "-1" otherwise.
-pub fn rosalind_cte() {
+pub fn rosalind_cte() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_cte.txt");
     let mut sections = contents.split('\n');
-    let num_graphs = sections.next().unwrap().parse::<usize>().unwrap();
-    println!("{}", num_graphs);
+    let num_graphs = sections.next().unwrap().parse::<usize>()?;
     for _ in 0..num_graphs {
-        let length_input = usize::parse_line(sections.next().unwrap()).unwrap();
+        let length_input = usize::parse_line(sections.next().unwrap())?;
         let (num_nodes, num_edges) = (length_input[0], length_input[1]);
         let mut graph = vec![format!("{} {}", num_nodes, num_edges)];
         graph.extend((0..num_edges).map(|_| sections.next().unwrap().to_owned()));
@@ -28,6 +28,7 @@ pub fn rosalind_cte() {
             None => print!("-1 "),
         }
     }
+    Ok(())
 }
 
 fn dijkstra_min_distances(

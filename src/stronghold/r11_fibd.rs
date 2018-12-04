@@ -1,5 +1,6 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// nth fibonacci number given that a number is active only for m months
 fn mortal_fibonacci(n: u64, m: u64) -> u64 {
@@ -26,10 +27,10 @@ fn mortal_fibonacci(n: u64, m: u64) -> u64 {
 /// Given: Positive integers n≤100 and m≤20.
 ///
 /// Return: The total number of pairs of rabbits that will remain after the nth month if all rabbits live for m months.
-pub fn rosalind_fibd() {
+pub fn rosalind_fibd() -> Result<(), Error> {
     let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fibd.txt")).unwrap();
-    let n = contents[0];
-    let m = contents[1];
+        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fibd.txt"))?;
+    let (n, m) = (contents[0], contents[1]);
     println!("{}", mortal_fibonacci(n, m));
+    Ok(())
 }

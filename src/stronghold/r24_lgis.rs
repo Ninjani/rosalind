@@ -1,6 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
 use std::iter::repeat;
+use failure::Error;
 
 /// Find the longest subsequence in a sequence of given length according to a given ordering function
 fn longest_subsequence(
@@ -43,11 +44,12 @@ fn longest_subsequence(
 /// Given: A positive integer n≤10000 followed by a permutation π of length n.
 ///
 /// Return: A longest increasing subsequence of π, followed by a longest decreasing subsequence of π.
-pub fn rosalind_lgis() {
+pub fn rosalind_lgis() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_lgis.txt");
-    let mut parts = contents.split('\n');
-    let length = parts.next().unwrap().parse::<usize>().unwrap();
-    let sequence = usize::parse_line(parts.next().unwrap()).unwrap();
+    let parts: Vec<_> = contents.split('\n').collect();
+    let length = parts[0].parse::<usize>()?;
+    let sequence = usize::parse_line(parts[1])?;
     utils::print_array(&longest_subsequence(length, &sequence, |x, y| x > y));
     utils::print_array(&longest_subsequence(length, &sequence, |x, y| x < y));
+    Ok(())
 }

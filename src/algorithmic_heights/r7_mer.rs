@@ -1,19 +1,19 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// Merge Two Sorted Arrays
 ///
 /// Given: A positive integer n≤10^5 and a sorted array A[1..n] of integers from −10^5 to 10^5, a positive integer m≤105 and a sorted array B[1..m] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array C[1..n+m] containing all the elements of A and B.
-pub fn rosalind_mer() {
+pub fn rosalind_mer() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_mer.txt");
-    let mut lines = contents.split('\n');
-    lines.next().unwrap();
-    let sublist_1 = isize::parse_line(lines.next().unwrap()).unwrap();
-    lines.next().unwrap();
-    let sublist_2 = isize::parse_line(lines.next().unwrap()).unwrap();
+    let lines: Vec<_> = contents.split('\n').collect();
+    let sublist_1 = isize::parse_line(lines[1])?;
+    let sublist_2 = isize::parse_line(lines[3])?;
     utils::print_array(&merge(&sublist_1, &sublist_2));
+    Ok(())
 }
 
 pub fn merge<T: PartialOrd + PartialEq + Copy>(left_array: &[T], right_array: &[T]) -> Vec<T> {

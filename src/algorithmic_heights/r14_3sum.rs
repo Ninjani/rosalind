@@ -1,19 +1,19 @@
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// 3SUM
 ///
 /// Given: A positive integer k≤20, a postive integer n≤10^4, and k arrays of size n containing integers from −10^5 to 10^5.
 ///
 /// Return: For each array A[1..n], output three different indices 1≤p<q<r≤n such that A[p]+A[q]+A[r]=0 if exist, and "-1" otherwise.
-pub fn rosalind_3sum() {
+pub fn rosalind_3sum() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_3sum.txt");
     let mut lines = contents.split('\n');
-    let length_input = usize::parse_line(lines.next().unwrap()).unwrap();
+    let length_input = usize::parse_line(lines.next().unwrap())?;
     let length = length_input[1];
     for line in lines {
-        let mut array_indices = isize::parse_line(line)
-            .unwrap()
+        let mut array_indices = isize::parse_line(line)?
             .into_iter()
             .enumerate()
             .collect::<Vec<_>>();
@@ -33,6 +33,7 @@ pub fn rosalind_3sum() {
             None => println!("-1"),
         }
     }
+    Ok(())
 }
 
 fn three_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, usize, usize)> {

@@ -2,6 +2,7 @@ use crate::utils;
 use itertools::Itertools;
 use std::collections::HashMap;
 use std::iter::repeat;
+use failure::Error;
 
 fn cartesian_product_repeat(alphabet: &[char], length: usize) -> Vec<String> {
     (1..=length)
@@ -16,21 +17,20 @@ fn cartesian_product_repeat(alphabet: &[char], length: usize) -> Vec<String> {
 ///
 /// Return: All strings of length at most n formed from 𝒜, ordered lexicographically.
 /// (Note: As in “Enumerating k-mers Lexicographically”, alphabet order is based on the order in which the symbols are given.)
-pub fn rosalind_lexv() {
+pub fn rosalind_lexv() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_lexv.txt");
-    let mut parts = contents.split('\n');
-    let alphabet = parts
-        .next()
-        .unwrap()
+    let parts: Vec<_> = contents.split('\n').collect();
+    let alphabet = parts[0]
         .split(' ')
         .map(|a| a.chars().next().unwrap())
         .collect::<Vec<_>>();
     let alphabet_indices: HashMap<_, _> =
         alphabet.iter().enumerate().map(|(i, c)| (c, i)).collect();
-    let length = parts.next().unwrap().parse::<usize>().unwrap();
+    let length = parts[1].parse::<usize>()?;
     let mut strings = cartesian_product_repeat(&alphabet, length);
     strings.sort_by_key(|k| k.chars().map(|c| alphabet_indices[&c]).collect::<Vec<_>>());
     for string in strings {
         println!("{}", string);
     }
+    Ok(())
 }
