@@ -12,8 +12,8 @@ pub fn rosalind_seto() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_seto.txt");
     let lines: Vec<_> = contents.split('\n').collect();
     let max_n = lines[0].parse::<usize>()?;
-    let set_a = utils::read_set(&lines[1]);
-    let set_b = utils::read_set(&lines[2]);
+    let set_a = utils::read_set(&lines[1])?;
+    let set_b = utils::read_set(&lines[2])?;
     let set_u = HashSet::from_iter(1..=max_n);
     utils::print_set(&set_a.union(&set_b).collect());
     utils::print_set(&set_a.intersection(&set_b).collect());

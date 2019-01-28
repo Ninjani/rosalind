@@ -1,14 +1,16 @@
 use crate::utils;
+use failure::Error;
 
 /// Building a Heap
 ///
 /// Given: A positive integer n≤10^5 and array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A permuted array A satisfying the binary max heap property: for any 2≤i≤n, A[⌊i/2⌋]≥A[i].
-pub fn rosalind_hea() {
-    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hea.txt");
+pub fn rosalind_hea() -> Result<(), Error> {
+    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hea.txt")?;
     build_max_heap(&mut array, length);
     utils::print_array(&array);
+    Ok(())
 }
 
 fn build_max_heap<T: PartialOrd + PartialEq + Copy>(array: &mut [T], length: usize) {

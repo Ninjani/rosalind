@@ -3,15 +3,16 @@ use radix::RadixNum;
 use std::char;
 use std::collections::HashMap;
 use std::iter::repeat;
+use failure::Error;
 
-pub fn rosalind_ba1m() {
+pub fn rosalind_ba1m() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1m.txt");
-    let mut lines = contents.split('\n');
+    let lines = contents.split('\n').collect::<Vec<_>>();
     let (number, k) = (
-        lines.next().unwrap().parse::<usize>().unwrap(),
-        lines.next().unwrap().parse::<usize>().unwrap(),
+        lines[0].parse::<usize>()?,
+        lines[1].parse::<usize>()?,
     );
-    let mut dna = number_to_pattern(number, &"ACGT".chars().collect::<Vec<_>>());
+    let mut dna = number_to_pattern(number, &"ACGT".chars().collect::<Vec<_>>())?;
     if dna.len() < k {
         dna = format!(
             "{}{}",
@@ -20,9 +21,10 @@ pub fn rosalind_ba1m() {
         );
     }
     println!("{}", dna);
+    Ok(())
 }
 
-fn number_to_pattern(number: usize, alphabet: &[char]) -> String {
+fn number_to_pattern(number: usize, alphabet: &[char]) -> Result<String, Error> {
     let num_alphabets = alphabet.len();
     let alphabet_map: HashMap<char, char> = alphabet
         .iter()
@@ -36,10 +38,9 @@ fn number_to_pattern(number: usize, alphabet: &[char]) -> String {
             )
         })
         .collect();
-    RadixNum::from(number)
-        .with_radix(num_alphabets)
-        .unwrap()
+    Ok(RadixNum::from(number)
+        .with_radix(num_alphabets)?
         .digits()
         .map(|n| alphabet_map[&n])
-        .collect()
+        .collect())
 }

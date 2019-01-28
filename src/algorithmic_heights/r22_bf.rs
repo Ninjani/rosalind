@@ -1,5 +1,6 @@
 use crate::utils;
 use std::iter::repeat;
+use failure::Error;
 
 const MAX_WEIGHT: isize = 1001;
 
@@ -8,10 +9,10 @@ const MAX_WEIGHT: isize = 1001;
 /// Given: A simple directed graph with integer edge weights from −10^3 to 10^3 and n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the length of a shortest path from the vertex 1 to the vertex i (D[1]=0). If i is not reachable from 1 set D[i] to x.
-pub fn rosalind_bf() {
+pub fn rosalind_bf() -> Result<(), Error> {
     let (num_nodes, _, edges) = utils::read_weighted_edge_list(&utils::input_from_file(
         "data/algorithmic_heights/rosalind_bf.txt",
-    ));
+    ))?;
     let distances = bellman_ford(num_nodes, &edges, 1);
     for node in 1..=num_nodes {
         match distances[node - 1] {
@@ -19,6 +20,7 @@ pub fn rosalind_bf() {
             None => print!("x "),
         }
     }
+    Ok(())
 }
 
 /// Finds lengths of shortest weighted (incl. negative weights) paths from start_node to each other node

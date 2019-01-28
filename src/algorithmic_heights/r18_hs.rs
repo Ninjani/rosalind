@@ -1,14 +1,16 @@
 use crate::utils;
+use failure::Error;
 
 /// Heap Sort
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array A.
-pub fn rosalind_hs() {
-    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hs.txt");
+pub fn rosalind_hs() -> Result<(), Error> {
+    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hs.txt")?;
     heap_sort(&mut array, length);
     utils::print_array(&array);
+    Ok(())
 }
 
 fn heap_sort<T: Copy + PartialOrd + PartialEq>(array: &mut [T], length: usize) {

@@ -1,13 +1,15 @@
 use crate::utils;
+use failure::Error;
 
 /// Counting Inversions
 ///
 /// Given: A positive integer n≤10^5 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: The number of inversions in A.
-pub fn rosalind_inv() {
-    let (_, array) = utils::read_isize_array("data/algorithmic_heights/rosalind_inv.txt");
+pub fn rosalind_inv() -> Result<(), Error> {
+    let (_, array) = utils::read_isize_array("data/algorithmic_heights/rosalind_inv.txt")?;
     println!("{}", merge_sort_count(&array).1);
+    Ok(())
 }
 
 fn merge_sort_count<T: PartialOrd + PartialEq + Copy>(array: &[T]) -> (Vec<T>, usize) {

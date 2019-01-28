@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
+use failure::Error;
 
 const CODON_FILE: &str = "data/codons.txt";
 pub const STOP_CODON_AA: &str = "Stop";
@@ -209,19 +210,19 @@ pub fn read_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usize)>) {
 /// node_2 -> node_4
 /// ...
 /// ```
-pub fn read_adjacency_list(contents: &str) -> HashMap<usize, Vec<usize>> {
+pub fn read_adjacency_list(contents: &str) -> Result<HashMap<usize, Vec<usize>>, Error> {
     let lines = contents.split('\n');
     let mut adjacency_list = HashMap::new();
     for line in lines {
         let parts: Vec<_> = line.split(" -> ").collect();
-        let node_1 = parts[0].parse::<usize>().unwrap();
+        let node_1 = parts[0].parse::<usize>()?;
         let nodes_2 = parts[1]
             .split(',')
-            .map(|n| n.parse::<usize>().unwrap())
-            .collect();
+            .map(|n| n.parse::<usize>())
+            .collect::<Result<_, _>>()?;
         adjacency_list.insert(node_1, nodes_2);
     }
-    adjacency_list
+    Ok(adjacency_list)
 }
 
 /// Reads a Rosalind edge list into an adjacency matrix
@@ -234,14 +235,14 @@ pub fn read_adjacency_list(contents: &str) -> HashMap<usize, Vec<usize>> {
 pub fn read_adjacency_matrix(
     contents: &str,
     directed: bool,
-) -> (usize, HashMap<usize, Vec<usize>>) {
+) -> Result<(usize, HashMap<usize, Vec<usize>>), Error> {
     let mut lines = contents.split('\n');
-    let num_nodes = lines.next().unwrap().parse::<usize>().unwrap();
+    let num_nodes = lines.next().unwrap().parse::<usize>()?;
     let mut adjacency_matrix = HashMap::new();
     for line in lines {
-        let mut parts = line.split(' ').map(|n| n.parse::<usize>().unwrap());
-        let node_1 = parts.next().unwrap();
-        let node_2 = parts.next().unwrap();
+        let parts = line.split(' ').map(|n| n.parse::<usize>()).collect::<Result<Vec<_>, _>>()?;
+        let node_1 = parts[0];
+        let node_2 = parts[1];
         {
             let edge_list_1 = adjacency_matrix.entry(node_1).or_insert_with(Vec::new);
             edge_list_1.push(node_2);
@@ -251,7 +252,7 @@ pub fn read_adjacency_matrix(
             edge_list_2.push(node_1);
         }
     }
-    (num_nodes, adjacency_matrix)
+    Ok((num_nodes, adjacency_matrix))
 }
 
 /// Read a Rosalind weighted edge list of the form:
@@ -261,24 +262,24 @@ pub fn read_adjacency_matrix(
 /// node_1 node_2 weight
 /// ...
 /// ```
-pub fn read_weighted_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usize, isize)>) {
+pub fn read_weighted_edge_list(contents: &str) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
     let mut lines = contents.split('\n');
     let length_input = lines
         .next()
         .unwrap()
         .split(' ')
-        .map(|n| n.parse::<usize>().unwrap())
-        .collect::<Vec<_>>();
+        .map(|n| n.parse::<usize>())
+        .collect::<Result<Vec<_>, _>>()?;
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
     let mut edges = Vec::new();
     for line in lines {
-        let mut parts = line.split(' ');
-        let node_1 = parts.next().unwrap().parse::<usize>().unwrap();
-        let node_2 = parts.next().unwrap().parse::<usize>().unwrap();
-        let weight = parts.next().unwrap().parse::<isize>().unwrap();
+        let parts = line.split(' ').collect::<Vec<_>>();
+        let node_1 = parts[0].parse::<usize>()?;
+        let node_2 = parts[1].parse::<usize>()?;
+        let weight = parts[2].parse::<isize>()?;
         edges.push((node_1, node_2, weight));
     }
-    (num_nodes, num_edges, edges)
+    Ok((num_nodes, num_edges, edges))
 }
 
 #[derive(Debug, Fail)]
@@ -354,12 +355,12 @@ impl Parseable for f64 {
 /// length
 /// a1 a2 a3 ...
 /// ```
-pub fn read_isize_array(filename: &str) -> (usize, Vec<isize>) {
+pub fn read_isize_array(filename: &str) -> Result<(usize, Vec<isize>), Error> {
     let contents = input_from_file(filename);
-    let mut lines = contents.split('\n');
-    let length = lines.next().unwrap().parse::<usize>().unwrap();
-    let array = isize::parse_line(lines.next().unwrap()).unwrap();
-    (length, array)
+    let lines = contents.split('\n').collect::<Vec<_>>();
+    let length = lines[0].parse::<usize>()?;
+    let array = isize::parse_line(lines[1])?;
+    Ok((length, array))
 }
 
 /// Parse a line of whitespace separated characters
@@ -409,16 +410,15 @@ impl Comparable for f64 {
     }
 }
 
-pub fn read_set(line: &str) -> HashSet<usize> {
+pub fn read_set(line: &str) -> Result<HashSet<usize>, Error> {
     let chars: Vec<_> = line.chars().collect();
     let line: String = chars[1..(line.len() - 1)].iter().collect();
-    HashSet::from_iter(
+    Ok(HashSet::from_iter(
         line.split(", ")
             .map(|n| n.parse::<usize>())
-            .collect::<Result<Vec<_>, ParseIntError>>()
-            .unwrap()
+            .collect::<Result<Vec<_>, _>>()?
             .into_iter(),
-    )
+    ))
 }
 
 /// Return overlapping kmers of a given length from a string

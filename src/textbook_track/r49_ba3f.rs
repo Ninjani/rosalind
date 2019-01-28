@@ -2,11 +2,12 @@ use crate::utils;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
+use failure::Error;
 
-pub fn rosalind_ba3f() {
+pub fn rosalind_ba3f() -> Result<(), Error> {
     let mut adjacency_list = utils::read_adjacency_list(&utils::input_from_file(
         "data/textbook_track/rosalind_ba3f.txt",
-    ));
+    ))?;
     let cycle = get_eulerian_cycle(&mut adjacency_list);
     println!(
         "{}",
@@ -16,6 +17,7 @@ pub fn rosalind_ba3f() {
             .collect::<Vec<_>>()
             .join("->")
     );
+    Ok(())
 }
 
 pub fn get_eulerian_cycle<T: Hash + Clone + Eq + Debug>(

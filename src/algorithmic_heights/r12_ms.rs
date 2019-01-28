@@ -1,14 +1,16 @@
 use crate::algorithmic_heights::r7_mer::merge;
 use crate::utils;
+use failure::Error;
 
 /// Merge Sort
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array A[1..n].
-pub fn rosalind_ms() {
-    let (_, array) = utils::read_isize_array("data/algorithmic_heights/rosalind_ms.txt");
+pub fn rosalind_ms() -> Result<(), Error> {
+    let (_, array) = utils::read_isize_array("data/algorithmic_heights/rosalind_ms.txt")?;
     utils::print_array(&merge_sort(&array));
+    Ok(())
 }
 
 fn merge_sort<T: PartialOrd + PartialEq + Copy>(array: &[T]) -> Vec<T> {
