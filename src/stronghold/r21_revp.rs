@@ -1,6 +1,6 @@
 use crate::utils;
+use failure::{err_msg, Error};
 use std::collections::HashMap;
-use failure::{Error, err_msg};
 
 /// Checks if a dna string is a reverse palindrome
 fn check_palindrome(dna: &[char], nucleotide_map: &HashMap<char, char>) -> bool {
@@ -23,7 +23,12 @@ fn check_palindrome(dna: &[char], nucleotide_map: &HashMap<char, char>) -> bool 
 pub fn rosalind_revp() -> Result<(), Error> {
     let nucleotide_map: HashMap<_, _> = "ATCG".chars().zip("TAGC".chars()).collect();
     let fasta = utils::read_fasta_file("data/stronghold/rosalind_revp.txt");
-    let dna = fasta.values().next().ok_or(err_msg("NoneError"))?.chars().collect::<Vec<_>>();
+    let dna = fasta
+        .values()
+        .next()
+        .ok_or_else(|| err_msg("NoneError"))?
+        .chars()
+        .collect::<Vec<_>>();
     for i in 0..dna.len() {
         for length in 4..=12 {
             if i + length > dna.len() {

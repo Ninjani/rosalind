@@ -5,16 +5,18 @@ use crate::utils::Parseable;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba2d() {
+pub fn rosalind_ba2d() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2d.txt");
     let mut lines = contents.split('\n');
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();
     for motif in greedy_motif_search(&dna, k, t, false) {
         println!("{}", motif);
     }
+    Ok(())
 }
 
 pub fn get_profile(sequences: &[String], pseudocounts: bool) -> Array2<f64> {

@@ -14,7 +14,7 @@ pub fn rosalind_splc() -> Result<(), Error> {
         .keys()
         .map(|key| (key, sequences[key].len()))
         .max_by(|a, b| a.1.cmp(&b.1))
-        .ok_or(err_msg("NoneError"))?
+        .ok_or_else(|| err_msg("NoneError"))?
         .0;
     let intron_keys = sequences
         .keys()
@@ -36,7 +36,8 @@ pub fn rosalind_splc() -> Result<(), Error> {
     }
     println!(
         "{}",
-        translate(&transcribe(&exons.iter().collect::<String>())).ok_or(err_msg("NoneError"))?
+        translate(&transcribe(&exons.iter().collect::<String>()))
+            .ok_or_else(|| err_msg("NoneError"))?
     );
     Ok(())
 }

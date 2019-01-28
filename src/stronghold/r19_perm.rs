@@ -35,8 +35,7 @@ pub fn get_permutations<T: PartialOrd + Clone>(array: &mut Vec<T>) -> Vec<Vec<T>
 ///
 /// Return: The total number of permutations of length n, followed by a list of all such permutations (in any order).
 pub fn rosalind_perm() -> Result<(), Error> {
-    let n = utils::input_from_file("data/stronghold/rosalind_perm.txt")
-        .parse::<usize>()?;
+    let n = utils::input_from_file("data/stronghold/rosalind_perm.txt").parse::<usize>()?;
     let total: usize = (1..=n).product();
     println!("{}", total);
     let mut array = (1..=n).collect::<Vec<_>>();

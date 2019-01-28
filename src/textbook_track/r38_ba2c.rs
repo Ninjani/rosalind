@@ -2,22 +2,26 @@ use crate::utils;
 use crate::utils::Parseable;
 use ndarray::Array2;
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba2c() {
+pub fn rosalind_ba2c() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2c.txt");
     let mut lines = contents.split('\n');
     let (text, k) = (
         lines.next().unwrap(),
-        lines.next().unwrap().parse::<usize>().unwrap(),
+        lines.next().unwrap().parse::<usize>()?,
     );
     let matrix = Array2::from_shape_vec(
         (4, k),
         lines
-            .flat_map(|line| f64::parse_line(line).unwrap().into_iter())
+            .map(|line| f64::parse_line(line))
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .flat_map(|line| line.into_iter())
             .collect(),
-    )
-    .unwrap();
+    )?;
     println!("{}", get_profile_most_probable_kmer(&text, k, &matrix));
+    Ok(())
 }
 
 pub fn get_probability_kmer(kmer: &str, profile_matrix: &Array2<f64>) -> f64 {

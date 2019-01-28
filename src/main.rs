@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![allow(clippy::implicit_hasher)]
 #![feature(slice_concat_ext)]
+#![feature(vec_remove_item)]
 #[macro_use]
 extern crate ndarray;
 #[macro_use]
@@ -11,5 +12,5 @@ pub mod textbook_track;
 pub mod utils;
 
 fn main() {
-    textbook_track::r85_ba6b::rosalind_ba6b()
+    textbook_track::r81_ba5l::rosalind_ba5l();
 }

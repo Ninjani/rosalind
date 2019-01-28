@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use num::bigint::BigUint;
 use failure::Error;
+use num::bigint::BigUint;
 
 /// Partial Permutations
 ///
@@ -9,8 +9,7 @@ use failure::Error;
 ///
 /// Return: The total number of partial permutations P(n,k), modulo 1,000,000.
 pub fn rosalind_pper() -> Result<(), Error> {
-    let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_pper.txt"))?;
+    let contents = u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_pper.txt"))?;
     let (n, k) = (contents[0], contents[1]);
     println!(
         "{}",

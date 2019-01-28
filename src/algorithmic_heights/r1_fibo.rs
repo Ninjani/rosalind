@@ -8,8 +8,7 @@ use failure::Error;
 ///
 /// Return: The value of F_n.
 pub fn rosalind_fibo() -> Result<(), Error> {
-    let n = utils::input_from_file("data/algorithmic_heights/rosalind_fibo.txt")
-        .parse::<u64>()?;
+    let n = utils::input_from_file("data/algorithmic_heights/rosalind_fibo.txt").parse::<u64>()?;
     println!("{}", fibonacci(n, 1));
     Ok(())
 }

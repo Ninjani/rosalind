@@ -1,14 +1,16 @@
 use crate::stronghold::r56_ctbl::traverse;
 use crate::utils;
+use failure::Error;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
 use std::collections::HashMap;
-use failure::{Error};
 
 /// W.I.P
-fn make_suffix_tree(lines: &[&str]) -> Result<Graph<String, (usize, usize), Directed, usize>, Error> {
+fn make_suffix_tree(
+    lines: &[&str],
+) -> Result<Graph<String, (usize, usize), Directed, usize>, Error> {
     let mut tree: Graph<String, (usize, usize), Directed, usize> = Graph::default();
     let mut node_to_index = HashMap::new();
     let (mut index_1, mut index_2);

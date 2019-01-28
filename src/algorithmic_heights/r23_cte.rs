@@ -1,9 +1,9 @@
 use crate::algorithmic_heights::r17_dij::{make_weighted_adjacency_matrix, State};
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 use std::collections::{BinaryHeap, HashMap};
 use std::iter::repeat;
-use failure::Error;
 
 /// Shortest Cycle Through a Given Edge
 ///

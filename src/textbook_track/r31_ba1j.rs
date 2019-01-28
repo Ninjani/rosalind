@@ -4,15 +4,16 @@ use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba1j() {
+pub fn rosalind_ba1j() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1j.txt");
-    let mut lines = contents.split('\n');
-    let text = lines.next().unwrap();
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let lines = contents.split('\n').collect::<Vec<_>>();
+    let numbers = usize::parse_line(lines[1])?;
     let (k, mismatch) = (numbers[0], numbers[1]);
-    let counts_tuple = get_sorted_kmer_counts_approx_revc(text, k, mismatch);
+    let counts_tuple = get_sorted_kmer_counts_approx_revc(lines[0], k, mismatch);
     utils::print_array(&get_most_frequent_kmers(&counts_tuple));
+    Ok(())
 }
 
 fn get_sorted_kmer_counts_approx_revc(

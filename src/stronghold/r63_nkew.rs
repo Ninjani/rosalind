@@ -1,8 +1,8 @@
 use crate::stronghold::r49_nwck::{get_path_length, parse_newick};
 use crate::utils;
-use petgraph::Undirected;
-use failure::{Error, err_msg};
+use failure::{err_msg, Error};
 use itertools::Itertools;
+use petgraph::Undirected;
 
 /// Newick Format with Edge Weights
 ///
@@ -17,7 +17,10 @@ pub fn rosalind_nkew() -> Result<(), Error> {
     for tree_data in trees {
         let tree_data: Vec<_> = tree_data.split('\n').collect();
         let tree = parse_newick(tree_data[0])?.into_edge_type::<Undirected>();
-        let (start, end)= tree_data[1].split(' ').collect_tuple().ok_or(err_msg("NoneError"))?;
+        let (start, end) = tree_data[1]
+            .split(' ')
+            .collect_tuple()
+            .ok_or_else(|| err_msg("NoneError"))?;
         match get_path_length(&tree, start, end) {
             Some(path_length) => path_lengths.push(path_length as usize),
             None => panic!("Start/end not found"),

@@ -1,15 +1,17 @@
 use crate::utils;
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba1b() {
+pub fn rosalind_ba1b() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1b.txt");
-    let mut lines = contents.split('\n');
+    let lines = contents.split('\n').collect::<Vec<_>>();
     let (text, k) = (
-        lines.next().unwrap(),
-        lines.next().unwrap().parse::<usize>().unwrap(),
+        lines[0],
+        lines[1].parse::<usize>()?,
     );
     let counts_tuple = get_sorted_kmer_counts(text, k);
     utils::print_array(&get_most_frequent_kmers(&counts_tuple));
+    Ok(())
 }
 
 pub fn get_sorted_kmer_counts(text: &str, k: usize) -> Vec<(String, usize)> {

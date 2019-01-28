@@ -1,10 +1,10 @@
 use crate::utils;
+use failure::{err_msg, Error};
+use itertools::Itertools;
 use petgraph::algo::dijkstra;
 use petgraph::visit::EdgeRef;
 use petgraph::Direction::Incoming;
 use petgraph::{Graph, Undirected};
-use failure::{Error, err_msg};
-use itertools::Itertools;
 
 /// Distances in Trees
 ///
@@ -20,7 +20,10 @@ pub fn rosalind_nwck() -> Result<(), Error> {
     for tree_data in trees {
         let tree_data: Vec<_> = tree_data.split('\n').collect();
         let tree = parse_newick(tree_data[0])?.into_edge_type::<Undirected>();
-        let (start, end) = tree_data[1].split(' ').collect_tuple().ok_or(err_msg("NoneError"))?;
+        let (start, end) = tree_data[1]
+            .split(' ')
+            .collect_tuple()
+            .ok_or_else(|| err_msg("NoneError"))?;
         match get_path_length(&tree, start, end) {
             Some(path_length) => path_lengths.push(path_length as usize),
             None => panic!("Start/end not found"),
@@ -91,13 +94,15 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
             }
             ")" => {
                 // Finish current branch
-                node_index = ancestors.pop().ok_or(err_msg("NoneError"))?;
+                node_index = ancestors.pop().ok_or_else(|| err_msg("NoneError"))?;
             }
             _ => {
                 let x = tokens[i - 1].as_str();
                 if x == ")" || x == "(" || x == "," {
                     // Name
-                    *tree.node_weight_mut(node_index).ok_or(err_msg("NoneError"))? = token.to_owned();
+                    *tree
+                        .node_weight_mut(node_index)
+                        .ok_or_else(|| err_msg("NoneError"))? = token.to_owned();
                 } else if x == ":" {
                     // Edge weight
                     let edge_ids: Vec<_> = tree
@@ -105,7 +110,9 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
                         .map(|edge| edge.id())
                         .collect();
                     for edge_id in edge_ids {
-                        *tree.edge_weight_mut(edge_id).ok_or(err_msg("NoneError"))? = token.parse::<f64>()?;
+                        *tree
+                            .edge_weight_mut(edge_id)
+                            .ok_or_else(|| err_msg("NoneError"))? = token.parse::<f64>()?;
                     }
                 }
             }

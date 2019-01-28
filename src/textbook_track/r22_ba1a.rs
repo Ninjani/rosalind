@@ -2,9 +2,9 @@ use crate::utils;
 
 pub fn rosalind_ba1a() {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1a.txt");
-    let mut lines = contents.split('\n');
-    let (text, pattern) = (lines.next().unwrap(), lines.next().unwrap());
-    println!("{}", pattern_count(&text, &pattern));
+    let lines = contents.split('\n').collect::<Vec<_>>();
+    let (text, pattern) = (lines[0], lines[1]);
+    println!("{}", pattern_count(text, pattern));
 }
 
 pub fn pattern_count(text: &str, pattern: &str) -> usize {

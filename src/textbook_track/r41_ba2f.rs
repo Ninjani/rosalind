@@ -3,11 +3,12 @@ use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
 use crate::utils;
 use crate::utils::Parseable;
 use rand::{thread_rng, Rng};
+use failure::Error;
 
-pub fn rosalind_ba2f() {
+pub fn rosalind_ba2f() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2f.txt");
     let mut lines = contents.split('\n');
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();
     let mut best_motifs = randomized_motif_search(&dna, k, t, true);
@@ -21,6 +22,7 @@ pub fn rosalind_ba2f() {
     for motif in best_motifs {
         println!("{}", motif);
     }
+    Ok(())
 }
 
 // RANDOMIZEDMOTIFSEARCH(Dna, k, t)

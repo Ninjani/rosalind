@@ -1,8 +1,8 @@
 use crate::stronghold::r20_prtm::get_aa_to_mass;
 use crate::stronghold::r55_conv::{get_max_multiplicity, get_minkowski_difference};
 use crate::utils;
-use std::collections::HashMap;
 use failure::{err_msg, Error};
+use std::collections::HashMap;
 
 /// Matching a Spectrum to a Protein
 ///
@@ -29,13 +29,14 @@ pub fn rosalind_prsm() -> Result<(), Error> {
                 get_max_multiplicity(&get_minkowski_difference(
                     &spectrum,
                     &get_complete_spectrum(protein, &aa_to_mass),
-                )).unwrap()
+                ))
+                .unwrap()
                 .0,
                 i,
             )
         })
         .max()
-        .ok_or(err_msg("NoneError"))?;
+        .ok_or_else(|| err_msg("NoneError"))?;
     println!("{}\n{}", max_multiplicity, proteins[max_index]);
     Ok(())
 }

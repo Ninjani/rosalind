@@ -1,6 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
 use std::slice::SliceConcatExt;
+use failure::Error;
 
 /// Implement GreedySorting to Sort a Permutation by Reversals
 ///
@@ -8,18 +9,17 @@ use std::slice::SliceConcatExt;
 ///
 /// Return: The sequence of permutations corresponding to applying GreedySorting to P,
 /// ending with the identity permutation.
-pub fn rosalind_ba6a() {
-    let line = utils::input_from_file(
-        "data/textbook_track/rosalind_ba6a.txt",
-    );
-    let permutation = isize::parse_line(&line[1..(line.len()-1)])
-    .unwrap();
-    greedy_reversal_sorting(&permutation);
+pub fn rosalind_ba6a() -> Result<(), Error> {
+    let line = utils::input_from_file("data/textbook_track/rosalind_ba6a.txt");
+    let mut permutation = isize::parse_line(&line[1..(line.len() - 1)])?;
+    greedy_reversal_sorting(&mut permutation);
+    Ok(())
 }
 
 fn print_permutation(permutation: &[isize]) {
     println!(
-        "({})", permutation
+        "({})",
+        permutation
             .iter()
             .map(|n| if *n > 0 {
                 format!("+{}", n)
@@ -31,27 +31,25 @@ fn print_permutation(permutation: &[isize]) {
     );
 }
 
-
-fn greedy_reversal_sorting(permutation: &[isize]) -> usize {
-    let mut permutation: Vec<_> = permutation.into_iter().cloned().collect();
+fn greedy_reversal_sorting(permutation: &mut [isize]) -> usize {
     let mut distance = 0;
     for k in 0isize..(permutation.len() as isize) {
         let k_index = k as usize;
         if permutation[k_index].abs() != (k + 1) {
-            let k_position = permutation
-                .iter()
-                .position(|x| x.abs() == k + 1)
-                .unwrap();
-            permutation = [
-                &permutation[..k_index],
-                &permutation[k_index..=k_position]
-                    .into_iter()
-                    .rev()
-                    .map(|x| -x)
-                    .collect::<Vec<_>>()[..],
-                &permutation[(k_position + 1)..],
-            ]
-            .concat().to_vec();
+            let k_position = permutation.iter().position(|x| x.abs() == k + 1).unwrap();
+            permutation.swap_with_slice(
+                &mut [
+                    &permutation[..k_index],
+                    &permutation[k_index..=k_position]
+                        .iter()
+                        .rev()
+                        .map(|x| -x)
+                        .collect::<Vec<_>>()[..],
+                    &permutation[(k_position + 1)..],
+                ]
+                .concat()
+                .to_vec(),
+            );
             print_permutation(&permutation);
             distance += 1;
         }

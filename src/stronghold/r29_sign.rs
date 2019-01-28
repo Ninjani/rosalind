@@ -1,7 +1,7 @@
 use crate::stronghold::r19_perm::get_permutations;
 use crate::utils;
-use itertools::Itertools;
 use failure::Error;
+use itertools::Itertools;
 
 /// Enumerating Oriented Gene Orderings
 ///
@@ -9,8 +9,7 @@ use failure::Error;
 ///
 /// Return: The total number of signed permutations of length n, followed by a list of all such permutations (you may list the signed permutations in any order).
 pub fn rosalind_sign() -> Result<(), Error> {
-    let length = utils::input_from_file("data/stronghold/rosalind_sign.txt")
-        .parse::<usize>()?;
+    let length = utils::input_from_file("data/stronghold/rosalind_sign.txt").parse::<usize>()?;
     let mut array = (1i64..=length as i64).collect::<Vec<_>>();
     let permutations = get_permutations(&mut array);
     let signs = vec![-1i64, 1];

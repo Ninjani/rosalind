@@ -3,15 +3,16 @@ use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::{HashMap, HashSet};
+use failure::Error;
 
-pub fn rosalind_ba1i() {
+pub fn rosalind_ba1i() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1i.txt");
-    let mut lines = contents.split('\n');
-    let text = lines.next().unwrap();
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let lines = contents.split('\n').collect::<Vec<_>>();
+    let numbers = usize::parse_line(lines[1])?;
     let (k, mismatch) = (numbers[0], numbers[1]);
-    let counts_tuple = get_sorted_kmer_counts_approx(text, k, mismatch);
+    let counts_tuple = get_sorted_kmer_counts_approx(lines[0], k, mismatch);
     utils::print_array(&get_most_frequent_kmers(&counts_tuple));
+    Ok(())
 }
 
 pub fn get_mismatch_sequences(sequence: &str, mismatch: usize) -> Vec<String> {

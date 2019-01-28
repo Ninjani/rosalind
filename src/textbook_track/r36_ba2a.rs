@@ -3,18 +3,20 @@ use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::HashSet;
+use failure::Error;
 
-pub fn rosalind_ba1a() {
+pub fn rosalind_ba1a()  -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2a.txt");
     let mut lines = contents.split('\n');
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, mismatch) = (numbers[0], numbers[1]);
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();
     utils::print_array(
         &enumerate_motifs(&dna, k, mismatch)
             .iter()
             .collect::<Vec<_>>(),
-    )
+    );
+    Ok(())
 }
 
 fn is_motif_in_sequence_approx(motif: &str, sequence: &str, mismatch: usize) -> bool {

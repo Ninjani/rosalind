@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use rand::{thread_rng, Rng};
 use failure::Error;
+use rand::{thread_rng, Rng};
 
 /// Median
 ///

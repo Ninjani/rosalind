@@ -2,21 +2,22 @@ use crate::textbook_track::r12_ba11a::get_mass_to_aa;
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::HashMap;
+use failure::Error;
 
 /// Convert a Peptide Vector into a Peptide
 ///
 /// Given: A space-delimited binary vector P.
 ///
 /// Return: A peptide whose binary peptide vector matches P. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11d() {
+pub fn rosalind_ba11d() -> Result<(), Error> {
     let peptide_vector = u8::parse_line(&utils::input_from_file(
         "data/textbook_track/rosalind_ba11d.txt",
-    ))
-    .unwrap();
+    ))?;
     println!(
         "{}",
         get_peptide_from_peptide_vector(&peptide_vector, &get_mass_to_aa())
     );
+    Ok(())
 }
 
 fn get_peptide_from_peptide_vector(

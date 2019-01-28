@@ -1,6 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
 use ndarray::{Array, Array2};
+use failure::Error;
 
 /// Find the Length of a Longest Path in a Manhattan-like Grid
 ///
@@ -9,23 +10,24 @@ use ndarray::{Array, Array2};
 ///
 /// Return: The length of a longest path from source (0, 0) to sink (n, m) in the n × m rectangular
 /// grid whose edges are defined by the matrices Down and Right.
-pub fn rosalind_ba5b() {
+pub fn rosalind_ba5b() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba5b.txt");
     let mut parts = contents.split("\n-\n");
     let mut size_down = parts.next().unwrap().split('\n');
-    let size = usize::parse_line(size_down.next().unwrap()).unwrap();
+    let size = usize::parse_line(size_down.next().unwrap())?;
     let mut down = Array2::zeros((size[0], size[1] + 1));
     for (i, line) in size_down.enumerate() {
         down.row_mut(i)
-            .assign(&Array::from_vec(usize::parse_line(line).unwrap()));
+            .assign(&Array::from_vec(usize::parse_line(line)?));
     }
     let mut right = Array2::zeros((size[0] + 1, size[1]));
     for (i, line) in parts.next().unwrap().split('\n').enumerate() {
         right
             .row_mut(i)
-            .assign(&Array::from_vec(usize::parse_line(line).unwrap()));
+            .assign(&Array::from_vec(usize::parse_line(line)?));
     }
     println!("{}", longest_path_length(&down, &right));
+    Ok(())
 }
 
 fn longest_path_length(down: &Array2<usize>, right: &Array2<usize>) -> usize {

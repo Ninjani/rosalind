@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::BinaryHeap;
 use failure::Error;
+use std::collections::BinaryHeap;
 
 /// Partial Sort
 ///

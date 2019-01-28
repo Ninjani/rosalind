@@ -61,7 +61,7 @@ pub fn make_weighted_adjacency_matrix<
 }
 
 /// Finds length of shortest (weighted) path from start_node to end_node using Dijkstra's Algorithm
-fn dijkstra<S: ::std::hash::BuildHasher>(
+pub fn dijkstra<S: ::std::hash::BuildHasher>(
     num_nodes: usize,
     adjacency_matrix: &HashMap<usize, Vec<(usize, isize)>, S>,
     start_node: usize,

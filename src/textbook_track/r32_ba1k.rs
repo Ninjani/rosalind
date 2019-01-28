@@ -2,15 +2,17 @@ use crate::stronghold::r23_lexf::enumerate_lex_2;
 use crate::utils;
 use std::collections::HashMap;
 use std::iter::repeat;
+use failure::Error;
 
-pub fn rosalind_ba1k() {
+pub fn rosalind_ba1k() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1k.txt");
-    let mut lines = contents.split('\n');
+    let lines = contents.split('\n').collect::<Vec<_>>();
     let (text, k) = (
-        lines.next().unwrap(),
-        lines.next().unwrap().parse::<usize>().unwrap(),
+        lines[0],
+        lines[1].parse::<usize>()?,
     );
     utils::print_array(&get_frequency_array(&text, k));
+    Ok(())
 }
 
 fn get_frequency_array(text: &str, k: usize) -> Vec<usize> {

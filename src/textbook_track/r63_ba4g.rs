@@ -7,18 +7,19 @@ use crate::utils::Parseable;
 use itertools::Itertools;
 use std::collections::HashSet;
 use std::iter::FromIterator;
+use failure::Error;
 
 /// Implement LeaderboardCyclopeptideSequencing
 ///
 /// Given: An integer N and a collection of integers Spectrum.
 ///
 /// Return: LeaderPeptide after running LeaderboardCyclopeptideSequencing(Spectrum, N).
-pub fn rosalind_ba4g() {
+pub fn rosalind_ba4g() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba4g.txt");
     let lines: Vec<_> = contents.split('\n').collect();
     let (n, spectrum) = (
-        lines[0].parse::<usize>().unwrap(),
-        usize::parse_line(lines[1]).unwrap(),
+        lines[0].parse::<usize>()?,
+        usize::parse_line(lines[1])?,
     );
     let aa_to_mass = &get_aa_to_mass_usize();
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
@@ -29,6 +30,7 @@ pub fn rosalind_ba4g() {
             .collect::<Vec<_>>()
             .join("-");
     println!("{}", peptide);
+    Ok(())
 }
 
 pub fn leaderboard_cyclo_peptide_sequencing(

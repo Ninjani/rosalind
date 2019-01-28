@@ -1,6 +1,6 @@
 use crate::utils;
-use std::collections::HashMap;
 use failure::Error;
+use std::collections::HashMap;
 
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 

@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use std::iter::repeat;
 use failure::Error;
+use std::iter::repeat;
 
 /// Find the longest subsequence in a sequence of given length according to a given ordering function
 fn longest_subsequence(

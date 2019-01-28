@@ -1,15 +1,16 @@
 use crate::utils;
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba3d() {
+pub fn rosalind_ba3d() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba3d.txt");
     let lines: Vec<_> = contents.split('\n').collect();
-    let k = lines[0].parse::<usize>().unwrap();
-    let text = lines[1];
-    let nodes = utils::kmerize(text, k);
+    let k = lines[0].parse::<usize>()?;
+    let nodes = utils::kmerize(lines[1], k);
     for (key, value) in de_bruijn_graph(&nodes) {
         println!("{} -> {}", key, value.join(","));
     }
+    Ok(())
 }
 
 pub fn de_bruijn_graph(nodes: &[String]) -> HashMap<String, Vec<String>> {

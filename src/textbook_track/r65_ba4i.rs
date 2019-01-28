@@ -3,6 +3,7 @@ use crate::textbook_track::r63_ba4g::{get_top_with_ties, leaderboard_cyclo_pepti
 use crate::textbook_track::r64_ba4h::get_spectral_convolution;
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 
 /// Implement ConvolutionCyclopeptideSequencing
 ///
@@ -11,13 +12,13 @@ use crate::utils::Parseable;
 /// Return: A cyclic peptide LeaderPeptide with amino acids taken only from the top M elements
 /// (and ties) of the convolution of Spectrum that fall between 57 and 200, and where the size
 /// of Leaderboard is restricted to the top N (and ties).
-pub fn rosalind_ba4i() {
+pub fn rosalind_ba4i() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba4i.txt");
     let lines: Vec<_> = contents.split('\n').collect();
     let (m, n, spectrum) = (
-        lines[0].parse::<usize>().unwrap(),
-        lines[1].parse::<usize>().unwrap(),
-        usize::parse_line(lines[2]).unwrap(),
+        lines[0].parse::<usize>()?,
+        lines[1].parse::<usize>()?,
+        usize::parse_line(lines[2])?,
     );
     let peptide = convolution_cyclo_peptide_sequencing(&spectrum, m, n)
         .into_iter()
@@ -25,6 +26,7 @@ pub fn rosalind_ba4i() {
         .collect::<Vec<_>>()
         .join("-");
     println!("{}", peptide);
+    Ok(())
 }
 
 fn convolution_cyclo_peptide_sequencing(spectrum: &[usize], m: usize, n: usize) -> Vec<usize> {

@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use num::BigUint;
 use failure::Error;
+use num::BigUint;
 
 /// Introduction to Alternative Splicing
 ///

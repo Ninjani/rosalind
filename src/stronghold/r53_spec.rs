@@ -10,7 +10,7 @@ const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 /// Return: A protein string of length n−1 whose prefix spectrum is equal to L (if multiple solutions exist, you may output any one of them). Consult the monoisotopic mass table.
 pub fn rosalind_spec() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_spec.txt");
-    let spectrum  = contents
+    let spectrum = contents
         .split('\n')
         .map(|line| line.parse::<f64>())
         .collect::<Result<Vec<_>, _>>()?;
@@ -36,7 +36,7 @@ pub fn get_mass_aa() -> Result<Vec<(f64, char)>, Error> {
         let mut aa_mass = line.split_whitespace();
         if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {
             let mass = mass.parse::<f64>()?;
-            let aa = aa.chars().next().ok_or(err_msg("NoneError"))?;
+            let aa = aa.chars().next().ok_or_else(|| err_msg("NoneError"))?;
             mass_aa.push((mass, aa));
         }
     }

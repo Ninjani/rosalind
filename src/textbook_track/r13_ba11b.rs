@@ -9,17 +9,17 @@ use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
 use std::collections::{HashMap, HashSet};
+use failure::Error;
 
 /// Given: A space-delimited list of integers, Spectrum.
 ///
 /// Return: An amino acid string with an ideal spectrum that matches Spectrum.
-pub fn rosalind_ba11b() {
+pub fn rosalind_ba11b() -> Result<(), Error> {
     let mut spectrum = vec![0];
     spectrum.append(
         &mut usize::parse_line(&utils::input_from_file(
             "data/textbook_track/rosalind_ba11b.txt",
-        ))
-        .unwrap(),
+        ))?,
     );
     let (source, sink) = (spectrum[0], spectrum[spectrum.len() - 1]);
     let mass_to_aa = get_mass_to_aa();
@@ -47,6 +47,7 @@ pub fn rosalind_ba11b() {
             println!("{}", peptide);
         }
     }
+    Ok(())
 }
 
 pub fn get_ideal_spectrum(peptide: &[usize]) -> Vec<usize> {

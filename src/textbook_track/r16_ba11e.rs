@@ -9,18 +9,18 @@ use petgraph::Directed;
 use petgraph::Direction::Incoming;
 use std::collections::HashMap;
 use std::isize;
+use failure::Error;
 /// W.I.P
 
 /// Given: A space-delimited spectral vector S.
 ///
 /// Return: A peptide with maximum score against S. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11e() {
+pub fn rosalind_ba11e() -> Result<(), Error>{
     let mut spectrum = vec![0];
     spectrum.extend(
         isize::parse_line(&utils::input_from_file(
             "data/textbook_track/rosalind_ba11e.txt",
-        ))
-        .unwrap(),
+        ))?,
     );
     let mut graph = StableGraph::new();
     let mut node_to_index = HashMap::new();
@@ -47,6 +47,7 @@ pub fn rosalind_ba11e() {
             .map(|i| graph[graph.find_edge(max_path[i], max_path[i + 1]).unwrap()])
             .collect::<String>()
     );
+    Ok(())
 }
 
 pub fn get_longest_path<U: Clone, Ix: IndexType>(

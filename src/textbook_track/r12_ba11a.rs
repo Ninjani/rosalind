@@ -1,25 +1,26 @@
 use crate::utils;
 use crate::utils::Parseable;
 use std::collections::HashMap;
+use failure::Error;
 
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 
 /// Construct the Graph of a Spectrum
 /// Given: A space-delimited list of integers Spectrum.
 /// Return: Graph(Spectrum).
-pub fn rosalind_ba11a() {
+pub fn rosalind_ba11a() -> Result<(), Error> {
     let mut spectrum = vec![0];
     spectrum.append(
         &mut usize::parse_line(&utils::input_from_file(
             "data/textbook_track/rosalind_ba11a.txt",
-        ))
-        .unwrap(),
+        ))?,
     );
     let mass_table = get_mass_to_aa();
     let graph = get_graph_spectrum(&spectrum, &mass_table);
     for (first_mass, second_mass, aa) in graph {
         println!("{}->{}:{}", first_mass, second_mass, aa);
     }
+    Ok(())
 }
 
 pub fn get_graph_spectrum(

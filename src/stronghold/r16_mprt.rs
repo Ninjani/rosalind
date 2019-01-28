@@ -1,7 +1,7 @@
 use crate::utils;
+use failure::Error;
 use regex::Regex;
 use reqwest;
-use failure::Error;
 
 const UNIPROT: &str = "http://www.uniprot.org/uniprot/";
 

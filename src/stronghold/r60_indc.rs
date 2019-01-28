@@ -1,6 +1,6 @@
 use crate::utils;
-use ndarray::Array1;
 use failure::Error;
+use ndarray::Array1;
 
 /// Independent Segregation of Chromosomes
 ///
@@ -10,9 +10,7 @@ use failure::Error;
 /// probability that two diploid siblings share at least k of their 2n chromosomes
 /// (we do not consider recombination for now).
 pub fn rosalind_indc() -> Result<(), Error> {
-    let n = utils::input_from_file("data/stronghold/rosalind_indc.txt")
-        .parse::<usize>()?
-        * 2;
+    let n = utils::input_from_file("data/stronghold/rosalind_indc.txt").parse::<usize>()? * 2;
     let mut log_sums = Array1::<f64>::zeros(n + 1);
     for i in 2..=n {
         log_sums[i] = (i as f64).log2() + log_sums[i - 1];

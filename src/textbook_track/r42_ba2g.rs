@@ -5,11 +5,12 @@ use crate::utils::Parseable;
 use ndarray::Array2;
 use rand::{thread_rng, Rng};
 use random_choice::random_choice;
+use failure::Error;
 
-pub fn rosalind_ba2g() {
+pub fn rosalind_ba2g() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2g.txt");
     let mut lines = contents.split('\n');
-    let numbers = usize::parse_line(lines.next().unwrap()).unwrap();
+    let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t, n) = (numbers[0], numbers[1], numbers[2]);
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();
     let mut best_motifs = gibbs_sampler(&dna, k, t, n, true);
@@ -23,6 +24,7 @@ pub fn rosalind_ba2g() {
     for motif in best_motifs {
         println!("{}", motif);
     }
+    Ok(())
 }
 
 fn get_profile_random_kmer(text: &str, k: usize, profile_matrix: &Array2<f64>) -> String {

@@ -33,8 +33,7 @@ fn dominant_probability(k: u64, m: u64, n: u64) -> f64 {
 ///
 /// Return: The probability that two randomly selected mating organisms will produce an individual possessing a dominant allele (and thus displaying the dominant phenotype). Assume that any two organisms can mate.
 pub fn rosalind_iprb() -> Result<(), Error> {
-    let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_iprb.txt"))?;
+    let contents = u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_iprb.txt"))?;
     let (k, m, n) = (contents[0], contents[1], contents[2]);
     println!("{}", dominant_probability(k, m, n));
     Ok(())

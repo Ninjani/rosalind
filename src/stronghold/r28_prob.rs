@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::HashMap;
 use failure::Error;
+use std::collections::HashMap;
 
 /// Get expected probabilities of each nucleotide from the GC content
 pub fn nucleotide_probs_from_gc_content(gc_content: f64) -> HashMap<char, f64> {

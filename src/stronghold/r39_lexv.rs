@@ -1,8 +1,8 @@
 use crate::utils;
+use failure::Error;
 use itertools::Itertools;
 use std::collections::HashMap;
 use std::iter::repeat;
-use failure::Error;
 
 fn cartesian_product_repeat(alphabet: &[char], length: usize) -> Vec<String> {
     (1..=length)

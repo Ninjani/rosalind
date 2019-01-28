@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use num::ToPrimitive;
 use failure::Error;
+use num::ToPrimitive;
 
 /// Independent Alleles
 ///
@@ -9,8 +9,7 @@ use failure::Error;
 ///
 /// Return: The probability that at least N Aa Bb organisms will belong to the k-th generation of Tom's family tree (don't count the Aa Bb mates at each level). Assume that Mendel's second law holds for the factors.
 pub fn rosalind_lia() -> Result<(), Error> {
-    let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_lia.txt"))?;
+    let contents = u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_lia.txt"))?;
     let k = contents[0];
     let n = contents[1];
     let total = 2u64.pow(k as u32);

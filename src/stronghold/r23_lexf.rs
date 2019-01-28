@@ -1,9 +1,9 @@
 use crate::utils;
+use failure::Error;
 use radix::RadixNum;
 use std::char;
 use std::collections::HashMap;
 use std::iter::repeat;
-use failure::Error;
 
 /// Definitely a hack: uses base-10 conversion to convert between decimal and alphabet length
 pub fn enumerate_lex(alphabets: Vec<char>, length: u32) -> impl Iterator<Item = String> {

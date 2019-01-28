@@ -1,9 +1,8 @@
 use crate::stronghold::r28_prob::nucleotide_probs_from_gc_content;
 use crate::utils;
 use crate::utils::Parseable;
-use itertools::Itertools;
 use failure::{err_msg, Error};
-
+use itertools::Itertools;
 
 /// Matching Random Motifs
 ///
@@ -15,7 +14,10 @@ use failure::{err_msg, Error};
 pub fn rosalind_rstr() -> Result<(), Error> {
     let contents = utils::input_from_file("data/stronghold/rosalind_rstr.txt");
     let lines: Vec<_> = contents.split('\n').collect();
-    let (num, gc_content) = f64::parse_line(lines[0])?.into_iter().collect_tuple().ok_or(err_msg("NoneError"))?;
+    let (num, gc_content) = f64::parse_line(lines[0])?
+        .into_iter()
+        .collect_tuple()
+        .ok_or_else(|| err_msg("NoneError"))?;
     let sequence = lines[1];
     let nucleotide_probs = nucleotide_probs_from_gc_content(gc_content);
     let a_complement = 1.

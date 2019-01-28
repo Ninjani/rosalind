@@ -54,6 +54,7 @@ pub mod r66_cstr;
 pub mod r6_hamm;
 pub mod r70_pcov;
 pub mod r71_prsm;
+//pub mod r78_gasm;
 pub mod r7_iprb;
 pub mod r86_pdpl;
 pub mod r8_prot;

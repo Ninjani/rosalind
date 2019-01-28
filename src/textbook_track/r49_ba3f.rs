@@ -1,5 +1,6 @@
 use crate::utils;
 use std::collections::HashMap;
+use std::fmt::Debug;
 use std::hash::Hash;
 
 pub fn rosalind_ba3f() {
@@ -17,7 +18,9 @@ pub fn rosalind_ba3f() {
     );
 }
 
-pub fn get_eulerian_cycle<T: Hash + Clone + Eq>(adjacency_list: &mut HashMap<T, Vec<T>>) -> Vec<T> {
+pub fn get_eulerian_cycle<T: Hash + Clone + Eq + Debug>(
+    adjacency_list: &mut HashMap<T, Vec<T>>,
+) -> Vec<T> {
     let nodes: Vec<_> = adjacency_list.keys().cloned().collect();
     let node_to_index: HashMap<_, _> = nodes.iter().enumerate().map(|(i, n)| (n, i)).collect();
     let mut num_edges_per_node: Vec<_> = nodes
@@ -30,6 +33,7 @@ pub fn get_eulerian_cycle<T: Hash + Clone + Eq>(adjacency_list: &mut HashMap<T, 
     let mut next_node;
     current_cycle.push(current_node.clone());
     while !current_cycle.is_empty() {
+        println!("{:?} {:?}", node_to_index, current_node);
         if num_edges_per_node[node_to_index[&current_node]] > 0 {
             current_cycle.push(current_node.clone());
             next_node = adjacency_list

@@ -28,8 +28,7 @@ fn mortal_fibonacci(n: u64, m: u64) -> u64 {
 ///
 /// Return: The total number of pairs of rabbits that will remain after the nth month if all rabbits live for m months.
 pub fn rosalind_fibd() -> Result<(), Error> {
-    let contents =
-        u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fibd.txt"))?;
+    let contents = u64::parse_line(&utils::input_from_file("data/stronghold/rosalind_fibd.txt"))?;
     let (n, m) = (contents[0], contents[1]);
     println!("{}", mortal_fibonacci(n, m));
     Ok(())

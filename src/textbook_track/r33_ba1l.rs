@@ -2,16 +2,18 @@ use crate::utils;
 use radix::RadixNum;
 use std::char;
 use std::collections::HashMap;
+use failure::Error;
 
-pub fn rosalind_ba1l() {
+pub fn rosalind_ba1l() -> Result<(), Error> {
     let dna = utils::input_from_file("data/textbook_track/rosalind_ba1l.txt");
     println!(
         "{}",
-        pattern_to_number(&dna, &"ACGT".chars().collect::<Vec<_>>())
-    )
+        pattern_to_number(&dna, &"ACGT".chars().collect::<Vec<_>>())?
+    );
+    Ok(())
 }
 
-fn pattern_to_number(pattern: &str, alphabet: &[char]) -> usize {
+fn pattern_to_number(pattern: &str, alphabet: &[char]) -> Result<usize, Error> {
     let num_alphabets = alphabet.len();
     let alphabet_map: HashMap<char, char> = alphabet
         .iter()
@@ -25,14 +27,12 @@ fn pattern_to_number(pattern: &str, alphabet: &[char]) -> usize {
             )
         })
         .collect();
-    RadixNum::from_str(
+    Ok(RadixNum::from_str(
         &pattern
             .chars()
             .map(|c| alphabet_map[&c])
             .collect::<String>(),
         num_alphabets,
-    )
-    .unwrap()
-    .as_decimal()
-    .unwrap()
+    )?
+    .as_decimal()?)
 }

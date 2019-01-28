@@ -7,18 +7,19 @@ use petgraph::Direction::{Incoming, Outgoing};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::isize;
+use failure::Error;
 
 /// Find the Longest Path in a DAG
 ///
 /// Given: An integer representing the source node of a graph, followed by an integer representing the sink node of the graph, followed by an edge-weighted graph. The graph is represented by a modified adjacency list in which the notation "0->1:7" indicates that an edge connects node 0 to node 1 with weight 7.
 ///
 /// Return: The length of a longest path in the graph, followed by a longest path. (If multiple longest paths exist, you may return any one.)
-pub fn rosalind_ba5d() {
+pub fn rosalind_ba5d() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba5d.txt");
     let mut lines = contents.split('\n');
     let (source, sink) = (
-        lines.next().unwrap().parse::<usize>().unwrap(),
-        lines.next().unwrap().parse::<usize>().unwrap(),
+        lines.next().unwrap().parse::<usize>()?,
+        lines.next().unwrap().parse::<usize>()?,
     );
     let (mut graph, node_to_index) = read_edge_weighted_list(lines.map(|l| l.to_owned()));
     let (length, longest_path) =
@@ -32,6 +33,7 @@ pub fn rosalind_ba5d() {
             .collect::<Vec<_>>()
             .join("->")
     );
+    Ok(())
 }
 
 fn set_pop<T: Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
@@ -43,7 +45,7 @@ fn set_pop<T: Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
     }
 }
 
-fn read_edge_weighted_list(
+pub fn read_edge_weighted_list(
     lines: impl Iterator<Item = String>,
 ) -> (
     StableGraph<usize, isize, Directed, u32>,

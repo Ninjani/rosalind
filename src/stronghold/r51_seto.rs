@@ -1,7 +1,7 @@
 use crate::utils;
+use failure::Error;
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use failure::Error;
 
 /// Introduction to Set Operations
 ///

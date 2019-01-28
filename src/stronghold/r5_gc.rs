@@ -16,7 +16,8 @@ pub fn rosalind_gc() -> Result<(), Error> {
         .iter()
         .map(|(key, dna)| (key, get_gc_content(dna)));
     let (max_key, max_value) = gc_contents
-        .max_by(|x, y| x.1.partial_cmp(&y.1).unwrap()).ok_or(err_msg("NoneError"))?;
+        .max_by(|x, y| x.1.partial_cmp(&y.1).unwrap())
+        .ok_or_else(|| err_msg("NoneError"))?;
     println!("{}\n{}", max_key, max_value * 100.);
     Ok(())
 }

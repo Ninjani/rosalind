@@ -1,12 +1,12 @@
 use crate::stronghold::r49_nwck::parse_newick;
 use crate::utils;
+use failure::Error;
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
 use std::collections::HashSet;
-use failure::{Error};
 
 /// Creating a Character Table
 ///
