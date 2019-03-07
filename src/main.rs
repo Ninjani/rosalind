@@ -12,5 +12,4 @@ pub mod textbook_track;
 pub mod utils;
 
 fn main() {
-    textbook_track::r81_ba5l::rosalind_ba5l();
 }
