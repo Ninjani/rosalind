@@ -7,7 +7,7 @@ use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Incoming;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::isize;
 use failure::Error;
 /// W.I.P

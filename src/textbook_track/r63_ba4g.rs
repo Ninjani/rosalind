@@ -5,7 +5,7 @@ use crate::textbook_track::r66_ba4j::get_linear_spectrum;
 use crate::utils;
 use crate::utils::Parseable;
 use itertools::Itertools;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use std::iter::FromIterator;
 use failure::Error;
 

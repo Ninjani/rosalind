@@ -5,7 +5,7 @@ use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// W.I.P
 fn make_suffix_tree(

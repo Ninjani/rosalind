@@ -6,7 +6,7 @@ use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 /// Creating a Character Table
 ///

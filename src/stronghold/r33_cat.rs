@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Catalan Numbers and RNA Secondary Structures
 ///

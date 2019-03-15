@@ -2,7 +2,7 @@ use crate::stronghold::r6_hamm::hamming;
 use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use failure::Error;
 
 pub fn rosalind_ba1a()  -> Result<(), Error> {

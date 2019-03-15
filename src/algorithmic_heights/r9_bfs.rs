@@ -1,6 +1,7 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
-use std::collections::{HashMap, HashSet, VecDeque};
+use hashbrown::{HashMap, HashSet};
+use std::collections::VecDeque;
 
 /// Breadth-First Search
 ///

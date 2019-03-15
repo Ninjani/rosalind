@@ -2,7 +2,7 @@ use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r63_ba4g::trim_leaderboard;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use failure::Error;
 
 /// Trim a Peptide Leaderboard

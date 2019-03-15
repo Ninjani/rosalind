@@ -1,7 +1,7 @@
 use crate::textbook_track::r74_ba5e::{read_scoring_matrix, AlignmentParameters};
 use crate::textbook_track::r80_ba5k::LinearSpaceAlignment;
 use crate::utils;
-use ndarray::{Array, Array2};
+
 
 
 /// W.I.P
@@ -9,7 +9,7 @@ use ndarray::{Array, Array2};
 pub fn rosalind_ba5l() {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba5l.txt");
     let lines: Vec<_> = contents.split('\n').collect();
-    let (mut scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt");
+    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt");
 //    scoring_matrix.fill(-1);
 //    scoring_matrix.diag_mut().assign(&Array::from_vec(
 //        (0..amino_acids.len()).map(|_| 1).collect(),

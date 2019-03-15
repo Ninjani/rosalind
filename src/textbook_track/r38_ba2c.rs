@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
 use ndarray::Array2;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use failure::Error;
 
 pub fn rosalind_ba2c() -> Result<(), Error> {

@@ -2,7 +2,7 @@ use crate::stronghold::r6_hamm::hamming;
 use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use failure::Error;
 
 pub fn rosalind_ba1i() -> Result<(), Error> {

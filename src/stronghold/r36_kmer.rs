@@ -1,6 +1,6 @@
 use crate::stronghold::r23_lexf::enumerate_lex;
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::iter::repeat;
 
 /// k-Mer Composition

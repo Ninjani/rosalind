@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Get the reverse complement of a DNA string
 pub fn reverse_complement(dna: &str) -> String {

@@ -1,5 +1,5 @@
 use ndarray::Array2;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use utils;
 use std::iter::repeat;
 use itertools::Itertools;

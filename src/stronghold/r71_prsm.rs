@@ -2,7 +2,7 @@ use crate::stronghold::r20_prtm::get_aa_to_mass;
 use crate::stronghold::r55_conv::{get_max_multiplicity, get_minkowski_difference};
 use crate::utils;
 use failure::{err_msg, Error};
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Matching a Spectrum to a Protein
 ///

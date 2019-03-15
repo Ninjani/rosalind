@@ -1,6 +1,6 @@
 use crate::utils;
 use failure::Error;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use std::iter::FromIterator;
 
 /// Introduction to Set Operations

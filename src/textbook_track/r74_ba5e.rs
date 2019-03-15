@@ -1,6 +1,6 @@
 use crate::utils;
 use ndarray::{Array, Array2};
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Find a Highest-Scoring Alignment of Two Strings
 ///

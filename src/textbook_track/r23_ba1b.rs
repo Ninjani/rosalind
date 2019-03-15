@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use failure::Error;
 
 pub fn rosalind_ba1b() -> Result<(), Error> {

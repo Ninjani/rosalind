@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use std::hash::Hash;
 
 /// Introduction to Pattern Matching

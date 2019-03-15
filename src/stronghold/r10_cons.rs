@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Get frequencies of each nucleotide at each position in a collection of sequences (profile)
 fn get_profile(sequences: &[&str]) -> Vec<HashMap<char, usize>> {

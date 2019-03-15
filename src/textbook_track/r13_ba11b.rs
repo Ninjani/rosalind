@@ -8,7 +8,7 @@ use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use failure::Error;
 
 /// Given: A space-delimited list of integers, Spectrum.

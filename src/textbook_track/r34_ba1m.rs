@@ -1,7 +1,7 @@
 use crate::utils;
 use radix::RadixNum;
 use std::char;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::iter::repeat;
 use failure::Error;
 

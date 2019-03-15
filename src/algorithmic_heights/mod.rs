@@ -24,7 +24,7 @@ pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
 
-//use std::collections::HashMap;
+//use hashbrown::HashMap;
 //use std::iter::repeat;
 //
 //struct DFS<S: ::std::hash::BuildHasher> {

@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 pub fn get_degrees<T: Eq + Clone + ::std::hash::Hash>(edges: &[(T, T)]) -> HashMap<T, usize> {
     let mut degrees = HashMap::new();

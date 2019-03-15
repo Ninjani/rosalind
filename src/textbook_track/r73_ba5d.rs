@@ -4,7 +4,7 @@ use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use std::hash::Hash;
 use std::isize;
 use failure::Error;

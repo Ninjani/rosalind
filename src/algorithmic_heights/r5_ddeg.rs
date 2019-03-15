@@ -1,6 +1,6 @@
 use crate::algorithmic_heights::r3_deg::get_degrees;
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Get adjacency matrix from list of edges
 pub fn make_adjacency_matrix<T: Eq + Copy + ::std::hash::Hash>(

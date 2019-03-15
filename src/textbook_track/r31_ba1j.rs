@@ -3,7 +3,7 @@ use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
 use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use failure::Error;
 
 pub fn rosalind_ba1j() -> Result<(), Error> {

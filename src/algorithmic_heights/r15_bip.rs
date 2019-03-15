@@ -1,6 +1,7 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
+use hashbrown::HashMap;
 use std::iter::repeat;
 
 /// Testing Bipartiteness

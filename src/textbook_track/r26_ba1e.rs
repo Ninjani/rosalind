@@ -1,7 +1,7 @@
 use crate::textbook_track::r23_ba1b::get_sorted_kmer_counts;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use failure::Error;
 
 pub fn rosalind_ba1e() -> Result<(), Error> {

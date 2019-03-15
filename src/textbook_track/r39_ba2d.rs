@@ -4,7 +4,7 @@ use crate::utils;
 use crate::utils::Parseable;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use failure::Error;
 
 pub fn rosalind_ba2d() -> Result<(), Error> {

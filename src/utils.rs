@@ -1,7 +1,7 @@
 use bio::pattern_matching::{bom, shift_and};
 use itertools::Itertools;
 use num::BigUint;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;

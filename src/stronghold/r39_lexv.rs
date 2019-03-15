@@ -1,7 +1,7 @@
 use crate::utils;
 use failure::Error;
 use itertools::Itertools;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::iter::repeat;
 
 fn cartesian_product_repeat(alphabet: &[char], length: usize) -> Vec<String> {

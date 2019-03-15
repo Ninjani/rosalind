@@ -1,6 +1,6 @@
 use crate::stronghold::r3_revc::reverse_complement;
 use crate::utils;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 /// Nodes of Bk
 /// correspond to all k-mers that are present as a substring of a (k+1)-mer from S∪Src.

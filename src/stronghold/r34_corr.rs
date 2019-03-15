@@ -1,7 +1,7 @@
 use crate::stronghold::r3_revc::reverse_complement;
 use crate::stronghold::r6_hamm::hamming;
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Error Correction in Reads
 ///

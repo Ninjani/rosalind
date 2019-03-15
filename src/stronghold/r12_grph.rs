@@ -1,5 +1,5 @@
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Make graph connecting sequences overlapping by overlap_length
 pub fn get_overlap_graph<S: ::std::hash::BuildHasher>(

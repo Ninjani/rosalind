@@ -1,6 +1,6 @@
 use crate::utils;
 use failure::{err_msg, Error};
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Checks if a dna string is a reverse palindrome
 fn check_palindrome(dna: &[char], nucleotide_map: &HashMap<char, char>) -> bool {

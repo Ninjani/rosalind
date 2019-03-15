@@ -1,6 +1,6 @@
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
 use crate::utils;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 pub fn rosalind_ba4c() {
     let peptide = utils::input_from_file("data/textbook_track/rosalind_ba4c.txt");

@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
 use failure::Error;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 /// Comparing Spectra with the Spectral Convolution
 ///

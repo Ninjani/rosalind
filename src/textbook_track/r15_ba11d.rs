@@ -1,7 +1,7 @@
 use crate::textbook_track::r12_ba11a::get_mass_to_aa;
 use crate::utils;
 use crate::utils::Parseable;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use failure::Error;
 
 /// Convert a Peptide Vector into a Peptide

@@ -1,6 +1,6 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 
 /// Square in a Graph
 ///

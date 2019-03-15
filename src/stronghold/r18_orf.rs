@@ -2,7 +2,7 @@ use crate::stronghold::r2_rna::transcribe;
 use crate::stronghold::r3_revc::reverse_complement;
 use crate::stronghold::r8_prot::translate;
 use crate::utils;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 /// Finds all possible proteins that can be translated from an RNA string
 pub fn find_proteins(rna: &str) -> HashSet<String> {
