@@ -24,64 +24,65 @@ pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
 
-//use hashbrown::HashMap;
-//use std::iter::repeat;
-//
-//struct DFS<S: ::std::hash::BuildHasher> {
-//    adjacency_matrix: HashMap<usize, Vec<usize>, S>,
-//    num_nodes: usize,
-//    visited: Vec<bool>,
-//    previsit: Vec<usize>,
-//    postvisit: Vec<usize>,
-//    clock: usize,
-//    num_connected_components: usize,
-//    connected_components: Vec<usize>
-//}
-//
-//impl<S: ::std::hash::BuildHasher> DFS<S>{
-//    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>, S>, num_nodes: usize) -> Self {
-//        let mut dfs_struct = DFS {
-//            adjacency_matrix,
-//            num_nodes,
-//            visited: repeat(false).take(num_nodes).collect(),
-//            previsit: repeat(0).take(num_nodes).collect(),
-//            postvisit: repeat(0).take(num_nodes).collect(),
-//            clock: 0,
-//            num_connected_components: 0,
-//            connected_components: repeat(0).take(num_nodes).collect(),
-//        };
-//        dfs_struct.dfs();
-//        dfs_struct
-//    }
-//
-//    fn dfs(&mut self) {
-//        for node in 1..=self.num_nodes {
-//            self.explore(node);
-//        }
-//    }
-//
-//    fn previsit(&mut self, node: usize) {
-//        self.previsit[node - 1] = self.clock;
-//        self.connected_components[node - 1] = self.num_connected_components;
-//        self.clock += 1;
-//    }
-//
-//    fn postvisit(&mut self, node: usize) {
-//        self.postvisit[node - 1] = self.clock;
-//        self.clock += 1;
-//    }
-//
-//    fn explore(&mut self, start_node: usize) {
-//        self.visited[start_node - 1] = true;
-//        self.previsit(start_node);
-//        if let Some(edge_list) = self.adjacency_matrix.get(&start_node) {
-//            for next_node in edge_list {
-//                if !self.visited[next_node - 1] {
-//                    self.num_connected_components += 1;
-//                    self.explore(*next_node);
-//                }
-//            }
-//        }
-//        self.postvisit(start_node)
-//    }
-//}
+use hashbrown::HashMap;
+use std::iter::repeat;
+
+struct DFS<S: ::std::hash::BuildHasher> {
+    adjacency_matrix: HashMap<usize, Vec<usize>, S>,
+    num_nodes: usize,
+    visited: Vec<bool>,
+    previsit: Vec<usize>,
+    postvisit: Vec<usize>,
+    clock: usize,
+    num_connected_components: usize,
+    connected_components: Vec<usize>
+}
+
+
+impl<S: ::std::hash::BuildHasher> DFS<S>{
+    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>, S>, num_nodes: usize) -> Self {
+        let mut dfs_struct = DFS {
+            adjacency_matrix,
+            num_nodes,
+            visited: repeat(false).take(num_nodes).collect(),
+            previsit: repeat(0).take(num_nodes).collect(),
+            postvisit: repeat(0).take(num_nodes).collect(),
+            clock: 0,
+            num_connected_components: 0,
+            connected_components: repeat(0).take(num_nodes).collect(),
+        };
+        dfs_struct.dfs();
+        dfs_struct
+    }
+
+    fn dfs(&mut self) {
+        for node in 1..=self.num_nodes {
+            self.explore(node);
+        }
+    }
+
+    fn previsit(&mut self, node: usize) {
+        self.previsit[node - 1] = self.clock;
+        self.connected_components[node - 1] = self.num_connected_components;
+        self.clock += 1;
+    }
+
+    fn postvisit(&mut self, node: usize) {
+        self.postvisit[node - 1] = self.clock;
+        self.clock += 1;
+    }
+
+    fn explore(&mut self, start_node: usize) {
+        self.visited[start_node - 1] = true;
+        self.previsit(start_node);
+        if let Some(edge_list) = self.adjacency_matrix.get(&start_node) {
+            for next_node in edge_list.clone() {
+                if !self.visited[next_node - 1] {
+                    self.num_connected_components += 1;
+                    self.explore(next_node);
+                }
+            }
+        }
+        self.postvisit(start_node)
+    }
+}
