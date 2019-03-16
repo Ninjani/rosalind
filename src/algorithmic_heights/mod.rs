@@ -23,12 +23,13 @@ pub mod r6_maj;
 pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
+pub mod r26_ts;
 
 use hashbrown::HashMap;
 use std::iter::repeat;
 
-struct DFS<S: ::std::hash::BuildHasher> {
-    adjacency_matrix: HashMap<usize, Vec<usize>, S>,
+pub struct DFS {
+    adjacency_matrix: HashMap<usize, Vec<usize>>,
     num_nodes: usize,
     visited: Vec<bool>,
     previsit: Vec<usize>,
@@ -38,9 +39,8 @@ struct DFS<S: ::std::hash::BuildHasher> {
     connected_components: Vec<usize>
 }
 
-
-impl<S: ::std::hash::BuildHasher> DFS<S>{
-    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>, S>, num_nodes: usize) -> Self {
+impl DFS{
+    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
         let mut dfs_struct = DFS {
             adjacency_matrix,
             num_nodes,
@@ -57,7 +57,10 @@ impl<S: ::std::hash::BuildHasher> DFS<S>{
 
     fn dfs(&mut self) {
         for node in 1..=self.num_nodes {
-            self.explore(node);
+	    if !self.visited[node-1] {
+                self.explore(node);
+                self.num_connected_components += 1;
+            }
         }
     }
 
@@ -78,7 +81,6 @@ impl<S: ::std::hash::BuildHasher> DFS<S>{
         if let Some(edge_list) = self.adjacency_matrix.get(&start_node) {
             for next_node in edge_list.clone() {
                 if !self.visited[next_node - 1] {
-                    self.num_connected_components += 1;
                     self.explore(next_node);
                 }
             }

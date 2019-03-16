@@ -159,8 +159,8 @@ pub fn sub_strings(source: &str, sub_size: usize) -> Vec<String> {
         .chars()
         .chunks(sub_size)
         .into_iter()
-        .map(|chunk| chunk.collect::<String>())
-        .collect::<Vec<_>>()
+        .map(|c| c.collect())
+        .collect()
 }
 
 /// Permutation $^nC_r$
@@ -191,15 +191,13 @@ pub fn read_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usize)>) {
         .next()
         .unwrap()
         .split(' ')
-        .map(|n| n.parse::<usize>().unwrap())
-        .collect::<Vec<_>>();
+        .map(str::parse)
+        .collect::<Result<Vec<_>, _>>().unwrap();
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
     let mut edges = Vec::new();
     for line in lines {
-        let mut parts = line.split(' ').map(|n| n.parse::<usize>().unwrap());
-        let node_1 = parts.next().unwrap();
-        let node_2 = parts.next().unwrap();
-        edges.push((node_1, node_2));
+        let parts = line.split(' ').map(str::parse).collect::<Result<Vec<_>, _>>().unwrap();
+        edges.push((parts[0], parts[1]));
     }
     (num_nodes, num_edges, edges)
 }
@@ -218,7 +216,7 @@ pub fn read_adjacency_list(contents: &str) -> Result<HashMap<usize, Vec<usize>>,
         let node_1 = parts[0].parse::<usize>()?;
         let nodes_2 = parts[1]
             .split(',')
-            .map(|n| n.parse::<usize>())
+            .map(str::parse)
             .collect::<Result<_, _>>()?;
         adjacency_list.insert(node_1, nodes_2);
     }
@@ -240,7 +238,7 @@ pub fn read_adjacency_matrix(
     let num_nodes = lines.next().unwrap().parse::<usize>()?;
     let mut adjacency_matrix = HashMap::new();
     for line in lines {
-        let parts = line.split(' ').map(|n| n.parse::<usize>()).collect::<Result<Vec<_>, _>>()?;
+        let parts = line.split(' ').map(str::parse).collect::<Result<Vec<_>, _>>()?;
         let node_1 = parts[0];
         let node_2 = parts[1];
         {
@@ -268,7 +266,7 @@ pub fn read_weighted_edge_list(contents: &str) -> Result<(usize, usize, Vec<(usi
         .next()
         .unwrap()
         .split(' ')
-        .map(|n| n.parse::<usize>())
+        .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?;
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
     let mut edges = Vec::new();
@@ -309,7 +307,7 @@ impl Parseable for isize {
     fn parse_line(line: &str) -> Result<Vec<isize>, ParseError> {
         Ok(line
             .split(' ')
-            .map(|n| n.parse::<isize>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, ParseIntError>>()?)
     }
 }
@@ -318,7 +316,7 @@ impl Parseable for usize {
     fn parse_line(line: &str) -> Result<Vec<usize>, ParseError> {
         Ok(line
             .split(' ')
-            .map(|n| n.parse::<usize>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, ParseIntError>>()?)
     }
 }
@@ -327,7 +325,7 @@ impl Parseable for u64 {
     fn parse_line(line: &str) -> Result<Vec<u64>, ParseError> {
         Ok(line
             .split(' ')
-            .map(|n| n.parse::<u64>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, ParseIntError>>()?)
     }
 }
@@ -336,7 +334,7 @@ impl Parseable for u8 {
     fn parse_line(line: &str) -> Result<Vec<u8>, ParseError> {
         Ok(line
             .split(' ')
-            .map(|n| n.parse::<u8>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, ParseIntError>>()?)
     }
 }
@@ -345,7 +343,7 @@ impl Parseable for f64 {
     fn parse_line(line: &str) -> Result<Vec<f64>, ParseError> {
         Ok(line
             .split(' ')
-            .map(|n| n.parse::<f64>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, ParseFloatError>>()?)
     }
 }
@@ -415,7 +413,7 @@ pub fn read_set(line: &str) -> Result<HashSet<usize>, Error> {
     let line: String = chars[1..(line.len() - 1)].iter().collect();
     Ok(HashSet::from_iter(
         line.split(", ")
-            .map(|n| n.parse::<usize>())
+            .map(str::parse)
             .collect::<Result<Vec<_>, _>>()?
             .into_iter(),
     ))

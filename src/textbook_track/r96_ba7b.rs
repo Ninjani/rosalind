@@ -49,7 +49,7 @@ pub fn read_matrix(lines: &[&str]) -> Result<Array2<usize>, Error> {
     for (i, line) in lines.iter().enumerate() {
         distance_matrix.row_mut(i).assign(&Array::from_vec(
             line.split_whitespace()
-                .map(|n| n.parse::<usize>())
+                .map(str::parse)
                 .collect::<Result<_, _>>()?,
         ));
     }

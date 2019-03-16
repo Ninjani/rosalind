@@ -13,7 +13,7 @@ pub fn rosalind_ba5a() -> Result<(), Error> {
     let money = lines[0].parse::<usize>()?;
     let coins: Vec<_> = lines[1]
         .split(',')
-        .map(|n| n.parse::<usize>())
+        .map(str::parse)
         .collect::<Result<_, _>>()?;
     println!("{}", get_change(money, &coins));
     Ok(())

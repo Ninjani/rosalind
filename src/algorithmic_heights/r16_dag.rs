@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::{DFS, r5_ddeg::make_adjacency_matrix};
 use crate::utils;
 use hashbrown::{HashMap, HashSet};
 use std::iter::repeat;
@@ -16,10 +16,32 @@ pub fn rosalind_dag() {
         let (num_nodes, _, edges) = utils::read_edge_list(section);
         let adjacency_matrix = make_adjacency_matrix(&edges, true);
         if is_acyclic(num_nodes, &adjacency_matrix) {
+            print!("")
+        } else {
+            print!("")
+        }
+
+	let dfs = DFS::run_dfs(adjacency_matrix, num_nodes);
+	if dfs.is_acyclic() {
             print!("1 ")
         } else {
             print!("-1 ")
         }
+    }
+}
+
+impl DFS {
+    pub fn is_acyclic(&self) -> bool {
+        for node in 1..self.num_nodes+1 {
+	    if let Some(edge_list) = self.adjacency_matrix.get(&node) {
+            	for next_node in edge_list {
+		    if self.previsit[node] < self.previsit[*next_node] && self.previsit[*next_node] < self.postvisit[node] && self.postvisit[node] < self.postvisit[*next_node] {
+                        return false
+                    }
+                }
+            }
+	}
+	true
     }
 }
 

@@ -1,4 +1,5 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::DFS;
 use crate::utils;
 use hashbrown::HashMap;
 use std::iter::repeat;
@@ -17,6 +18,7 @@ pub fn rosalind_cc() {
         "{}",
         count_connected_components(num_nodes, &adjacency_matrix)
     );
+    println!("{}", DFS::run_dfs(adjacency_matrix, num_nodes).num_connected_components);
 }
 
 /// Finds number of connected components

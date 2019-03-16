@@ -11,5 +11,7 @@ pub mod stronghold;
 pub mod textbook_track;
 pub mod utils;
 
-fn main() {
+fn main() -> Result<(), failure::Error> {
+    algorithmic_heights::r16_dag::rosalind_dag();
+    Ok(())
 }
