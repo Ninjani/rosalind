@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use ndarray::{Array, Array2};
 use failure::Error;
+use ndarray::{Array, Array2};
 
 /// Find the Length of a Longest Path in a Manhattan-like Grid
 ///

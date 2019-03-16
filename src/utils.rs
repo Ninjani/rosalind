@@ -260,8 +260,7 @@ pub fn read_adjacency_matrix(
 /// node_1 node_2 weight
 /// ...
 /// ```
-pub fn read_weighted_edge_list(contents: &str) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
-    let mut lines = contents.split('\n');
+pub fn read_weighted_edge_list(lines: &mut Iterator<Item=String>) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
     let length_input = lines
         .next()
         .unwrap()
@@ -269,8 +268,9 @@ pub fn read_weighted_edge_list(contents: &str) -> Result<(usize, usize, Vec<(usi
         .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?;
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
-    let mut edges = Vec::new();
-    for line in lines {
+    let mut edges = Vec::with_capacity(num_edges);
+    for _ in 0..num_edges {
+        let line = lines.next().unwrap();
         let parts = line.split(' ').collect::<Vec<_>>();
         let node_1 = parts[0].parse::<usize>()?;
         let node_2 = parts[1].parse::<usize>()?;

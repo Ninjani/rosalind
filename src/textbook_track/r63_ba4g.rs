@@ -4,10 +4,10 @@ use crate::textbook_track::r62_ba4f::score_cyclic_peptide;
 use crate::textbook_track::r66_ba4j::get_linear_spectrum;
 use crate::utils;
 use crate::utils::Parseable;
-use itertools::Itertools;
-use hashbrown::HashSet;
-use std::iter::FromIterator;
 use failure::Error;
+use hashbrown::HashSet;
+use itertools::Itertools;
+use std::iter::FromIterator;
 
 /// Implement LeaderboardCyclopeptideSequencing
 ///
@@ -17,10 +17,7 @@ use failure::Error;
 pub fn rosalind_ba4g() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba4g.txt");
     let lines: Vec<_> = contents.split('\n').collect();
-    let (n, spectrum) = (
-        lines[0].parse::<usize>()?,
-        usize::parse_line(lines[1])?,
-    );
+    let (n, spectrum) = (lines[0].parse::<usize>()?, usize::parse_line(lines[1])?);
     let aa_to_mass = &get_aa_to_mass_usize();
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
     let peptide =

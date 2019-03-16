@@ -1,7 +1,5 @@
-use crate::algorithmic_heights::{DFS, r5_ddeg::make_adjacency_matrix};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
 use crate::utils;
-use hashbrown::{HashMap, HashSet};
-use std::iter::repeat;
 
 /// Testing Acyclicity
 ///
@@ -15,14 +13,8 @@ pub fn rosalind_dag() {
     for section in sections {
         let (num_nodes, _, edges) = utils::read_edge_list(section);
         let adjacency_matrix = make_adjacency_matrix(&edges, true);
-        if is_acyclic(num_nodes, &adjacency_matrix) {
-            print!("")
-        } else {
-            print!("")
-        }
-
-	let dfs = DFS::run_dfs(adjacency_matrix, num_nodes);
-	if dfs.is_acyclic() {
+        let dfs = DFS::run_dfs(adjacency_matrix, num_nodes);
+        if dfs.is_acyclic() {
             print!("1 ")
         } else {
             print!("-1 ")
@@ -32,50 +24,18 @@ pub fn rosalind_dag() {
 
 impl DFS {
     pub fn is_acyclic(&self) -> bool {
-        for node in 1..self.num_nodes+1 {
-	    if let Some(edge_list) = self.adjacency_matrix.get(&node) {
-            	for next_node in edge_list {
-		    if self.previsit[node] < self.previsit[*next_node] && self.previsit[*next_node] < self.postvisit[node] && self.postvisit[node] < self.postvisit[*next_node] {
-                        return false
+        for node in 1..self.num_nodes + 1 {
+            if let Some(edge_list) = self.adjacency_matrix.get(&node) {
+                for next_node in edge_list {
+                    if self.previsit[*next_node - 1] < self.previsit[node - 1]
+                        && self.previsit[node - 1] < self.postvisit[node - 1]
+                        && self.postvisit[node - 1] < self.postvisit[*next_node - 1]
+                    {
+                        return false;
                     }
                 }
             }
-	}
-	true
-    }
-}
-
-pub fn is_acyclic(num_nodes: usize, adjacency_matrix: &HashMap<usize, Vec<usize>>) -> bool {
-    let mut visited = repeat(false).take(num_nodes).collect::<Vec<_>>();
-    let mut visited_by_node = HashSet::new();
-    for node in 1..=num_nodes {
-        if is_cyclic_checker(node, &mut visited, &mut visited_by_node, adjacency_matrix) {
-            return false;
         }
+        true
     }
-    true
-}
-
-pub fn is_cyclic_checker<S: ::std::hash::BuildHasher>(
-    node: usize,
-    visited: &mut [bool],
-    visited_by_node: &mut HashSet<usize, S>,
-    adjacency_matrix: &HashMap<usize, Vec<usize>, S>,
-) -> bool {
-    if !visited[node - 1] {
-        visited[node - 1] = true;
-        visited_by_node.insert(node);
-        if let Some(edge_list) = adjacency_matrix.get(&node) {
-            for child in edge_list {
-                if (!visited[*child - 1]
-                    && is_cyclic_checker(*child, visited, visited_by_node, adjacency_matrix))
-                    || visited_by_node.contains(child)
-                {
-                    return true;
-                }
-            }
-        }
-    }
-    visited_by_node.remove(&node);
-    false
 }

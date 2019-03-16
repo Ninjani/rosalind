@@ -21,7 +21,8 @@ pub fn rosalind_ba5k() {
         string_2: lines[1].chars().collect(),
         parameters,
     };
-    let (middle_node, direction) = lsa.get_middle_node_and_edge(0, lsa.string_1.len(), 0, lsa.string_2.len());
+    let (middle_node, direction) =
+        lsa.get_middle_node_and_edge(0, lsa.string_1.len(), 0, lsa.string_2.len());
     let middle = ((lsa.string_2.len() as f32) / 2.).floor() as usize;
     let (start, end) = match direction {
         1 => ((middle_node, middle), (middle_node + 1, middle)),
@@ -32,7 +33,7 @@ pub fn rosalind_ba5k() {
     println!("{:?} {:?}", start, end);
 }
 
-pub struct LinearSpaceAlignment  {
+pub struct LinearSpaceAlignment {
     pub string_1: Vec<char>,
     pub string_2: Vec<char>,
     pub parameters: AlignmentParameters,
@@ -45,9 +46,9 @@ impl LinearSpaceAlignment {
         bottom: usize,
         left: usize,
         right: usize,
-        reverse: bool
+        reverse: bool,
     ) -> (Array1<isize>, Array1<usize>) {
-        let (n, m) = (bottom-top+1, right-left+1);
+        let (n, m) = (bottom - top + 1, right - left + 1);
         let mut scores = Array2::zeros((2, n));
         let mut backtrack = Array1::zeros(n);
         scores[(1, 0)] = scores[(0, 0)] - self.parameters.gap_penalty;
@@ -66,14 +67,16 @@ impl LinearSpaceAlignment {
                     (scores[(i_index, j - 1)] - self.parameters.gap_penalty),
                     (scores[(i_1_index, j - 1)]
                         + if reverse {
-                        self.parameters.scoring_matrix[(
-                            self.parameters.amino_acid_order[&self.string_1[bottom - j]],
-                            self.parameters.amino_acid_order[&self.string_2[right - i]],
-                        )]} else {
-                        self.parameters.scoring_matrix[(
-                            self.parameters.amino_acid_order[&self.string_1[top + j - 1]],
-                            self.parameters.amino_acid_order[&self.string_2[left + i - 1]],
-                        )]}),
+                            self.parameters.scoring_matrix[(
+                                self.parameters.amino_acid_order[&self.string_1[bottom - j]],
+                                self.parameters.amino_acid_order[&self.string_2[right - i]],
+                            )]
+                        } else {
+                            self.parameters.scoring_matrix[(
+                                self.parameters.amino_acid_order[&self.string_1[top + j - 1]],
+                                self.parameters.amino_acid_order[&self.string_2[left + i - 1]],
+                            )]
+                        }),
                 ];
                 let (max_index, max_value) = values
                     .into_iter()
@@ -96,13 +99,12 @@ impl LinearSpaceAlignment {
     ) -> (usize, usize) {
         let middle = ((left + right) as f32 / 2.) as usize;
         let (scores_from_source, _) = self.get_scores(top, bottom, left, middle, false);
-        let (scores_to_sink, backtrack_to_sink) =
-            self.get_scores(top, bottom,middle, right, true);
+        let (scores_to_sink, backtrack_to_sink) = self.get_scores(top, bottom, middle, right, true);
         let max_node = (top..bottom)
-                .map(|i| (scores_from_source[i - top] + scores_to_sink[bottom - i], i))
-                .max()
-                .unwrap()
-                .1;
+            .map(|i| (scores_from_source[i - top] + scores_to_sink[bottom - i], i))
+            .max()
+            .unwrap()
+            .1;
         (max_node, backtrack_to_sink[bottom - max_node])
     }
 }

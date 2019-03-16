@@ -4,10 +4,7 @@ use crate::utils;
 pub fn rosalind_ba2h() {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2h.txt");
     let lines = contents.split('\n').collect::<Vec<_>>();
-    let dna: Vec<_> = lines[1]
-        .split(' ')
-        .map(|l| l.to_owned())
-        .collect();
+    let dna: Vec<_> = lines[1].split(' ').map(|l| l.to_owned()).collect();
     println!(
         "{}",
         get_distance_between_pattern_and_strings(lines[0], &dna)

@@ -1,14 +1,11 @@
 use crate::utils;
-use hashbrown::HashMap;
 use failure::Error;
+use hashbrown::HashMap;
 
 pub fn rosalind_ba1b() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1b.txt");
     let lines = contents.split('\n').collect::<Vec<_>>();
-    let (text, k) = (
-        lines[0],
-        lines[1].parse::<usize>()?,
-    );
+    let (text, k) = (lines[0], lines[1].parse::<usize>()?);
     let counts_tuple = get_sorted_kmer_counts(text, k);
     utils::print_array(&get_most_frequent_kmers(&counts_tuple));
     Ok(())

@@ -1,6 +1,6 @@
 use crate::utils;
-use ndarray::{Array, Array2};
 use failure::Error;
+use ndarray::{Array, Array2};
 
 /// Compute Limb Lengths in a Tree
 ///

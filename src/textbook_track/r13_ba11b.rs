@@ -3,24 +3,22 @@ use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
+use hashbrown::{HashMap, HashSet};
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
-use hashbrown::{HashMap, HashSet};
-use failure::Error;
 
 /// Given: A space-delimited list of integers, Spectrum.
 ///
 /// Return: An amino acid string with an ideal spectrum that matches Spectrum.
 pub fn rosalind_ba11b() -> Result<(), Error> {
     let mut spectrum = vec![0];
-    spectrum.append(
-        &mut usize::parse_line(&utils::input_from_file(
-            "data/textbook_track/rosalind_ba11b.txt",
-        ))?,
-    );
+    spectrum.append(&mut usize::parse_line(&utils::input_from_file(
+        "data/textbook_track/rosalind_ba11b.txt",
+    ))?);
     let (source, sink) = (spectrum[0], spectrum[spectrum.len() - 1]);
     let mass_to_aa = get_mass_to_aa();
     let aa_to_mass = get_aa_to_mass_usize();

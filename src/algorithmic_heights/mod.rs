@@ -15,6 +15,9 @@ pub mod r22_bf;
 pub mod r23_cte;
 pub mod r24_med;
 pub mod r25_ps;
+pub mod r26_ts;
+pub mod r27_hdag;
+pub mod r28_nwc;
 pub mod r2_bins;
 pub mod r3_deg;
 pub mod r4_ins;
@@ -23,23 +26,22 @@ pub mod r6_maj;
 pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
-pub mod r26_ts;
 
 use hashbrown::HashMap;
 use std::iter::repeat;
 
 pub struct DFS {
-    adjacency_matrix: HashMap<usize, Vec<usize>>,
-    num_nodes: usize,
+    pub adjacency_matrix: HashMap<usize, Vec<usize>>,
+    pub num_nodes: usize,
     visited: Vec<bool>,
-    previsit: Vec<usize>,
-    postvisit: Vec<usize>,
+    pub previsit: Vec<usize>,
+    pub postvisit: Vec<usize>,
     clock: usize,
-    num_connected_components: usize,
-    connected_components: Vec<usize>
+    pub num_connected_components: usize,
+    pub connected_components: Vec<usize>,
 }
 
-impl DFS{
+impl DFS {
     pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
         let mut dfs_struct = DFS {
             adjacency_matrix,
@@ -57,7 +59,7 @@ impl DFS{
 
     fn dfs(&mut self) {
         for node in 1..=self.num_nodes {
-	    if !self.visited[node-1] {
+            if !self.visited[node - 1] {
                 self.explore(node);
                 self.num_connected_components += 1;
             }

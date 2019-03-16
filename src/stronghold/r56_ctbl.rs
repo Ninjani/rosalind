@@ -1,12 +1,12 @@
 use crate::stronghold::r49_nwck::parse_newick;
 use crate::utils;
 use failure::Error;
+use hashbrown::HashSet;
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
 use petgraph::Graph;
-use hashbrown::HashSet;
 
 /// Creating a Character Table
 ///

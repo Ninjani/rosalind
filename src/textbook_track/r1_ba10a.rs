@@ -1,7 +1,7 @@
 use crate::textbook_track::hidden_markov_models::HMM;
 use crate::utils;
-use ndarray::Array2;
 use hashbrown::HashMap;
+use ndarray::Array2;
 
 /// Compute the Probability of a Hidden Path
 ///

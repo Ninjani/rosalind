@@ -2,10 +2,10 @@ use crate::stronghold::r6_hamm::hamming;
 use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::HashSet;
 use failure::Error;
+use hashbrown::HashSet;
 
-pub fn rosalind_ba1a()  -> Result<(), Error> {
+pub fn rosalind_ba1a() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2a.txt");
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;

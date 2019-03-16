@@ -1,6 +1,6 @@
 use crate::utils;
-use ndarray::Array2;
 use hashbrown::HashMap;
+use ndarray::Array2;
 
 /// Hidden Markov Model (Implementations spread across files)
 pub struct HMM {

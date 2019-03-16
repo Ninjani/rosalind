@@ -1,8 +1,8 @@
 use crate::utils;
+use failure::Error;
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
 use std::iter::repeat;
-use failure::Error;
 
 /// Dijkstra's Algorithm
 ///
@@ -10,9 +10,12 @@ use failure::Error;
 ///
 /// Return: An array D[1..n] where D[i] is the length of a shortest path from the vertex 1 to the vertex i (D[1]=0). If i is not reachable from 1 set D[i] to −1.
 pub fn rosalind_dij() -> Result<(), Error> {
-    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&utils::input_from_file(
-        "data/algorithmic_heights/rosalind_dij.txt",
-    ))?;
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_dij.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
     let adjacency_matrix = make_weighted_adjacency_matrix(&edges);
     for node in 1..=num_nodes {
         match dijkstra(num_nodes, &adjacency_matrix, 1, node) {

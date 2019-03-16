@@ -2,8 +2,8 @@ use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
 use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
 use crate::utils;
 use crate::utils::Parseable;
-use rand::{thread_rng, Rng};
 use failure::Error;
+use rand::{thread_rng, Rng};
 
 pub fn rosalind_ba2f() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2f.txt");

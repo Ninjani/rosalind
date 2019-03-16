@@ -1,8 +1,8 @@
 use crate::textbook_track::r12_ba11a::get_mass_to_aa;
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::HashMap;
 use failure::Error;
+use hashbrown::HashMap;
 
 /// Convert a Peptide Vector into a Peptide
 ///

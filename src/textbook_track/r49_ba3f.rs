@@ -1,8 +1,8 @@
 use crate::utils;
+use failure::Error;
 use hashbrown::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
-use failure::Error;
 
 pub fn rosalind_ba3f() -> Result<(), Error> {
     let mut adjacency_list = utils::read_adjacency_list(&utils::input_from_file(

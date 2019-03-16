@@ -1,12 +1,10 @@
-use ndarray::Array2;
 use hashbrown::HashMap;
-use utils;
-use std::iter::repeat;
 use itertools::Itertools;
-
+use ndarray::Array2;
+use std::iter::repeat;
+use utils;
 
 // Work In Progress!
-
 
 #[derive(Clone, Copy, Debug)]
 enum State {
@@ -14,7 +12,7 @@ enum State {
     Match,
     Insert,
     Delete,
-    End
+    End,
 }
 
 struct ProfileHMM {
@@ -37,13 +35,20 @@ impl ProfileHMM {
         let mut alphabet_index: HashMap<_, _> =
             alphabet.iter().enumerate().map(|(i, c)| (*c, i)).collect();
         alphabet_index.insert('-', len_alphabet);
-        let msa: Vec<Vec<_>> = sections.next().unwrap().split('\n')
+        let msa: Vec<Vec<_>> = sections
+            .next()
+            .unwrap()
+            .split('\n')
             .filter(|line| !line.is_empty())
-            .map(|line| line.trim().chars().map(|c| alphabet_index[&c]).collect::<Vec<_>>())
+            .map(|line| {
+                line.trim()
+                    .chars()
+                    .map(|c| alphabet_index[&c])
+                    .collect::<Vec<_>>()
+            })
             .collect();
         let len_sequence = msa[0].len();
-        let match_states =
-            Self::find_match_states(&msa, len_alphabet + 1, len_sequence, threshold);
+        let match_states = Self::find_match_states(&msa, len_alphabet + 1, len_sequence, threshold);
         let num_match_states = match_states.len();
         let state_transitions = HashMap::new();
         let num_state_pairs = state_pairs.len();
@@ -55,7 +60,7 @@ impl ProfileHMM {
             state_pairs,
             match_emissions: Array2::<f64>::zeros((len_alphabet, num_match_states + 1)),
             insert_emissions: Array2::<f64>::zeros((len_alphabet, num_match_states + 1)),
-            state_transitions
+            state_transitions,
         }
     }
 
@@ -78,11 +83,8 @@ impl ProfileHMM {
                        // State::Match => self.state_transitions.entry((previous_state))
                     }
                 }
-
             }
-
         }
-
     }
     fn count_match_emissions(&mut self) {
         {
@@ -120,7 +122,6 @@ impl ProfileHMM {
         }
         match_states
     }
-
 }
 
 pub fn rosalind_ba10e() {

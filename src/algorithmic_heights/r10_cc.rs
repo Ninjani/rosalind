@@ -1,8 +1,6 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::algorithmic_heights::DFS;
 use crate::utils;
-use hashbrown::HashMap;
-use std::iter::repeat;
 
 /// Connected Components
 ///
@@ -16,47 +14,6 @@ pub fn rosalind_cc() {
     let adjacency_matrix = make_adjacency_matrix(&edges, false);
     println!(
         "{}",
-        count_connected_components(num_nodes, &adjacency_matrix)
+        DFS::run_dfs(adjacency_matrix, num_nodes).num_connected_components
     );
-    println!("{}", DFS::run_dfs(adjacency_matrix, num_nodes).num_connected_components);
-}
-
-/// Finds number of connected components
-pub fn count_connected_components<S: ::std::hash::BuildHasher>(
-    num_nodes: usize,
-    adjacency_matrix: &HashMap<usize, Vec<usize>, S>,
-) -> usize {
-    let mut visited = repeat(false).take(num_nodes).collect::<Vec<_>>();
-    let mut num_cc = 0;
-    for node in 1..=num_nodes {
-        if !visited[node - 1] {
-            num_cc += 1;
-            dfs(&mut visited, node, &adjacency_matrix);
-        }
-    }
-    num_cc
-}
-
-/// Depth-first search
-pub fn dfs<S: ::std::hash::BuildHasher>(
-    visited: &mut [bool],
-    node: usize,
-    adjacency_matrix: &HashMap<usize, Vec<usize>, S>,
-) {
-    let mut stack = Vec::new();
-    stack.push(node);
-    visited[node - 1] = true;
-    while !stack.is_empty() {
-        let subtree_root = stack.pop().unwrap();
-        if !visited[subtree_root - 1] {
-            visited[subtree_root - 1] = true;
-        }
-        if let Some(edge_list) = adjacency_matrix.get(&subtree_root) {
-            for child in edge_list {
-                if !visited[*child - 1] {
-                    stack.push(*child);
-                }
-            }
-        }
-    }
 }

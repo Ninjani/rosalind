@@ -1,11 +1,11 @@
 use crate::textbook_track::r96_ba7b::{get_limb_length, read_matrix};
 use crate::utils;
+use failure::Error;
 use hashbrown::HashMap;
 use itertools::Itertools;
 use ndarray::Array2;
 use petgraph::graph::NodeIndex;
 use petgraph::stable_graph::StableGraph;
-use failure::Error;
 
 // W.I.P
 

@@ -1,8 +1,8 @@
 use crate::utils;
 use failure::Error;
+use hashbrown::HashMap;
 use radix::RadixNum;
 use std::char;
-use hashbrown::HashMap;
 use std::iter::repeat;
 
 /// Definitely a hack: uses base-10 conversion to convert between decimal and alphabet length

@@ -1,8 +1,8 @@
 use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
 use crate::utils;
 use crate::utils::Parseable;
-use itertools::Itertools;
 use failure::Error;
+use itertools::Itertools;
 
 /// Generate the Convolution of a Spectrum
 ///

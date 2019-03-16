@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::HashMap;
 use failure::Error;
+use hashbrown::HashMap;
 
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 
@@ -10,11 +10,9 @@ const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 /// Return: Graph(Spectrum).
 pub fn rosalind_ba11a() -> Result<(), Error> {
     let mut spectrum = vec![0];
-    spectrum.append(
-        &mut usize::parse_line(&utils::input_from_file(
-            "data/textbook_track/rosalind_ba11a.txt",
-        ))?,
-    );
+    spectrum.append(&mut usize::parse_line(&utils::input_from_file(
+        "data/textbook_track/rosalind_ba11a.txt",
+    ))?);
     let mass_table = get_mass_to_aa();
     let graph = get_graph_spectrum(&spectrum, &mass_table);
     for (first_mass, second_mass, aa) in graph {

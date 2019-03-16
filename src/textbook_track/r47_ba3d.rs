@@ -1,6 +1,6 @@
 use crate::utils;
-use hashbrown::HashMap;
 use failure::Error;
+use hashbrown::HashMap;
 
 pub fn rosalind_ba3d() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba3d.txt");

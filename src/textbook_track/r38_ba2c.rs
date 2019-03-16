@@ -1,8 +1,8 @@
 use crate::utils;
 use crate::utils::Parseable;
-use ndarray::Array2;
-use hashbrown::HashMap;
 use failure::Error;
+use hashbrown::HashMap;
+use ndarray::Array2;
 
 pub fn rosalind_ba2c() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2c.txt");

@@ -1,13 +1,13 @@
 use crate::utils;
+use failure::Error;
+use hashbrown::{HashMap, HashSet};
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
-use hashbrown::{HashMap, HashSet};
 use std::hash::Hash;
 use std::isize;
-use failure::Error;
 
 /// Find the Longest Path in a DAG
 ///

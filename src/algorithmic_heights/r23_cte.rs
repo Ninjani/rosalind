@@ -19,7 +19,8 @@ pub fn rosalind_cte() -> Result<(), Error> {
         let (num_nodes, num_edges) = (length_input[0], length_input[1]);
         let mut graph = vec![format!("{} {}", num_nodes, num_edges)];
         graph.extend((0..num_edges).map(|_| sections.next().unwrap().to_owned()));
-        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&graph.join("\n"))?;
+        let mut lines = graph.into_iter();
+        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
         let adjacency_matrix = make_weighted_adjacency_matrix(&edges);
         let (start, end, weight) = edges[0];
         let min_distances = dijkstra_min_distances(num_nodes, &adjacency_matrix, end);

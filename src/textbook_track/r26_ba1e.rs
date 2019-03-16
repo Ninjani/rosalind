@@ -1,8 +1,8 @@
 use crate::textbook_track::r23_ba1b::get_sorted_kmer_counts;
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::HashSet;
 use failure::Error;
+use hashbrown::HashSet;
 
 pub fn rosalind_ba1e() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1e.txt");

@@ -2,26 +2,24 @@ use crate::textbook_track::r12_ba11a::get_mass_to_aa;
 use crate::textbook_track::r73_ba5d::get_topological_ordering;
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
+use hashbrown::HashMap;
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Incoming;
-use hashbrown::HashMap;
 use std::isize;
-use failure::Error;
 /// W.I.P
 
 /// Given: A space-delimited spectral vector S.
 ///
 /// Return: A peptide with maximum score against S. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11e() -> Result<(), Error>{
+pub fn rosalind_ba11e() -> Result<(), Error> {
     let mut spectrum = vec![0];
-    spectrum.extend(
-        isize::parse_line(&utils::input_from_file(
-            "data/textbook_track/rosalind_ba11e.txt",
-        ))?,
-    );
+    spectrum.extend(isize::parse_line(&utils::input_from_file(
+        "data/textbook_track/rosalind_ba11e.txt",
+    ))?);
     let mut graph = StableGraph::new();
     let mut node_to_index = HashMap::new();
     for (i, value) in spectrum.iter().enumerate() {

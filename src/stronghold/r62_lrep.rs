@@ -1,11 +1,11 @@
 use crate::stronghold::r56_ctbl::traverse;
 use crate::utils;
 use failure::Error;
+use hashbrown::HashMap;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
-use hashbrown::HashMap;
 
 /// W.I.P
 fn make_suffix_tree(

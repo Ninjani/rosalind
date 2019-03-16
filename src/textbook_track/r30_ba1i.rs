@@ -2,8 +2,8 @@ use crate::stronghold::r6_hamm::hamming;
 use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::{HashMap, HashSet};
 use failure::Error;
+use hashbrown::{HashMap, HashSet};
 
 pub fn rosalind_ba1i() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba1i.txt");

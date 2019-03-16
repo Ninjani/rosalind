@@ -2,10 +2,10 @@ use crate::textbook_track::r38_ba2c::get_probability_kmer;
 use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
 use ndarray::Array2;
 use rand::{thread_rng, Rng};
 use random_choice::random_choice;
-use failure::Error;
 
 pub fn rosalind_ba2g() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2g.txt");

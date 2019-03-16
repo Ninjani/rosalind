@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::utils::Parseable;
-use std::slice::SliceConcatExt;
 use failure::Error;
+use std::slice::SliceConcatExt;
 
 /// Implement GreedySorting to Sort a Permutation by Reversals
 ///

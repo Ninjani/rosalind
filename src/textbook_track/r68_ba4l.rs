@@ -2,8 +2,8 @@ use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r63_ba4g::trim_leaderboard;
 use crate::utils;
 use crate::utils::Parseable;
-use hashbrown::{HashMap, HashSet};
 use failure::Error;
+use hashbrown::{HashMap, HashSet};
 
 /// Trim a Peptide Leaderboard
 ///
@@ -19,10 +19,7 @@ pub fn rosalind_ba4l() -> Result<(), Error> {
         .map(|p| (p.chars().map(|c| aa_to_mass[&c]).collect::<Vec<_>>(), p))
         .collect();
     let leaderboard: HashSet<_> = masses_to_peptide.keys().cloned().collect();
-    let (spectrum, n) = (
-        usize::parse_line(lines[1])?,
-        lines[2].parse::<usize>()?,
-    );
+    let (spectrum, n) = (usize::parse_line(lines[1])?, lines[2].parse::<usize>()?);
     utils::print_array(
         &trim_leaderboard(&leaderboard, &spectrum, n)
             .into_iter()

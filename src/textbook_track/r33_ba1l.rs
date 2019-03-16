@@ -1,8 +1,8 @@
 use crate::utils;
+use failure::Error;
+use hashbrown::HashMap;
 use radix::RadixNum;
 use std::char;
-use hashbrown::HashMap;
-use failure::Error;
 
 pub fn rosalind_ba1l() -> Result<(), Error> {
     let dna = utils::input_from_file("data/textbook_track/rosalind_ba1l.txt");

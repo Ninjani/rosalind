@@ -2,10 +2,10 @@ use crate::stronghold::r6_hamm::hamming;
 use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
 use crate::utils;
 use crate::utils::Parseable;
+use failure::Error;
+use hashbrown::HashMap;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
-use hashbrown::HashMap;
-use failure::Error;
 
 pub fn rosalind_ba2d() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba2d.txt");

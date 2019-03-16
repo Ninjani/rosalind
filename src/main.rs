@@ -12,6 +12,6 @@ pub mod textbook_track;
 pub mod utils;
 
 fn main() -> Result<(), failure::Error> {
-    algorithmic_heights::r16_dag::rosalind_dag();
+    algorithmic_heights::r28_nwc::rosalind_nwc()?;
     Ok(())
 }

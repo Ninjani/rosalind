@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r10_cc::count_connected_components;
+use crate::algorithmic_heights::DFS;
 use crate::utils;
 use failure::Error;
 
@@ -14,7 +14,7 @@ pub fn rosalind_tree() -> Result<(), Error> {
     )?;
     println!(
         "{}",
-        count_connected_components(num_nodes, &adjacency_matrix) - 1
+        DFS::run_dfs(adjacency_matrix, num_nodes).num_connected_components - 1
     );
     Ok(())
 }
