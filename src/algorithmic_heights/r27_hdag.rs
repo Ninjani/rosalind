@@ -9,10 +9,13 @@ use failure::Error;
 /// followed by a Hamiltonian path (i.e., a list of vertices), otherwise output "-1".
 pub fn rosalind_hdag() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_hdag.txt");
-    let mut sections = contents.split("\n\n");
-    sections.next().unwrap();
-    for section in sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(section);
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let num_sections = lines.next().unwrap().parse::<usize>()?;
+    for _ in 0..num_sections {
+        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
         let adjacency_matrix = make_adjacency_matrix(&edges, true);
         let hamiltonian_path = DFS::run_dfs(adjacency_matrix, num_nodes).get_hamiltonian_path();
         match hamiltonian_path {

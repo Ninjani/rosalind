@@ -27,9 +27,12 @@ pub fn make_adjacency_matrix<T: Eq + Copy + ::std::hash::Hash>(
 ///
 /// Return: An array D[1..n] where D[i] is the sum of the degrees of i's neighbors.
 pub fn rosalind_ddeg() {
-    let (num_nodes, _, edges) = utils::read_edge_list(&utils::input_from_file(
-        "data/algorithmic_heights/rosalind_ddeg.txt",
-    ));
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_ddeg.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
     let degrees = get_degrees(&edges);
     let adjacency_matrix = make_adjacency_matrix(&edges, false);
     for node in 1..=num_nodes {

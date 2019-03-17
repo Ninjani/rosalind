@@ -22,9 +22,12 @@ pub fn get_degrees<T: Eq + Clone + ::std::hash::Hash>(edges: &[(T, T)]) -> HashM
 ///
 /// Return: An array D[1..n] where D[i] is the degree of vertex i.
 pub fn rosalind_deg() {
-    let (num_nodes, _, edges) = utils::read_edge_list(&utils::input_from_file(
-        "data/algorithmic_heights/rosalind_deg.txt",
-    ));
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_deg.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
     let degrees = get_degrees(&edges);
     for node in 1..=num_nodes {
         print!("{}", degrees.get(&node).unwrap_or(&0));

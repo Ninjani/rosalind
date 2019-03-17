@@ -5,7 +5,8 @@ use rand::{thread_rng, Rng};
 
 /// Median
 ///
-/// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5, a positive number k≤n.
+/// Given: A positive integer n≤105 and an array A[1..n] of integers
+/// from −10^5 to 10^5, a positive number k≤n.
 ///
 /// Return: The k-th smallest element of A.
 pub fn rosalind_med() -> Result<(), Error> {
@@ -18,7 +19,7 @@ pub fn rosalind_med() -> Result<(), Error> {
     Ok(())
 }
 
-fn partition(array: &mut [isize], left: usize, right: usize, pivot_index: usize) -> usize {
+pub fn partition(array: &mut [isize], left: usize, right: usize, pivot_index: usize) -> usize {
     let pivot = array[pivot_index];
     array.swap(pivot_index, right);
     let mut store_index = left;

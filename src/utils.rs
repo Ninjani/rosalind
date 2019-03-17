@@ -185,8 +185,7 @@ pub fn factorial(n: usize) -> BigUint {
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usize)>) {
-    let mut lines = contents.split('\n');
+pub fn read_edge_list(lines: &mut Iterator<Item=String>) -> (usize, usize, Vec<(usize, usize)>) {
     let length_input = lines
         .next()
         .unwrap()
@@ -194,8 +193,10 @@ pub fn read_edge_list(contents: &str) -> (usize, usize, Vec<(usize, usize)>) {
         .map(str::parse)
         .collect::<Result<Vec<_>, _>>().unwrap();
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
-    let mut edges = Vec::new();
-    for line in lines {
+    let mut edges = Vec::with_capacity(num_edges);
+    let mut line;
+    for _ in 0..num_edges {
+        line = lines.next().unwrap();
         let parts = line.split(' ').map(str::parse).collect::<Result<Vec<_>, _>>().unwrap();
         edges.push((parts[0], parts[1]));
     }

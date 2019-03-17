@@ -6,9 +6,12 @@ use failure::Error;
 ///
 /// Return: A topological sorting (i.e., a permutation of vertices) of the graph.
 pub fn rosalind_ts() -> Result<(), Error> {
-    let (num_nodes, _, edges) = utils::read_edge_list(&utils::input_from_file(
-        "data/algorithmic_heights/rosalind_ts.txt",
-    ));
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_ts.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
     let adjacency_matrix = make_adjacency_matrix(&edges, true);
     utils::print_array(&DFS::run_dfs(adjacency_matrix, num_nodes).get_topological_sort());
     Ok(())

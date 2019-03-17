@@ -8,9 +8,12 @@ use crate::utils;
 ///
 /// Return: The number of connected components in the graph.
 pub fn rosalind_cc() {
-    let (num_nodes, _, edges) = utils::read_edge_list(&utils::input_from_file(
-        "data/algorithmic_heights/rosalind_cc.txt",
-    ));
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_cc.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
     let adjacency_matrix = make_adjacency_matrix(&edges, false);
     println!(
         "{}",

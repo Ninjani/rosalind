@@ -26,9 +26,12 @@ pub mod r6_maj;
 pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
+pub mod r29_qs;
+pub mod r30_scc;
+pub mod r31_2sat;
+pub mod r32_gs;
 
 use hashbrown::HashMap;
-use std::iter::repeat;
 
 pub struct DFS {
     pub adjacency_matrix: HashMap<usize, Vec<usize>>,
@@ -42,17 +45,21 @@ pub struct DFS {
 }
 
 impl DFS {
-    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
-        let mut dfs_struct = DFS {
+    fn new(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+        DFS {
             adjacency_matrix,
             num_nodes,
-            visited: repeat(false).take(num_nodes).collect(),
-            previsit: repeat(0).take(num_nodes).collect(),
-            postvisit: repeat(0).take(num_nodes).collect(),
+            visited: (0..num_nodes).map(|_| false).collect(),
+            previsit: (0..num_nodes).map(|_| 0).collect(),
+            postvisit: (0..num_nodes).map(|_| 0).collect(),
             clock: 0,
             num_connected_components: 0,
-            connected_components: repeat(0).take(num_nodes).collect(),
-        };
+            connected_components: (0..num_nodes).map(|_| 0).collect(),
+        }
+    }
+
+    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+        let mut dfs_struct = DFS::new(adjacency_matrix, num_nodes);
         dfs_struct.dfs();
         dfs_struct
     }
