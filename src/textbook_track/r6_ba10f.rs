@@ -5,6 +5,7 @@ use crate::textbook_track::{
 use crate::utils;
 use failure::Error;
 
+/// W.I.P
 /// Construct a Profile HMM
 ///
 /// Given: A threshold θ, followed by an alphabet Σ,

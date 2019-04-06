@@ -5,6 +5,7 @@ use hashbrown::HashMap;
 use itertools::Itertools;
 use ndarray::{Array3, Axis};
 
+/// W.I.P
 #[derive(Debug)]
 pub struct ProfileHMM {
     threshold: f32,
