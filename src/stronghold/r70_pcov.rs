@@ -6,7 +6,7 @@ pub fn rosalind_pcov() {
     let contents = utils::input_from_file("data/stronghold/rosalind_pcov.txt");
     let reads: Vec<_> = contents.split('\n').map(|s| s.to_owned()).collect();
     let mut adjacency_list = de_bruijn_graph(&reads);
-    let cycle = get_eulerian_cycle(&mut adjacency_list);
+    let cycle = get_eulerian_cycle(&mut adjacency_list, reads[0].clone()).unwrap();
     let length = cycle.len();
     println!(
         "{}",

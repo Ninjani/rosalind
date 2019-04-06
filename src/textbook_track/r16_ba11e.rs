@@ -10,16 +10,20 @@ use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Incoming;
 use std::isize;
-/// W.I.P
 
+/// Sequence a Peptide
+///
 /// Given: A space-delimited spectral vector S.
 ///
 /// Return: A peptide with maximum score against S. For masses with more than one amino acid, any choice may be used.
 pub fn rosalind_ba11e() -> Result<(), Error> {
     let mut spectrum = vec![0];
-    spectrum.extend(isize::parse_line(&utils::input_from_file(
-        "data/textbook_track/rosalind_ba11e.txt",
-    ))?);
+    spectrum.extend(isize::parse_line(
+        &utils::input_from_file("data/textbook_track/rosalind_ba11e.txt")
+            .split('\n')
+            .collect::<Vec<_>>()
+            .join(" "),
+    )?);
     let mut graph = StableGraph::new();
     let mut node_to_index = HashMap::new();
     for (i, value) in spectrum.iter().enumerate() {
@@ -53,20 +57,25 @@ pub fn get_longest_path<U: Clone, Ix: IndexType>(
     source: NodeIndex<Ix>,
     sink: NodeIndex<Ix>,
 ) -> Option<(isize, Vec<NodeIndex<Ix>>)> {
-    let mut weights: HashMap<_, _> = graph.node_indices().map(|n| (n, isize::MIN)).collect();
-    weights.insert(source, graph[source]);
+    let mut weights: HashMap<_, _> = graph
+        .node_indices()
+        .map(|n| (n, isize::MIN + 1000))
+        .collect();
+    weights.insert(source, 0);
     let mut backtrack = HashMap::new();
     let topo_nodes = get_topological_ordering(&mut graph.clone());
     match topo_nodes {
         Some(topo_nodes) => {
-            let (source_index, sink_index) = (
-                topo_nodes.iter().position(|&s| s == source).unwrap(),
-                topo_nodes.iter().position(|&s| s == sink).unwrap(),
-            );
             for node in &topo_nodes {
                 if let Some((max_value, max_predecessor)) = graph
                     .edges_directed(*node, Incoming)
-                    .map(|e| (graph[e.source()] + weights[&e.source()], e.source()))
+                    .map(|e| {
+                        let (e_source, e_sink) = (e.source(), e.target());
+                        (
+                            graph[e_source] + graph[e_sink] + weights[&e_source],
+                            e_source,
+                        )
+                    })
                     .max_by(|a, b| a.0.cmp(&b.0))
                 {
                     weights.insert(*node, max_value);

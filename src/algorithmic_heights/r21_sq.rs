@@ -1,14 +1,14 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
-use hashbrown::{HashMap, HashSet};
 use failure::Error;
+use hashbrown::{HashMap, HashSet};
 
 /// Square in a Graph
 ///
 /// Given: A positive integer k≤20 and k simple undirected graphs with n≤400 vertices in the edge list format.
 ///
 /// Return: For each graph, output "1" if it contains a simple cycle (that is, a cycle which doesn’t intersect itself) of length 4 and "-1" otherwise.
-pub fn rosalind_sq() -> Result<(), Error>{
+pub fn rosalind_sq() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_sq.txt");
     let mut lines = contents
         .split('\n')

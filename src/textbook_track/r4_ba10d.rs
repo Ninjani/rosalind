@@ -1,12 +1,35 @@
-use crate::textbook_track::hidden_markov_models::HMM;
+use crate::textbook_track::hidden_markov_models::{HMMError, HMM};
 use crate::utils;
+use failure::Error;
 use ndarray::Array2;
 
+/// Compute the Probability of a String Emitted by an HMM
+///
+/// Given: A string x, followed by the alphabet Σ from which x was constructed,
+/// followed by the states States, transition matrix Transition,
+/// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
+///
+/// Return: The probability Pr(x) that the HMM emits x.
+pub fn rosalind_ba10d() -> Result<(), Error> {
+    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10d.txt");
+    let mut sections = contents.split("--------");
+    let sequence = sections
+        .next()
+        .ok_or(HMMError::FormatError("Missing sequence".into()))?
+        .trim()
+        .to_owned();
+    let hmm = HMM::read_hmm(&mut sections)?;
+    println!("{:e}", hmm.get_probability_of_sequence(&sequence)?);
+    Ok(())
+}
+
 impl HMM {
-    fn get_probability_of_sequence(&self, sequence: &str) -> f64 {
+    fn get_probability_of_sequence(&self, sequence: &str) -> Result<f64, Error> {
         let mut f_sums = Array2::<f64>::zeros((self.states.len(), sequence.len()));
         let mut sequence_chars = sequence.chars();
-        let first_char = sequence_chars.next().unwrap();
+        let first_char = sequence_chars
+            .next()
+            .ok_or(HMMError::FormatError("Empty sequence".into()))?;
         for k in 0..self.states.len() {
             f_sums[[k, 0]] = self.emission_matrix[[k, self.alphabet_index[&first_char]]] * 1.
                 / self.states.len() as f64;
@@ -19,20 +42,8 @@ impl HMM {
                     * self.emission_matrix[[k, self.alphabet_index[&s_char]]];
             }
         }
-        (0..self.states.len())
+        Ok((0..self.states.len())
             .map(|k| f_sums[[k, sequence.len() - 1]])
-            .sum()
+            .sum())
     }
-}
-
-/// Compute the Probability of a String Emitted by an HMM
-///
-/// Given: A string x, followed by the alphabet Σ from which x was constructed, followed by the states States, transition matrix Transition, and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
-///
-/// Return: The probability Pr(x) that the HMM emits x.
-pub fn rosalind_ba10d() {
-    let (hmm, sequence) = HMM::read_hmm(&utils::input_from_file(
-        "data/textbook_track/rosalind_ba10d.txt",
-    ));
-    println!("{:e}", hmm.get_probability_of_sequence(&sequence));
 }

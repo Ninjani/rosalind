@@ -1,12 +1,12 @@
 use bio::pattern_matching::{bom, shift_and};
+use failure::Error;
+use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 use num::BigUint;
-use hashbrown::{HashMap, HashSet};
 use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
-use failure::Error;
 
 const CODON_FILE: &str = "data/codons.txt";
 pub const STOP_CODON_AA: &str = "Stop";
@@ -185,19 +185,24 @@ pub fn factorial(n: usize) -> BigUint {
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_edge_list(lines: &mut Iterator<Item=String>) -> (usize, usize, Vec<(usize, usize)>) {
+pub fn read_edge_list(lines: &mut Iterator<Item = String>) -> (usize, usize, Vec<(usize, usize)>) {
     let length_input = lines
         .next()
         .unwrap()
         .split(' ')
         .map(str::parse)
-        .collect::<Result<Vec<_>, _>>().unwrap();
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap();
     let (num_nodes, num_edges) = (length_input[0], length_input[1]);
     let mut edges = Vec::with_capacity(num_edges);
     let mut line;
     for _ in 0..num_edges {
         line = lines.next().unwrap();
-        let parts = line.split(' ').map(str::parse).collect::<Result<Vec<_>, _>>().unwrap();
+        let parts = line
+            .split(' ')
+            .map(str::parse)
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap();
         edges.push((parts[0], parts[1]));
     }
     (num_nodes, num_edges, edges)
@@ -209,19 +214,37 @@ pub fn read_edge_list(lines: &mut Iterator<Item=String>) -> (usize, usize, Vec<(
 /// node_2 -> node_4
 /// ...
 /// ```
-pub fn read_adjacency_list(contents: &str) -> Result<HashMap<usize, Vec<usize>>, Error> {
+pub fn read_adjacency_list(
+    contents: &str,
+    zero_start: bool,
+) -> Result<(usize, HashMap<usize, Vec<usize>>), Error> {
     let lines = contents.split('\n');
     let mut adjacency_list = HashMap::new();
+    let mut num_nodes = 0;
     for line in lines {
         let parts: Vec<_> = line.split(" -> ").collect();
-        let node_1 = parts[0].parse::<usize>()?;
+        let mut node_1 = parts[0].parse::<usize>()?;
+        if zero_start {
+            node_1 += 1;
+        }
+        if node_1 > num_nodes {
+            num_nodes = node_1;
+        }
         let nodes_2 = parts[1]
             .split(',')
             .map(str::parse)
-            .collect::<Result<_, _>>()?;
+            .collect::<Result<Vec<usize>, _>>()?
+            .into_iter()
+            .map(|x| if zero_start { x + 1 } else { x })
+            .collect::<Vec<_>>();
+        for n in &nodes_2 {
+            if *n > num_nodes {
+                num_nodes = *n;
+            }
+        }
         adjacency_list.insert(node_1, nodes_2);
     }
-    Ok(adjacency_list)
+    Ok((num_nodes, adjacency_list))
 }
 
 /// Reads a Rosalind edge list into an adjacency matrix
@@ -239,7 +262,10 @@ pub fn read_adjacency_matrix(
     let num_nodes = lines.next().unwrap().parse::<usize>()?;
     let mut adjacency_matrix = HashMap::new();
     for line in lines {
-        let parts = line.split(' ').map(str::parse).collect::<Result<Vec<_>, _>>()?;
+        let parts = line
+            .split(' ')
+            .map(str::parse)
+            .collect::<Result<Vec<_>, _>>()?;
         let node_1 = parts[0];
         let node_2 = parts[1];
         {
@@ -261,7 +287,9 @@ pub fn read_adjacency_matrix(
 /// node_1 node_2 weight
 /// ...
 /// ```
-pub fn read_weighted_edge_list(lines: &mut Iterator<Item=String>) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
+pub fn read_weighted_edge_list(
+    lines: &mut Iterator<Item = String>,
+) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
     let length_input = lines
         .next()
         .unwrap()

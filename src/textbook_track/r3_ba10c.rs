@@ -1,27 +1,38 @@
-use crate::textbook_track::hidden_markov_models::HMM;
+use crate::textbook_track::hidden_markov_models::{HMMError, HMM};
 use crate::utils;
 use crate::utils::Comparable;
+use failure::Error;
 use ndarray::Array2;
 
 /// Implement the Viterbi Algorithm
 ///
-/// Given: A string x, followed by the alphabet Σ from which x was constructed, followed by the states States, transition matrix Transition, and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
+/// Given: A string x, followed by the alphabet Σ from which x was constructed,
+/// followed by the states States, transition matrix Transition,
+/// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: A path that maximizes the (unconditional) probability Pr(x, π) over all possible paths π.
-pub fn rosalind_ba10c() {
-    let (hmm, sequence) = HMM::read_hmm(&utils::input_from_file(
-        "data/textbook_track/rosalind_ba10c.txt",
-    ));
-    println!("{}", hmm.run_viterbi(&sequence));
+pub fn rosalind_ba10c() -> Result<(), Error> {
+    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10c.txt");
+    let mut sections = contents.split("--------");
+    let sequence = sections
+        .next()
+        .ok_or(HMMError::FormatError("Missing sequence".into()))?
+        .trim()
+        .to_owned();
+    let hmm = HMM::read_hmm(&mut sections)?;
+    println!("{}", hmm.run_viterbi(&sequence)?);
+    Ok(())
 }
 
 impl HMM {
     /// Runs the viterbi algorithm on a sequence
-    fn run_viterbi(&self, sequence: &str) -> String {
+    fn run_viterbi(&self, sequence: &str) -> Result<String, Error> {
         let mut v_maxes = Array2::<f64>::zeros((self.states.len(), sequence.len()));
         let mut pointers = Array2::<usize>::zeros((self.states.len(), sequence.len()));
         let mut sequence_chars = sequence.chars();
-        let first_char = sequence_chars.next().unwrap();
+        let first_char = sequence_chars
+            .next()
+            .ok_or(HMMError::FormatError("Empty sequence".into()))?;
         for k in 0..self.states.len() {
             v_maxes[[k, 0]] = self.emission_matrix[[k, self.alphabet_index[&first_char]]] * 1.
                 / self.states.len() as f64;
@@ -48,6 +59,6 @@ impl HMM {
             max_index = pointers[[max_index, i]];
             path.push(self.states[max_index]);
         }
-        path.into_iter().rev().collect()
+        Ok(path.into_iter().rev().collect())
     }
 }

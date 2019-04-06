@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::{DFS, r5_ddeg::make_adjacency_matrix};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
 use crate::utils;
 use failure::Error;
 
@@ -15,7 +15,6 @@ pub fn rosalind_gs() -> Result<(), Error> {
         let adjacency_matrix = make_adjacency_matrix(&edges, true);
         let node_order = DFS::get_sink_scc_node_order(&adjacency_matrix, num_nodes);
         let dfs_scc = DFS::run_dfs_given_node_order(adjacency_matrix, num_nodes, &node_order);
-
     }
     Ok(())
 }

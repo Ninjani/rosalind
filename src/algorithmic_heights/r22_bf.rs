@@ -13,7 +13,7 @@ pub fn rosalind_bf() -> Result<(), Error> {
     let mut lines = contents.split('\n').map(|s| s.to_owned());
     let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
     let distances =
-        bellman_ford(num_nodes, &edges, 1).ok_or_else(||format_err!("Negative cycle found"))?;
+        bellman_ford(num_nodes, &edges, 1).ok_or_else(|| format_err!("Negative cycle found"))?;
     for node in 1..=num_nodes {
         if distances[node - 1] < ::std::isize::MAX {
             print!("{} ", distances[node - 1]);

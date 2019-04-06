@@ -4,6 +4,11 @@ use crate::utils;
 use failure::Error;
 use hashbrown::HashMap;
 
+/// Strongly Connected Components
+///
+/// Given: A simple directed graph with n≤103 vertices in the edge list format.
+///
+/// Return: The number of strongly connected components in the graph.
 pub fn rosalind_scc() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_scc.txt");
     let mut lines = contents

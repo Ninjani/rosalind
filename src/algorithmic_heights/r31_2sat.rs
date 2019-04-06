@@ -4,7 +4,9 @@ use crate::utils;
 use failure::Error;
 use hashbrown::{HashMap, HashSet};
 
-fn read_2sat_adjacency_list(lines: &mut Iterator<Item=String>) -> (usize, usize, Vec<(usize, usize)>) {
+fn read_2sat_adjacency_list(
+    lines: &mut Iterator<Item = String>,
+) -> (usize, usize, Vec<(usize, usize)>) {
     let length_input = lines
         .next()
         .unwrap()
@@ -13,8 +15,7 @@ fn read_2sat_adjacency_list(lines: &mut Iterator<Item=String>) -> (usize, usize,
         .collect::<Result<Vec<usize>, _>>()
         .unwrap();
     let (num_variables, num_clauses) = (length_input[0], length_input[1]);
-    let (num_nodes, num_edges) = (num_variables * 2, num_clauses * 2);
-    let mut edges = Vec::with_capacity(num_edges);
+    let mut edges = Vec::with_capacity(num_clauses * 2);
     let mut line;
     for _ in 0..num_clauses {
         line = lines.next().unwrap();
@@ -26,7 +27,7 @@ fn read_2sat_adjacency_list(lines: &mut Iterator<Item=String>) -> (usize, usize,
         edges.push((get_node(-parts[0]), get_node(parts[1])));
         edges.push((get_node(-parts[1]), get_node(parts[0])));
     }
-    (num_nodes, num_edges, edges)
+    (num_variables * 2, num_clauses * 2, edges)
 }
 
 fn get_node(variable: isize) -> usize {
@@ -55,10 +56,11 @@ fn get_negated_node(node: usize) -> usize {
 }
 
 pub fn rosalind_2sat() -> Result<(), Error> {
-    let contents = utils::input_from_file(
-        "data/algorithmic_heights/rosalind_2sat.txt",
-    );
-    let mut lines = contents.split('\n').filter(|s| !s.trim().is_empty()).map(|s| s.to_owned());
+    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_2sat.txt");
+    let mut lines = contents
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
         let (num_nodes, _, edges) = read_2sat_adjacency_list(&mut lines);
@@ -66,7 +68,7 @@ pub fn rosalind_2sat() -> Result<(), Error> {
         let node_order = DFS::get_sink_scc_node_order(&adjacency_matrix, num_nodes);
         let dfs_scc = DFS::run_dfs_given_node_order(adjacency_matrix, num_nodes, &node_order);
         let mut satisfiable = true;
-        for i in (0..num_nodes-1).step_by(2) {
+        for i in (0..num_nodes - 1).step_by(2) {
             if dfs_scc.connected_components[i] == dfs_scc.connected_components[i + 1] {
                 satisfiable = false;
                 break;
@@ -103,14 +105,10 @@ pub fn rosalind_2sat() -> Result<(), Error> {
                 .map(|(i, _)| get_variable(i + 1).to_string())
                 .collect::<Vec<_>>()
                 .join(" ");
-            println!(
-                "1 {}",
-                true_variables
-            );
+            println!("1 {}", true_variables);
         } else {
             println!("0");
         }
     }
     Ok(())
 }
-

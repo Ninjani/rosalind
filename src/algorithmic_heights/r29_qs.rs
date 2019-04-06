@@ -1,9 +1,8 @@
+use crate::algorithmic_heights::r24_med::partition;
 use crate::utils;
 use crate::utils::Parseable;
-use crate::algorithmic_heights::r24_med::partition;
-use rand::{thread_rng, Rng};
 use failure::Error;
-
+use rand::{thread_rng, Rng};
 
 pub fn rosalind_qs() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_qs.txt");

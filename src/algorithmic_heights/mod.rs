@@ -18,7 +18,13 @@ pub mod r25_ps;
 pub mod r26_ts;
 pub mod r27_hdag;
 pub mod r28_nwc;
+pub mod r29_qs;
 pub mod r2_bins;
+pub mod r30_scc;
+pub mod r31_2sat;
+pub mod r32_gs;
+pub mod r33_sc;
+pub mod r34_sdag;
 pub mod r3_deg;
 pub mod r4_ins;
 pub mod r5_ddeg;
@@ -26,10 +32,6 @@ pub mod r6_maj;
 pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
-pub mod r29_qs;
-pub mod r30_scc;
-pub mod r31_2sat;
-pub mod r32_gs;
 
 use hashbrown::HashMap;
 
