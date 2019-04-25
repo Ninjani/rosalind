@@ -1,4 +1,4 @@
-use crate::textbook_track::hidden_markov_models::{HMMError, HMM};
+use crate::textbook_track::hidden_markov_models::{HMMError, HMM, read_chars, read_probability_matrix};
 use crate::utils;
 use failure::Error;
 use hashbrown::HashMap;
@@ -14,18 +14,18 @@ pub fn rosalind_ba10a() -> Result<(), Error> {
     let mut sections = contents.split("--------");
     let hidden_path = sections
         .next()
-        .ok_or(HMMError::FormatError("Missing hidden path".into()))?
+        .ok_or_else(|| HMMError::InputFormatError("Missing hidden path".into()))?
         .trim()
         .to_owned();
-    let (states, state_index) = HMM::read_chars(
+    let (states, state_index) = read_chars(
         &sections
             .next()
-            .ok_or(HMMError::FormatError("Missing states".into()))?,
+            .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
     );
-    let transition_matrix = HMM::read_probability_matrix(
+    let transition_matrix = read_probability_matrix(
         sections
             .next()
-            .ok_or(HMMError::FormatError("Missing transition matrix".into()))?,
+            .ok_or_else(|| HMMError::InputFormatError("Missing transition matrix".into()))?,
         &state_index,
         &state_index,
     )?;

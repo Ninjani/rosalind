@@ -1,13 +1,13 @@
 use crate::algorithmic_heights::r3_deg::get_degrees;
 use crate::utils;
-use hashbrown::HashMap;
+use std::collections::btree_map::BTreeMap;
 
 /// Get adjacency matrix from list of edges
-pub fn make_adjacency_matrix<T: Eq + Copy + ::std::hash::Hash>(
+pub fn make_adjacency_matrix<T: Eq + Copy + Ord + ::std::hash::Hash>(
     edges: &[(T, T)],
     directed: bool,
-) -> HashMap<T, Vec<T>> {
-    let mut adjacency_matrix = HashMap::new();
+) -> BTreeMap<T, Vec<T>> {
+    let mut adjacency_matrix = BTreeMap::new();
     for (node_1, node_2) in edges {
         {
             let edge_list_1 = adjacency_matrix.entry(*node_1).or_insert_with(Vec::new);

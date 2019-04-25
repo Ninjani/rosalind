@@ -32,13 +32,33 @@ pub mod r6_maj;
 pub mod r7_mer;
 pub mod r8_2sum;
 pub mod r9_bfs;
+use std::hash::Hash;
+use std::fmt::Debug;
 
 use hashbrown::HashMap;
+use std::collections::btree_map::BTreeMap;
+//use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
+
+pub fn convert_graph<T: Hash + Clone + Eq + Debug>(adjacency_list: &HashMap<T, Vec<T>>) -> (HashMap<usize, T>, BTreeMap<usize, Vec<usize>>) {
+    let mut node_to_index = HashMap::new();
+    let mut new_adj_list = BTreeMap::new();
+    let mut i = 0;
+    for (node_1, edges) in adjacency_list {
+        let index_1 = *node_to_index.entry(node_1.clone()).or_insert({i += 1; i-1});
+        for node_2 in edges {
+            let index_2 = *node_to_index.entry(node_2.clone()).or_insert({i += 1; i-1});
+            new_adj_list.entry(index_1).or_insert_with(Vec::new).push(index_2);
+        }
+    }
+    (node_to_index.into_iter().map(|(n, i)| (i, n)).collect(), new_adj_list)
+}
+
 
 pub struct DFS {
-    pub adjacency_matrix: HashMap<usize, Vec<usize>>,
+    pub adjacency_matrix: BTreeMap<usize, Vec<usize>>,
+    // pub adjacency_matrix_reverse: HashMap<usize, Vec<usize>>,
     pub num_nodes: usize,
-    visited: Vec<bool>,
+    pub visited: Vec<bool>,
     pub previsit: Vec<usize>,
     pub postvisit: Vec<usize>,
     clock: usize,
@@ -47,9 +67,11 @@ pub struct DFS {
 }
 
 impl DFS {
-    fn new(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+    fn new(adjacency_matrix: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+        // let adjacency_matrix_reverse = reverse_adjacency_list(&adjacency_matrix);
         DFS {
             adjacency_matrix,
+            // adjacency_matrix_reverse,
             num_nodes,
             visited: (0..num_nodes).map(|_| false).collect(),
             previsit: (0..num_nodes).map(|_| 0).collect(),
@@ -60,7 +82,7 @@ impl DFS {
         }
     }
 
-    pub fn run_dfs(adjacency_matrix: HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+    pub fn run_dfs(adjacency_matrix: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
         let mut dfs_struct = DFS::new(adjacency_matrix, num_nodes);
         dfs_struct.dfs();
         dfs_struct

@@ -2,7 +2,7 @@ use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::algorithmic_heights::DFS;
 use crate::utils;
 use failure::Error;
-use hashbrown::HashMap;
+use std::collections::btree_map::BTreeMap;
 
 /// Strongly Connected Components
 ///
@@ -28,7 +28,7 @@ pub fn rosalind_scc() -> Result<(), Error> {
 
 impl DFS {
     pub fn get_sink_scc_node_order(
-        adjacency_matrix: &HashMap<usize, Vec<usize>>,
+        adjacency_matrix: &BTreeMap<usize, Vec<usize>>,
         num_nodes: usize,
     ) -> Vec<usize> {
         let graph_reverse = DFS::run_dfs_reverse(&adjacency_matrix, num_nodes);
@@ -41,8 +41,8 @@ impl DFS {
         node_order.into_iter().map(|(i, _)| i + 1).collect()
     }
 
-    fn run_dfs_reverse(adjacency_matrix: &HashMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
-        let mut new_matrix = HashMap::new();
+    fn run_dfs_reverse(adjacency_matrix: &BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+        let mut new_matrix = BTreeMap::new();
         for (node_2, edge_list) in adjacency_matrix {
             for node_1 in edge_list {
                 new_matrix
@@ -55,7 +55,7 @@ impl DFS {
     }
 
     pub fn run_dfs_given_node_order(
-        adjacency_matrix: HashMap<usize, Vec<usize>>,
+        adjacency_matrix: BTreeMap<usize, Vec<usize>>,
         num_nodes: usize,
         node_order: &[usize],
     ) -> Self {

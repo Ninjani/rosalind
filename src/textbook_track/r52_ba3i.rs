@@ -1,19 +1,23 @@
 use crate::algorithmic_heights::convert_graph;
+use crate::stronghold::r23_lexf::enumerate_lex_2;
 use crate::textbook_track::r47_ba3d::de_bruijn_graph;
-use crate::textbook_track::r50_ba3g::get_eulerian_path;
+use crate::textbook_track::r49_ba3f::get_eulerian_cycle;
 use crate::utils;
 use failure::Error;
 
-pub fn rosalind_ba3h() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba3h.txt");
-    let patterns: Vec<_> = contents.split('\n').skip(1).map(|s| s.to_owned()).collect();
+pub fn rosalind_ba3i() -> Result<(), Error> {
+    let contents = utils::input_from_file("data/textbook_track/rosalind_ba3i.txt");
+    let length = contents.parse::<usize>()?;
+    let patterns = enumerate_lex_2(&['0', '1'], length);
     let adjacency_list = de_bruijn_graph(&patterns);
     let (index_to_node, indexed_adjacency_list) = convert_graph(&adjacency_list);
+    let cycle = get_eulerian_cycle(indexed_adjacency_list, None, index_to_node.len()).unwrap();
+    let cycle_length = cycle.len();
     println!(
         "{}",
-        get_eulerian_path(indexed_adjacency_list)
-            .unwrap()
+        cycle
             .into_iter()
+            .take(cycle_length - length + 1)
             .enumerate()
             .map(|(i, read_index)| if i == 0 {
                 index_to_node[&read_index].clone()

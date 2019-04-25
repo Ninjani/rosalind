@@ -17,3 +17,5 @@ random_choice = "*"
 petgraph = "0.4.13"
 failure = "0.1.3"
 hashbrown = "0.1.7"
+color-backtrace = { version = "0.1" }
+

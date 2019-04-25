@@ -41,6 +41,8 @@ pub mod r49_ba3f;
 pub mod r4_ba10d;
 pub mod r50_ba3g;
 pub mod r51_ba3h;
+pub mod r52_ba3i;
+pub mod r53_ba3j;
 pub mod r57_ba4a;
 pub mod r58_ba4b;
 pub mod r59_ba4c;

@@ -1,6 +1,5 @@
 use crate::textbook_track::{
-    hidden_markov_models::{HMMError, HMM},
-    r5_ba10e::ProfileHMM,
+    hidden_markov_models::{ProfileHMMError, ProfileHMM, read_chars},
 };
 use crate::utils;
 use failure::Error;
@@ -17,7 +16,7 @@ pub fn rosalind_ba10f() -> Result<(), Error> {
     let mut sections = contents.split("--------");
     let threshold_pseudocount = sections
         .next()
-        .ok_or(HMMError::FormatError(
+        .ok_or_else(|| ProfileHMMError::InputFormatError(
             "Missing threshold/pseudocount".into(),
         ))?
         .trim()
@@ -25,24 +24,23 @@ pub fn rosalind_ba10f() -> Result<(), Error> {
         .map(|x| x.parse::<f32>())
         .collect::<Result<Vec<_>, _>>()?;
     let (threshold, pseudocount) = (threshold_pseudocount[0], threshold_pseudocount[1]);
-    let (alphabet, alphabet_index) = HMM::read_chars(
+    let (alphabet, alphabet_index) = read_chars(
         sections
             .next()
-            .ok_or(HMMError::FormatError("Missing alphabet".into()))?,
+            .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alphabet".into()))?,
     );
     let msa_section = sections
         .next()
-        .ok_or(HMMError::FormatError("Missing alignment".into()))?;
+        .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alignment".into()))?;
     let hmm = ProfileHMM::new(
         threshold,
         Some(pseudocount),
         alphabet,
         alphabet_index,
         msa_section,
-    );
-    hmm.print_transitions();
+    )?;
+    hmm.print_transition_matrix();
     println!("--------");
-    hmm.print_emissions();
-    println!("{:?}", hmm);
+    hmm.print_emission_matrix();
     Ok(())
 }

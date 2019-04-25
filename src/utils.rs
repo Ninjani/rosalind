@@ -7,6 +7,7 @@ use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
+use std::collections::btree_map::BTreeMap;
 
 const CODON_FILE: &str = "data/codons.txt";
 pub const STOP_CODON_AA: &str = "Stop";
@@ -217,9 +218,9 @@ pub fn read_edge_list(lines: &mut Iterator<Item = String>) -> (usize, usize, Vec
 pub fn read_adjacency_list(
     contents: &str,
     zero_start: bool,
-) -> Result<(usize, HashMap<usize, Vec<usize>>), Error> {
+) -> Result<(usize, BTreeMap<usize, Vec<usize>>), Error> {
     let lines = contents.split('\n');
-    let mut adjacency_list = HashMap::new();
+    let mut adjacency_list = BTreeMap::new();
     let mut num_nodes = 0;
     for line in lines {
         let parts: Vec<_> = line.split(" -> ").collect();
@@ -257,10 +258,10 @@ pub fn read_adjacency_list(
 pub fn read_adjacency_matrix(
     contents: &str,
     directed: bool,
-) -> Result<(usize, HashMap<usize, Vec<usize>>), Error> {
+) -> Result<(usize, BTreeMap<usize, Vec<usize>>), Error> {
     let mut lines = contents.split('\n');
     let num_nodes = lines.next().unwrap().parse::<usize>()?;
-    let mut adjacency_matrix = HashMap::new();
+    let mut adjacency_matrix = BTreeMap::new();
     for line in lines {
         let parts = line
             .split(' ')

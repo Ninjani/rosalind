@@ -6,7 +6,7 @@ pub fn rosalind_ba3b() {
     println!("{}", reverse_kmerize(&kmers));
 }
 
-fn reverse_kmerize(kmers: &[&str]) -> String {
+pub fn reverse_kmerize(kmers: &[&str]) -> String {
     let k = &kmers[0].len();
     let first: String = kmers[0].chars().collect();
     let end = kmers[1..]

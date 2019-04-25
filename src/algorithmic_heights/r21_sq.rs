@@ -1,7 +1,8 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
 use failure::Error;
-use hashbrown::{HashMap, HashSet};
+use hashbrown::{HashSet};
+use std::collections::btree_map::BTreeMap;
 
 /// Square in a Graph
 ///
@@ -27,7 +28,7 @@ pub fn rosalind_sq() -> Result<(), Error> {
     Ok(())
 }
 
-fn has_square(num_nodes: usize, adjacency_matrix: &HashMap<usize, Vec<usize>>) -> bool {
+fn has_square(num_nodes: usize, adjacency_matrix: &BTreeMap<usize, Vec<usize>>) -> bool {
     for i in 1..num_nodes {
         for j in (i + 1)..=num_nodes {
             let adj_i: HashSet<_> = adjacency_matrix

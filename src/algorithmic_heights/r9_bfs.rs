@@ -2,6 +2,7 @@ use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
 use hashbrown::{HashMap, HashSet};
 use std::collections::VecDeque;
+use std::collections::btree_map::BTreeMap;
 
 /// Breadth-First Search
 ///
@@ -38,7 +39,7 @@ fn get_path_length(node: usize, path: &HashMap<usize, Option<usize>>) -> usize {
 
 /// Finds length of shortest path from start_node to end_node using breadth-first search
 fn bfs_length(
-    adjacency_matrix: &HashMap<usize, Vec<usize>>,
+    adjacency_matrix: &BTreeMap<usize, Vec<usize>>,
     start_node: usize,
     end_node: usize,
 ) -> Option<usize> {

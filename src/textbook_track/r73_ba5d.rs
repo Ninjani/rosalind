@@ -36,7 +36,7 @@ pub fn rosalind_ba5d() -> Result<(), Error> {
     Ok(())
 }
 
-fn set_pop<T: Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
+pub fn set_pop<T: Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
     if set.is_empty() {
         None
     } else {

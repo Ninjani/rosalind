@@ -1,9 +1,9 @@
 use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
 use crate::utils;
 use failure::Error;
-use hashbrown::HashMap;
 use std::collections::VecDeque;
 use std::iter::repeat;
+use std::collections::btree_map::BTreeMap;
 
 /// Testing Bipartiteness
 ///
@@ -29,7 +29,7 @@ pub fn rosalind_bip() -> Result<(), Error> {
     Ok(())
 }
 
-fn is_bipartite(num_nodes: usize, adjacency_matrix: &HashMap<usize, Vec<usize>>) -> bool {
+fn is_bipartite(num_nodes: usize, adjacency_matrix: &BTreeMap<usize, Vec<usize>>) -> bool {
     let mut colors = repeat(None).take(num_nodes).collect::<Vec<_>>();
     for node in 1..=num_nodes {
         if colors[node - 1].is_none() && !is_bipartite_checker(&mut colors, node, &adjacency_matrix)
@@ -40,10 +40,10 @@ fn is_bipartite(num_nodes: usize, adjacency_matrix: &HashMap<usize, Vec<usize>>)
     true
 }
 
-fn is_bipartite_checker<S: ::std::hash::BuildHasher>(
+fn is_bipartite_checker(
     colors: &mut [Option<bool>],
     node: usize,
-    adjacency_matrix: &HashMap<usize, Vec<usize>, S>,
+    adjacency_matrix: &BTreeMap<usize, Vec<usize>>,
 ) -> bool {
     let mut queue = VecDeque::new();
     queue.push_back(node);

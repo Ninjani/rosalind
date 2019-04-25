@@ -15,7 +15,7 @@ pub fn rosalind_ba10d() -> Result<(), Error> {
     let mut sections = contents.split("--------");
     let sequence = sections
         .next()
-        .ok_or(HMMError::FormatError("Missing sequence".into()))?
+        .ok_or_else(|| HMMError::InputFormatError("Missing sequence".into()))?
         .trim()
         .to_owned();
     let hmm = HMM::read_hmm(&mut sections)?;
@@ -29,7 +29,7 @@ impl HMM {
         let mut sequence_chars = sequence.chars();
         let first_char = sequence_chars
             .next()
-            .ok_or(HMMError::FormatError("Empty sequence".into()))?;
+            .ok_or_else(|| HMMError::InputFormatError("Empty sequence".into()))?;
         for k in 0..self.states.len() {
             f_sums[[k, 0]] = self.emission_matrix[[k, self.alphabet_index[&first_char]]] * 1.
                 / self.states.len() as f64;
