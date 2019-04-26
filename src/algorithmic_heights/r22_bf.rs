@@ -11,12 +11,12 @@ use failure::Error;
 pub fn rosalind_bf() -> Result<(), Error> {
     let contents = utils::input_from_file("data/algorithmic_heights/rosalind_bf.txt");
     let mut lines = contents.split('\n').map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
+    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
     let distances =
-        bellman_ford(num_nodes, &edges, 1).ok_or_else(|| format_err!("Negative cycle found"))?;
-    for node in 1..=num_nodes {
-        if distances[node - 1] < ::std::isize::MAX {
-            print!("{} ", distances[node - 1]);
+        bellman_ford(num_nodes, &edges, 0).ok_or_else(|| format_err!("Negative cycle found"))?;
+    for node in 0..num_nodes {
+        if distances[node] < ::std::isize::MAX {
+            print!("{} ", distances[node]);
         } else {
             print!("x ");
         }
@@ -33,10 +33,10 @@ pub fn bellman_ford(
 ) -> Option<Vec<isize>> {
     fn update(distances: &mut [isize], edge: &(usize, usize, isize)) -> bool {
         let (node_1, node_2, weight) = edge;
-        if distances[*node_1 - 1] < ::std::isize::MAX
-            && distances[*node_1 - 1] + weight < distances[*node_2 - 1]
+        if distances[*node_1] < ::std::isize::MAX
+            && distances[*node_1] + *weight < distances[*node_2]
         {
-            distances[*node_2 - 1] = distances[*node_1 - 1] + weight;
+            distances[*node_2] = distances[*node_1] + *weight;
             true
         } else {
             false
@@ -45,7 +45,7 @@ pub fn bellman_ford(
     let mut distances = (0..num_nodes)
         .map(|_| ::std::isize::MAX)
         .collect::<Vec<_>>();
-    distances[start_node - 1] = 0;
+    distances[start_node] = 0;
     let mut updated;
     for _ in 0..num_nodes - 1 {
         updated = edges.iter().any(|edge| update(&mut distances, edge));

@@ -6,7 +6,6 @@ use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
-use std::hash::Hash;
 use std::isize;
 
 /// Find the Longest Path in a DAG
@@ -34,15 +33,6 @@ pub fn rosalind_ba5d() -> Result<(), Error> {
             .join("->")
     );
     Ok(())
-}
-
-pub fn set_pop<T: Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
-    if set.is_empty() {
-        None
-    } else {
-        let x = set.iter().next().unwrap().clone();
-        set.take(&x)
-    }
 }
 
 pub fn read_edge_weighted_list(
@@ -82,7 +72,7 @@ pub fn get_topological_ordering<T, U, Ix: IndexType>(
         .collect();
     let mut node;
     while !candidates.is_empty() {
-        node = set_pop(&mut candidates).unwrap();
+        node = utils::set_pop(&mut candidates).unwrap();
         let edges: Vec<_> = graph
             .edges_directed(node, Outgoing)
             .map(|e| (e.id(), e.target()))

@@ -19,13 +19,15 @@ pub struct HMM {
     pub emission_matrix: Array2<f64>,
 }
 
-pub fn read_chars(line: &str) -> (Vec<char>, HashMap<char, usize>) {
+/// Read a list of space-separated characters and return them
+/// along with a HashMap mapping each character to its index
+pub fn get_chars_and_index(line: &str) -> (Vec<char>, HashMap<char, usize>) {
     let chars = utils::parse_chars(line);
     let char_index = get_char_index(&chars);
     (chars, char_index)
 }
 
-/// list of chars to hashmap of char to index
+/// list of chars to HashMap of char to index
 fn get_char_index(chars: &[char]) -> HashMap<char, usize> {
     chars.iter().enumerate().map(|(i, c)| (*c, i)).collect()
 }
@@ -35,6 +37,9 @@ fn get_char_index(chars: &[char]) -> HashMap<char, usize> {
 ///     A   B
 /// A   0.194   0.806
 /// B   0.273   0.727
+///
+/// row_indices maps row names to indices in returned matrix
+/// col_indices maps col names to indices in returned matrix
 pub fn read_probability_matrix(
     contents: &str,
     row_indices: &HashMap<char, usize>,
@@ -169,31 +174,26 @@ pub enum ProfileHMMError {
     ForbiddenTransitionError(State, State),
 }
 
-
 /// Row normalizes 3D matrix (across last axis)
+/// Replaces NaNs with zeros
 fn normalize_matrix(matrix: &Array3<f32>) -> Array3<f32> {
     let mut matrix = matrix / &matrix.sum_axis(Axis(2)).insert_axis(Axis(2));
     let nan_indices: Vec<_> = matrix
         .indexed_iter()
-        .filter_map(|(index, &item)| {
-            if f32::is_nan(item) {
-                Some(index)
-            } else {
-                None
-            }
-        })
+        .filter_map(
+            |(index, &item)| {
+                if f32::is_nan(item) {
+                    Some(index)
+                } else {
+                    None
+                }
+            },
+        )
         .collect();
     for index in nan_indices {
         matrix[index] = 0.;
     }
     matrix
-}
-
-fn format_line<T: ToString>(counts: impl Iterator<Item = T>) -> String {
-    counts
-        .map(|c| c.to_string())
-        .collect::<Vec<_>>()
-        .join("\t")
 }
 
 #[derive(Debug)]
@@ -205,11 +205,30 @@ pub struct ProfileHMM {
     msa: Vec<Vec<usize>>,
     seed_alignment: Vec<SeedColumn>,
     num_active: usize,
-    // state, 3x3 transition matrix corresponding to M(i), D(i), I(i) -> I(i), M(i+1), D(i+1)
-    // starts with S, M(0) -> I(0), M(1), D(1)
-    // ends with M(n), D(n), I(n) -> I(n), E
+    /// Transition matrix is 3D with shape (num_active + 1, 3, 3)
+    /// One 3x3 sub-matrix for each set of active states
+    /// 3x3 matrix is of the form:
+    ///     I(i) M(i+1) D(i+1)
+    /// M(i)
+    /// D(i)
+    /// I(i)
+    ///
+    /// First sub-matrix (matrix[0, .., ..])
+    ///     I(0) M(1) D(1)
+    ///     0     0    0
+    /// S
+    /// I(0)
+    ///
+    /// Last sub-matrix (matrix[num_active, .., ..])
+    ///     I(n) E
+    /// M(n)       0
+    /// D(n)       0
+    /// I(n)       0
     transition_matrix: Array3<f32>,
-    // 0 = match, 1 = delete, 2 = insert
+    /// Emission matrix is 3D with shape (3, num_active + 1, len_alphabet)
+    /// 0 = match emissions
+    /// 1 = delete emissions
+    /// 2 = insert emissions
     emission_matrix: Array3<f32>,
     pseudocount: f32,
 }
@@ -368,17 +387,17 @@ impl ProfileHMM {
         Ok(())
     }
 
-    fn format_transition_line(&self, first: State) -> String {
+    fn get_transition_line(&self, from_state: State) -> Vec<f32> {
         let num_states = 1 + 1 + self.num_active * 3 + 1;
         let mut probabilities = Vec::with_capacity(num_states);
         probabilities.push(0.);
-        match first {
+        match from_state {
             State::Start => {
                 probabilities.extend(self.transition_matrix.slice(s![0, 1, ..]).into_iter())
             }
             State::End => (),
             State::Match(i) | State::Delete(i) | State::Insert(i) => {
-                let index = first.to_emission_index().unwrap();
+                let index = from_state.to_emission_index().unwrap();
                 probabilities.extend((0..i).flat_map(|_| (0..3).map(|_| 0.)));
                 let s = if i == self.num_active { 2 } else { 3 };
                 probabilities.extend(self.transition_matrix.slice(s![i, index, ..s]).into_iter());
@@ -387,95 +406,79 @@ impl ProfileHMM {
         if probabilities.len() < num_states {
             probabilities.extend((0..num_states - probabilities.len()).map(|_| 0.));
         }
-        format_line(probabilities)
+        probabilities
     }
 
     pub fn print_transition_matrix(&self) {
-        for i in 0..=self.num_active {
-            if i == 0 {
-                print!("S\tI0\t")
-            } else {
-                print!("M{}\tD{}\tI{}\t", i, i, i);
-            }
+        print!("S\tI0\t");
+        for i in 1..=self.num_active {
+            print!("M{}\tD{}\tI{}\t", i, i, i);
         }
         println!("E");
-        for i in 0..=self.num_active {
-            if i == 0 {
-                println!("S\t{}", self.format_transition_line(State::Start));
-                println!(
-                    "I0\t{}",
-                    self.format_transition_line(State::Insert(0))
-                );
-            } else {
-                println!(
-                    "M{}\t{}",
-                    i,
-                    self.format_transition_line(State::Match(i))
-                );
-                println!(
-                    "D{}\t{}",
-                    i,
-                    self.format_transition_line(State::Delete(i))
-                );
-                println!(
-                    "I{}\t{}",
-                    i,
-                    self.format_transition_line(State::Insert(i))
-                );
-            }
-        }
-        println!("E\t{}", self.format_transition_line(State::End));
-    }
-
-    pub fn print_emission_matrix(&self) {
-        println!(
-            "\t{}",
-            format_line(self.alphabet.iter().take(self.alphabet.len() - 1))
-        );
         println!(
             "S\t{}",
-            format_line((0..self.alphabet.len() - 1).map(|_| 0))
+            utils::format_line(self.get_transition_line(State::Start).into_iter(), "\t")
         );
         println!(
             "I0\t{}",
-            format_line(
-                self.emission_matrix
-                    .slice(s![0, 0, ..self.alphabet.len() - 1])
-                    .iter()
-            )
+            utils::format_line(self.get_transition_line(State::Insert(0)).into_iter(), "\t")
         );
         for i in 1..=self.num_active {
-            println!(
-                "M{}\t{}",
-                i,
-                format_line(
-                    self.emission_matrix
-                        .slice(s![0, i, ..self.alphabet.len() - 1])
-                        .iter()
-                )
-            );
-            println!(
-                "D{}\t{}",
-                i,
-                format_line(
-                    self.emission_matrix
-                        .slice(s![1, i, ..self.alphabet.len() - 1])
-                        .iter()
-                )
-            );
-            println!(
-                "I{}\t{}",
-                i,
-                format_line(
-                    self.emission_matrix
-                        .slice(s![2, i, ..self.alphabet.len() - 1])
-                        .iter()
-                )
-            );
+            for (state_name, state) in "MDI"
+                .chars()
+                .zip(vec![State::Match(i), State::Delete(i), State::Insert(i)].into_iter())
+            {
+                println!(
+                    "{}{}\t{}",
+                    state_name,
+                    i,
+                    utils::format_line(self.get_transition_line(state).into_iter(), "\t")
+                );
+            }
         }
         println!(
             "E\t{}",
-            format_line((0..self.alphabet.len() - 1).map(|_| 0))
+            utils::format_line(self.get_transition_line(State::End).into_iter(), "\t")
+        );
+    }
+
+    pub fn print_emission_matrix(&self) {
+        let len_alphabet_nogap = self.alphabet.len() - 1;
+        println!(
+            "\t{}",
+            utils::format_line(self.alphabet.iter().take(len_alphabet_nogap), "\t")
+        );
+        println!(
+            "S\t{}",
+            utils::format_line((0..len_alphabet_nogap).map(|_| 0), "\t")
+        );
+        println!(
+            "I0\t{}",
+            utils::format_line(
+                self.emission_matrix
+                    .slice(s![0, 0, ..len_alphabet_nogap])
+                    .iter(),
+                "\t"
+            )
+        );
+        for i in 1..=self.num_active {
+            for (state_name, index) in "MDI".chars().zip(0..3) {
+                println!(
+                    "{}{}\t{}",
+                    state_name,
+                    i,
+                    utils::format_line(
+                        self.emission_matrix
+                            .slice(s![index, i, ..len_alphabet_nogap])
+                            .iter(),
+                        "\t"
+                    )
+                );
+            }
+        }
+        println!(
+            "E\t{}",
+            utils::format_line((0..len_alphabet_nogap).map(|_| 0), "\t")
         );
     }
 }

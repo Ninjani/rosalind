@@ -23,7 +23,7 @@ pub fn rosalind_ba3f() -> Result<(), Error> {
 pub fn get_eulerian_cycle(
     adjacency_list: BTreeMap<usize, Vec<usize>>,
     start_node: Option<usize>,
-    num_nodes: usize
+    num_nodes: usize,
 ) -> Option<Vec<usize>> {
     let mut adjacency_list = adjacency_list;
     let nodes: Vec<_> = (0..num_nodes).collect();
@@ -44,10 +44,10 @@ pub fn get_eulerian_cycle(
         if num_edges_per_node[current_node_index] > 0 {
             current_cycle.push(current_node_index);
             next_node_index = adjacency_list
-                    .entry(current_node_index)
-                    .or_insert_with(Vec::new)
-                    .pop()
-                    .unwrap();
+                .entry(current_node_index)
+                .or_insert_with(Vec::new)
+                .pop()
+                .unwrap();
             num_edges_per_node[current_node_index] -= 1;
             current_node_index = next_node_index;
         } else {

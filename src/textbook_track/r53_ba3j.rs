@@ -1,7 +1,7 @@
 use crate::algorithmic_heights::{convert_graph, DFS};
 use crate::textbook_track::r45_ba3b::reverse_kmerize;
 use crate::textbook_track::r50_ba3g::get_eulerian_path;
-use crate::textbook_track::{r50_ba3g::reverse_adjacency_list, r73_ba5d::set_pop};
+use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
 use crate::utils;
 use failure::Error;
 use hashbrown::{HashMap, HashSet};
@@ -9,24 +9,6 @@ use itertools::Itertools;
 use std::collections::btree_map::BTreeMap;
 
 type PairedRead = (String, String);
-
-fn read_paired_reads(contents: &str) -> (Vec<PairedRead>, usize, usize) {
-    let mut lines = contents.split('\n');
-    let (k, d) = lines
-        .next()
-        .unwrap()
-        .split_whitespace()
-        .map(|x| x.parse::<usize>().unwrap())
-        .collect_tuple()
-        .unwrap();
-    (
-        lines
-            .map(|l| l.split('|').map(|s| s.to_owned()).collect_tuple().unwrap())
-            .collect(),
-        k,
-        d,
-    )
-}
 
 pub fn rosalind_ba3j() -> Result<(), Error> {
     let contents = utils::input_from_file("data/textbook_track/rosalind_ba3j.txt");
@@ -55,6 +37,24 @@ pub fn rosalind_ba3j() -> Result<(), Error> {
         }
     }
     Ok(())
+}
+
+fn read_paired_reads(contents: &str) -> (Vec<PairedRead>, usize, usize) {
+    let mut lines = contents.split('\n');
+    let (k, d) = lines
+        .next()
+        .unwrap()
+        .split_whitespace()
+        .map(|x| x.parse::<usize>().unwrap())
+        .collect_tuple()
+        .unwrap();
+    (
+        lines
+            .map(|l| l.split('|').map(|s| s.to_owned()).collect_tuple().unwrap())
+            .collect(),
+        k,
+        d,
+    )
 }
 
 pub fn paired_de_bruijn_graph(nodes: &[PairedRead]) -> HashMap<PairedRead, Vec<PairedRead>> {
@@ -112,21 +112,6 @@ fn get_bypass_graph(
     new_adj_list
 }
 
-// A LL E ULERIAN C YCLES (Graph)
-//AllGraphs
-//the set consisting of a single graph Graph
-//while there is a non-simple graph G in AllGraphs
-//v
-//a node with indegree larger than 1 in G
-//for each incoming edge ( u, v ) into v
-//for each outgoing edge ( v, w ) from v
-//NewGraph
-//( u, v, w ) -bypass graph of G
-//if NewGraph is connected
-//add NewGraph to AllGraphs
-//remove G from AllGraphs
-//for each graph G in AllGraphs
-//output the (single) Eulerian cycle in G
 pub fn get_all_eulerian_paths(
     adjacency_list: BTreeMap<usize, Vec<usize>>,
     num_nodes: usize,
@@ -137,7 +122,7 @@ pub fn get_all_eulerian_paths(
         adjacency_list,
         None,
     ));
-    while let Some((adj_list_rev, adj_list, _)) = set_pop(&mut graphs) {
+    while let Some((adj_list_rev, adj_list, _)) = utils::set_pop(&mut graphs) {
         let mut node_v = None;
         for (node, edges) in &adj_list_rev {
             if edges.len() > 1 {
@@ -178,23 +163,22 @@ pub fn get_all_eulerian_paths(
     }
     graphs
         .into_iter()
-        .map(|(_, adj_list, node_v)| (get_eulerian_path(adj_list), node_v))
+        .map(|(_, adj_list, node_v)| {
+            (
+                get_eulerian_path(
+                    adj_list,
+                    if node_v.is_some() {
+                        num_nodes + 1
+                    } else {
+                        num_nodes
+                    },
+                ),
+                node_v,
+            )
+        })
         .collect()
 }
 
-// S TRING S PELLED B Y G APPED P ATTERNS (GappedPatterns, k, d)
-//FirstPatterns
-//the sequence of initial k-mers from GappedPatterns
-//SecondPatterns
-//the sequence of terminal k-mers from GappedPatterns
-//PrefixString
-//S TRING S PELLED B Y P ATTERNS ( FirstPatterns, k )
-//SuffixString
-//S TRING S PELLED B Y P ATTERNS ( SecondPatterns, k )
-//for i = k + d + 1 to |PrefixString|
-//if the i-th symbol in PrefixString 6 = the ( i k d ) -th symbol in SuffixString
-//return “there is no string spelled by the gapped patterns”
-//return PrefixString concatenated with the last k + d symbols of SuffixString
 fn get_string_spelled_by_gapped_patterns(
     gapped_patterns: &[&PairedRead],
     k: usize,

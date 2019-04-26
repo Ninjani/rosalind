@@ -8,7 +8,7 @@ use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
 use std::collections::btree_map::BTreeMap;
-
+use std::string::ToString;
 const CODON_FILE: &str = "data/codons.txt";
 pub const STOP_CODON_AA: &str = "Stop";
 pub const START_CODON: &str = "AUG";
@@ -21,29 +21,26 @@ pub fn input_from_file(filename: &str) -> String {
     contents.trim().to_owned()
 }
 
+/// Input iterator to "separator"-separated string of items
+pub fn format_line<T: ToString>(items: impl Iterator<Item = T>, separator: &str) -> String {
+    items.map(|c| c.to_string()).collect::<Vec<_>>().join(separator)
+}
+
 /// Print a space-separated array
-pub fn print_array<T: ::std::string::ToString>(input: &[T]) {
+pub fn print_array<T: ToString>(input: &[T]) {
     println!(
         "{}",
-        input
-            .iter()
-            .map(|n| n.to_string())
-            .collect::<Vec<String>>()
-            .join(" ")
+        input.iter().map(|c| c.to_string()).collect::<Vec<_>>().join(" ")
     );
 }
 
 /// Print a comma-separated set
-pub fn print_set<T: ::std::string::ToString + ::std::cmp::Eq + ::std::hash::Hash>(
+pub fn print_set<T: ToString + ::std::cmp::Eq + ::std::hash::Hash>(
     input: &HashSet<T>,
 ) {
     println!(
         "{{{}}}",
-        input
-            .iter()
-            .map(|n| n.to_string())
-            .collect::<Vec<String>>()
-            .join(", ")
+        input.iter().map(|c| c.to_string()).collect::<Vec<_>>().join(", ")
     );
 }
 
@@ -186,7 +183,7 @@ pub fn factorial(n: usize) -> BigUint {
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_edge_list(lines: &mut Iterator<Item = String>) -> (usize, usize, Vec<(usize, usize)>) {
+pub fn read_edge_list(lines: &mut Iterator<Item = String>, substract: bool) -> (usize, usize, Vec<(usize, usize)>) {
     let length_input = lines
         .next()
         .unwrap()
@@ -204,7 +201,12 @@ pub fn read_edge_list(lines: &mut Iterator<Item = String>) -> (usize, usize, Vec
             .map(str::parse)
             .collect::<Result<Vec<_>, _>>()
             .unwrap();
-        edges.push((parts[0], parts[1]));
+        if substract {
+            edges.push((parts[0] - 1, parts[1] - 1));
+        } else {
+            edges.push((parts[0], parts[1]));
+        }
+
     }
     (num_nodes, num_edges, edges)
 }
@@ -255,9 +257,10 @@ pub fn read_adjacency_list(
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_adjacency_matrix(
+pub fn read_edge_list_to_adjacency_list(
     contents: &str,
     directed: bool,
+    subtract: bool
 ) -> Result<(usize, BTreeMap<usize, Vec<usize>>), Error> {
     let mut lines = contents.split('\n');
     let num_nodes = lines.next().unwrap().parse::<usize>()?;
@@ -267,8 +270,12 @@ pub fn read_adjacency_matrix(
             .split(' ')
             .map(str::parse)
             .collect::<Result<Vec<_>, _>>()?;
-        let node_1 = parts[0];
-        let node_2 = parts[1];
+        let mut node_1 = parts[0];
+        let mut node_2 = parts[1];
+        if subtract {
+            node_1 -= 1;
+            node_2 -= 1;
+        }
         {
             let edge_list_1 = adjacency_matrix.entry(node_1).or_insert_with(Vec::new);
             edge_list_1.push(node_2);
@@ -290,6 +297,7 @@ pub fn read_adjacency_matrix(
 /// ```
 pub fn read_weighted_edge_list(
     lines: &mut Iterator<Item = String>,
+    subtract: bool
 ) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
     let length_input = lines
         .next()
@@ -302,8 +310,12 @@ pub fn read_weighted_edge_list(
     for _ in 0..num_edges {
         let line = lines.next().unwrap();
         let parts = line.split(' ').collect::<Vec<_>>();
-        let node_1 = parts[0].parse::<usize>()?;
-        let node_2 = parts[1].parse::<usize>()?;
+        let mut node_1 = parts[0].parse::<usize>()?;
+        let mut node_2 = parts[1].parse::<usize>()?;
+        if subtract {
+            node_1 -= 1;
+            node_2 -= 1;
+        }
         let weight = parts[2].parse::<isize>()?;
         edges.push((node_1, node_2, weight));
     }
@@ -447,6 +459,13 @@ pub fn read_set(line: &str) -> Result<HashSet<usize>, Error> {
             .collect::<Result<Vec<_>, _>>()?
             .into_iter(),
     ))
+}
+
+pub fn set_pop<T: ::std::hash::Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
+    match set.iter().next() {
+        Some(x) => set.take(&x.clone()),
+        None => None
+    }
 }
 
 /// Return overlapping kmers of a given length from a string

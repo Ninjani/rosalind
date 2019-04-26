@@ -37,16 +37,30 @@ use std::fmt::Debug;
 
 use hashbrown::HashMap;
 use std::collections::btree_map::BTreeMap;
-//use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
 
 pub fn convert_graph<T: Hash + Clone + Eq + Debug>(adjacency_list: &HashMap<T, Vec<T>>) -> (HashMap<usize, T>, BTreeMap<usize, Vec<usize>>) {
     let mut node_to_index = HashMap::new();
     let mut new_adj_list = BTreeMap::new();
-    let mut i = 0;
+    let mut index = 0;
+    let (mut index_1, mut index_2);
     for (node_1, edges) in adjacency_list {
-        let index_1 = *node_to_index.entry(node_1.clone()).or_insert({i += 1; i-1});
+        match node_to_index.get(node_1) {
+            Some(i) => index_1 = *i,
+            None => {
+                node_to_index.insert(node_1.clone(), index);
+                index_1 = index;
+                index += 1;
+            }
+        }
         for node_2 in edges {
-            let index_2 = *node_to_index.entry(node_2.clone()).or_insert({i += 1; i-1});
+            match node_to_index.get(node_2) {
+                Some(i) => index_2 = *i,
+                None => {
+                    node_to_index.insert(node_2.clone(), index);
+                    index_2 = index;
+                    index += 1;
+                }
+            }
             new_adj_list.entry(index_1).or_insert_with(Vec::new).push(index_2);
         }
     }
@@ -55,8 +69,7 @@ pub fn convert_graph<T: Hash + Clone + Eq + Debug>(adjacency_list: &HashMap<T, V
 
 
 pub struct DFS {
-    pub adjacency_matrix: BTreeMap<usize, Vec<usize>>,
-    // pub adjacency_matrix_reverse: HashMap<usize, Vec<usize>>,
+    pub adjacency_list: BTreeMap<usize, Vec<usize>>,
     pub num_nodes: usize,
     pub visited: Vec<bool>,
     pub previsit: Vec<usize>,
@@ -67,11 +80,9 @@ pub struct DFS {
 }
 
 impl DFS {
-    fn new(adjacency_matrix: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
-        // let adjacency_matrix_reverse = reverse_adjacency_list(&adjacency_matrix);
+    fn new(adjacency_list: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
         DFS {
-            adjacency_matrix,
-            // adjacency_matrix_reverse,
+            adjacency_list,
             num_nodes,
             visited: (0..num_nodes).map(|_| false).collect(),
             previsit: (0..num_nodes).map(|_| 0).collect(),
@@ -82,15 +93,15 @@ impl DFS {
         }
     }
 
-    pub fn run_dfs(adjacency_matrix: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
-        let mut dfs_struct = DFS::new(adjacency_matrix, num_nodes);
+    pub fn run_dfs(adjacency_list: BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
+        let mut dfs_struct = DFS::new(adjacency_list, num_nodes);
         dfs_struct.dfs();
         dfs_struct
     }
 
     fn dfs(&mut self) {
-        for node in 1..=self.num_nodes {
-            if !self.visited[node - 1] {
+        for node in 0..self.num_nodes {
+            if !self.visited[node] {
                 self.explore(node);
                 self.num_connected_components += 1;
             }
@@ -98,22 +109,22 @@ impl DFS {
     }
 
     fn previsit(&mut self, node: usize) {
-        self.previsit[node - 1] = self.clock;
-        self.connected_components[node - 1] = self.num_connected_components;
+        self.previsit[node] = self.clock;
+        self.connected_components[node] = self.num_connected_components;
         self.clock += 1;
     }
 
     fn postvisit(&mut self, node: usize) {
-        self.postvisit[node - 1] = self.clock;
+        self.postvisit[node] = self.clock;
         self.clock += 1;
     }
 
     fn explore(&mut self, start_node: usize) {
-        self.visited[start_node - 1] = true;
+        self.visited[start_node] = true;
         self.previsit(start_node);
-        if let Some(edge_list) = self.adjacency_matrix.get(&start_node) {
+        if let Some(edge_list) = self.adjacency_list.get(&start_node) {
             for next_node in edge_list.clone() {
-                if !self.visited[next_node - 1] {
+                if !self.visited[next_node] {
                     self.explore(next_node);
                 }
             }

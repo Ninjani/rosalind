@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_list, DFS};
 use crate::utils;
 use failure::Error;
 use hashbrown::HashMap;
@@ -9,12 +9,12 @@ pub fn rosalind_sdag() -> Result<(), Error> {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
+    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
     let raw_edges: Vec<_> = edges.iter().map(|(n1, n2, _)| (*n1, *n2)).collect();
     let edge_weights: HashMap<_, _> = edges.iter().map(|(n1, n2, w)| ((*n1, *n2), *w)).collect();
-    let adjacency_matrix = make_adjacency_matrix(&raw_edges, true);
+    let adjacency_matrix = make_adjacency_list(&raw_edges, true);
     let graph = DFS::run_dfs(adjacency_matrix, num_nodes);
-    let distances = graph.get_shortest_path_length(&edge_weights, 1);
+    let distances = graph.get_shortest_path_length(&edge_weights, 0);
     utils::print_array(
         &distances
             .into_iter()
@@ -35,19 +35,19 @@ impl DFS {
     ) -> Vec<Option<isize>> {
         fn update(distances: &mut [isize], edge: &(usize, usize, isize)) -> bool {
             let (node_1, node_2, weight) = edge;
-            if distances[*node_1 - 1] < ::std::isize::MAX
-                && distances[*node_1 - 1] + weight < distances[*node_2 - 1]
+            if distances[*node_1] < ::std::isize::MAX
+                && distances[*node_1] + *weight < distances[*node_2]
             {
-                distances[*node_2 - 1] = distances[*node_1 - 1] + weight;
+                distances[*node_2] = distances[*node_1] + *weight;
                 true
             } else {
                 false
             }
         }
         let mut distances: Vec<_> = (0..self.num_nodes).map(|_| ::std::isize::MAX).collect();
-        distances[source_node - 1] = 0;
+        distances[source_node] = 0;
         for node in DFS::get_topological_sort(&self) {
-            if let Some(edges) = self.adjacency_matrix.get(&node) {
+            if let Some(edges) = self.adjacency_list.get(&node) {
                 for target in edges {
                     update(
                         &mut distances,

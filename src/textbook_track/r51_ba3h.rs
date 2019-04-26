@@ -11,7 +11,7 @@ pub fn rosalind_ba3h() -> Result<(), Error> {
     let (index_to_node, indexed_adjacency_list) = convert_graph(&adjacency_list);
     println!(
         "{}",
-        get_eulerian_path(indexed_adjacency_list)
+        get_eulerian_path(indexed_adjacency_list, index_to_node.len())
             .unwrap()
             .into_iter()
             .enumerate()

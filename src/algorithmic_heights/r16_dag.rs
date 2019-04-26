@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_list, DFS};
 use crate::utils;
 use failure::Error;
 
@@ -15,8 +15,8 @@ pub fn rosalind_dag() -> Result<(), Error> {
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-        let adjacency_matrix = make_adjacency_matrix(&edges, true);
+        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+        let adjacency_matrix = make_adjacency_list(&edges, true);
         let dfs = DFS::run_dfs(adjacency_matrix, num_nodes);
         if dfs.is_acyclic() {
             print!("1 ")
@@ -29,12 +29,12 @@ pub fn rosalind_dag() -> Result<(), Error> {
 
 impl DFS {
     pub fn is_acyclic(&self) -> bool {
-        for node in 1..=self.num_nodes {
-            if let Some(edge_list) = self.adjacency_matrix.get(&node) {
-                for next_node in edge_list {
-                    if self.previsit[*next_node - 1] < self.previsit[node - 1]
-                        && self.previsit[node - 1] < self.postvisit[node - 1]
-                        && self.postvisit[node - 1] < self.postvisit[*next_node - 1]
+        for node in 0..self.num_nodes {
+            if let Some(edge_list) = self.adjacency_list.get(&node) {
+                for &next_node in edge_list {
+                    if self.previsit[next_node] < self.previsit[node]
+                        && self.previsit[node] < self.postvisit[node]
+                        && self.postvisit[node] < self.postvisit[next_node]
                     {
                         return false;
                     }

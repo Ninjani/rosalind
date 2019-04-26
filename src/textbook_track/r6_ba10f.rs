@@ -1,5 +1,5 @@
-use crate::textbook_track::{
-    hidden_markov_models::{ProfileHMMError, ProfileHMM, read_chars},
+use crate::textbook_track::hidden_markov_models::{
+    get_chars_and_index, ProfileHMM, ProfileHMMError,
 };
 use crate::utils;
 use failure::Error;
@@ -16,15 +16,13 @@ pub fn rosalind_ba10f() -> Result<(), Error> {
     let mut sections = contents.split("--------");
     let threshold_pseudocount = sections
         .next()
-        .ok_or_else(|| ProfileHMMError::InputFormatError(
-            "Missing threshold/pseudocount".into(),
-        ))?
+        .ok_or_else(|| ProfileHMMError::InputFormatError("Missing threshold/pseudocount".into()))?
         .trim()
         .split_whitespace()
         .map(|x| x.parse::<f32>())
         .collect::<Result<Vec<_>, _>>()?;
     let (threshold, pseudocount) = (threshold_pseudocount[0], threshold_pseudocount[1]);
-    let (alphabet, alphabet_index) = read_chars(
+    let (alphabet, alphabet_index) = get_chars_and_index(
         sections
             .next()
             .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alphabet".into()))?,

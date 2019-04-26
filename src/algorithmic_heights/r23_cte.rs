@@ -20,11 +20,11 @@ pub fn rosalind_cte() -> Result<(), Error> {
         let mut graph = vec![format!("{} {}", num_nodes, num_edges)];
         graph.extend((0..num_edges).map(|_| sections.next().unwrap().to_owned()));
         let mut lines = graph.into_iter();
-        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
+        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
         let adjacency_matrix = make_weighted_adjacency_matrix(&edges);
         let (start, end, weight) = edges[0];
         let min_distances = dijkstra_min_distances(num_nodes, &adjacency_matrix, end);
-        match min_distances[start - 1] {
+        match min_distances[start] {
             Some(cost) => print!("{} ", cost + weight as usize),
             None => print!("-1 "),
         }
@@ -44,17 +44,17 @@ fn dijkstra_min_distances(
         node: start_node,
     });
     while let Some(State { cost, node }) = heap.pop() {
-        if distances[node - 1].is_some() {
+        if distances[node].is_some() {
             continue;
         }
-        distances[node - 1] = Some(cost);
+        distances[node] = Some(cost);
         if let Some(edge_list) = adjacency_matrix.get(&node) {
             for (child, weight) in edge_list {
                 let next = State {
                     cost: cost + (*weight as usize),
                     node: *child,
                 };
-                if distances[next.node - 1].is_none() {
+                if distances[next.node].is_none() {
                     heap.push(next);
                 }
             }

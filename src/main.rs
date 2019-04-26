@@ -15,6 +15,6 @@ pub mod utils;
 
 fn main() -> Result<(), failure::Error> {
     color_backtrace::install();
-    textbook_track::r6_ba10f::rosalind_ba10f()?;
+    textbook_track::r54_ba3k::rosalind_ba3k()?;
     Ok(())
 }

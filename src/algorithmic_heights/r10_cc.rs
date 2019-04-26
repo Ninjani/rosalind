@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
 use crate::algorithmic_heights::DFS;
 use crate::utils;
 
@@ -13,8 +13,8 @@ pub fn rosalind_cc() {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-    let adjacency_matrix = make_adjacency_matrix(&edges, false);
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+    let adjacency_matrix = make_adjacency_list(&edges, false);
     println!(
         "{}",
         DFS::run_dfs(adjacency_matrix, num_nodes).num_connected_components

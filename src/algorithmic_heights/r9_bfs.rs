@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
 use crate::utils;
 use hashbrown::{HashMap, HashSet};
 use std::collections::VecDeque;
@@ -15,12 +15,12 @@ pub fn rosalind_bfs() {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-    let adjacency_matrix = make_adjacency_matrix(&edges, true);
-    for node in 1..=num_nodes {
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+    let adjacency_matrix = make_adjacency_list(&edges, true);
+    for node in 0..num_nodes {
         print!(
             "{} ",
-            bfs_length(&adjacency_matrix, 1, node)
+            bfs_length(&adjacency_matrix, 0, node)
                 .map(|x| x as isize)
                 .unwrap_or(-1)
         );
@@ -54,10 +54,10 @@ fn bfs_length(
             return Some(get_path_length(subtree_root, &path));
         }
         if let Some(edge_list) = adjacency_matrix.get(&subtree_root) {
-            for child in edge_list {
-                if !closed_set.contains(child) && !open_set.contains(child) {
-                    path.insert(*child, Some(subtree_root));
-                    open_set.push_back(*child);
+            for &child in edge_list {
+                if !closed_set.contains(&child) && !open_set.contains(&child) {
+                    path.insert(child, Some(subtree_root));
+                    open_set.push_back(child);
                 }
             }
         }

@@ -15,10 +15,10 @@ pub fn rosalind_dij() -> Result<(), Error> {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
+    let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
     let adjacency_matrix = make_weighted_adjacency_matrix(&edges);
-    for node in 1..=num_nodes {
-        match dijkstra(num_nodes, &adjacency_matrix, 1, node) {
+    for node in 0..num_nodes {
+        match dijkstra(num_nodes, &adjacency_matrix, 0, node) {
             Some(cost) => print!("{} ", cost),
             None => print!("-1 "),
         }
@@ -75,17 +75,17 @@ pub fn dijkstra<S: ::std::hash::BuildHasher>(
     let mut distances = repeat(::std::usize::MAX)
         .take(num_nodes)
         .collect::<Vec<_>>();
-    distances[start_node - 1] = 0;
+    distances[start_node] = 0;
     let mut heap = BinaryHeap::with_capacity(num_nodes);
     heap.push(State {
-        cost: distances[start_node - 1],
+        cost: distances[start_node],
         node: start_node,
     });
     while let Some(State { cost, node }) = heap.pop() {
         if node == end_node {
             return Some(cost);
         }
-        if cost > distances[node - 1] {
+        if cost > distances[node] {
             continue;
         }
         if let Some(edge_list) = adjacency_matrix.get(&node) {
@@ -94,8 +94,8 @@ pub fn dijkstra<S: ::std::hash::BuildHasher>(
                     cost: cost + (*weight as usize),
                     node: *child,
                 };
-                if next.cost < distances[next.node - 1] {
-                    distances[next.node - 1] = next.cost;
+                if next.cost < distances[next.node] {
+                    distances[next.node] = next.cost;
                     heap.push(next);
                 }
             }

@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_list, DFS};
 use crate::utils;
 use failure::Error;
 
@@ -11,9 +11,15 @@ pub fn rosalind_ts() -> Result<(), Error> {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-    let adjacency_matrix = make_adjacency_matrix(&edges, true);
-    utils::print_array(&DFS::run_dfs(adjacency_matrix, num_nodes).get_topological_sort());
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+    let adjacency_matrix = make_adjacency_list(&edges, true);
+    utils::print_array(
+        &DFS::run_dfs(adjacency_matrix, num_nodes)
+            .get_topological_sort()
+            .into_iter()
+            .map(|i| i + 1)
+            .collect::<Vec<_>>(),
+    );
     Ok(())
 }
 
@@ -21,6 +27,6 @@ impl DFS {
     pub fn get_topological_sort(&self) -> Vec<usize> {
         let mut postvisit = self.postvisit.iter().enumerate().collect::<Vec<_>>();
         postvisit.sort_by(|a, b| b.1.cmp(&a.1));
-        postvisit.into_iter().map(|(i, _)| i + 1).collect()
+        postvisit.into_iter().map(|(i, _)| i).collect()
     }
 }

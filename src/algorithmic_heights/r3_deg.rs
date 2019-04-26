@@ -27,9 +27,9 @@ pub fn rosalind_deg() {
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
+    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
     let degrees = get_degrees(&edges);
-    for node in 1..=num_nodes {
+    for node in 0..num_nodes {
         print!("{}", degrees.get(&node).unwrap_or(&0));
     }
 }

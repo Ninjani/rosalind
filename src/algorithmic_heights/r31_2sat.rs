@@ -1,8 +1,10 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
 use crate::algorithmic_heights::DFS;
 use crate::utils;
 use failure::Error;
 use hashbrown::{HashMap, HashSet};
+
+/// TODO: Fix 1-indexed to 0-indexed
 
 fn read_2sat_adjacency_list(
     lines: &mut Iterator<Item = String>,
@@ -64,7 +66,7 @@ pub fn rosalind_2sat() -> Result<(), Error> {
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
         let (num_nodes, _, edges) = read_2sat_adjacency_list(&mut lines);
-        let adjacency_matrix = make_adjacency_matrix(&edges, true);
+        let adjacency_matrix = make_adjacency_list(&edges, true);
         let node_order = DFS::get_sink_scc_node_order(&adjacency_matrix, num_nodes);
         let dfs_scc = DFS::run_dfs_given_node_order(adjacency_matrix, num_nodes, &node_order);
         let mut satisfiable = true;

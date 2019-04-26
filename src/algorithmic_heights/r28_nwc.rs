@@ -14,9 +14,9 @@ pub fn rosalind_nwc() -> Result<(), Error> {
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines)?;
+        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
         let mut has_negative_cycle = false;
-        for node in 1..=num_nodes {
+        for node in 0..num_nodes {
             if bellman_ford(num_nodes, &edges, node).is_none() {
                 has_negative_cycle = true;
                 break;

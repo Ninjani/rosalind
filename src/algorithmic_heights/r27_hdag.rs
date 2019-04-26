@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::{r5_ddeg::make_adjacency_matrix, DFS};
+use crate::algorithmic_heights::{r5_ddeg::make_adjacency_list, DFS};
 use crate::utils;
 use failure::Error;
 
@@ -15,8 +15,8 @@ pub fn rosalind_hdag() -> Result<(), Error> {
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-        let adjacency_matrix = make_adjacency_matrix(&edges, true);
+        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+        let adjacency_matrix = make_adjacency_list(&edges, true);
         let hamiltonian_path = DFS::run_dfs(adjacency_matrix, num_nodes).get_hamiltonian_path();
         match hamiltonian_path {
             None => println!("-1"),
@@ -24,7 +24,7 @@ pub fn rosalind_hdag() -> Result<(), Error> {
                 "1 {}",
                 topo_sort
                     .into_iter()
-                    .map(|n| n.to_string())
+                    .map(|n| (n+1).to_string())
                     .collect::<Vec<String>>()
                     .join(" ")
             ),
@@ -40,7 +40,7 @@ impl DFS {
         } else {
             let topo_sort = self.get_topological_sort();
             for i in 0..topo_sort.len() - 1 {
-                match self.adjacency_matrix.get(&topo_sort[i]) {
+                match self.adjacency_list.get(&topo_sort[i]) {
                     Some(edge_list) => {
                         if !edge_list.contains(&topo_sort[i + 1]) {
                             return None;

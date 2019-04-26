@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
 use crate::utils;
 use failure::Error;
 use hashbrown::{HashSet};
@@ -17,8 +17,8 @@ pub fn rosalind_sq() -> Result<(), Error> {
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-        let adjacency_matrix = make_adjacency_matrix(&edges, false);
+        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+        let adjacency_matrix = make_adjacency_list(&edges, false);
         if has_square(num_nodes, &adjacency_matrix) {
             print!("1 ")
         } else {
@@ -29,8 +29,8 @@ pub fn rosalind_sq() -> Result<(), Error> {
 }
 
 fn has_square(num_nodes: usize, adjacency_matrix: &BTreeMap<usize, Vec<usize>>) -> bool {
-    for i in 1..num_nodes {
-        for j in (i + 1)..=num_nodes {
+    for i in 0..num_nodes-1 {
+        for j in (i+1)..num_nodes {
             let adj_i: HashSet<_> = adjacency_matrix
                 .get(&i)
                 .unwrap_or(&vec![])

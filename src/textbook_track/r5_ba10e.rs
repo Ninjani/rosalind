@@ -1,4 +1,6 @@
-use crate::textbook_track::hidden_markov_models::{ProfileHMM, ProfileHMMError, read_chars};
+use crate::textbook_track::hidden_markov_models::{
+    get_chars_and_index, ProfileHMM, ProfileHMMError,
+};
 use crate::utils;
 use failure::Error;
 
@@ -16,7 +18,7 @@ pub fn rosalind_ba10e() -> Result<(), Error> {
         .ok_or_else(|| ProfileHMMError::InputFormatError("Missing threshold".into()))?
         .trim()
         .parse::<f32>()?;
-    let (alphabet, alphabet_index) = read_chars(
+    let (alphabet, alphabet_index) = get_chars_and_index(
         sections
             .next()
             .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alphabet".into()))?,

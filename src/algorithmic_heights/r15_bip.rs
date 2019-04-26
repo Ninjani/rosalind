@@ -1,4 +1,4 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_matrix;
+use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
 use crate::utils;
 use failure::Error;
 use std::collections::VecDeque;
@@ -18,8 +18,8 @@ pub fn rosalind_bip() -> Result<(), Error> {
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines);
-        let adjacency_matrix = make_adjacency_matrix(&edges, false);
+        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
+        let adjacency_matrix = make_adjacency_list(&edges, false);
         if is_bipartite(num_nodes, &adjacency_matrix) {
             print!("1 ");
         } else {
@@ -31,8 +31,8 @@ pub fn rosalind_bip() -> Result<(), Error> {
 
 fn is_bipartite(num_nodes: usize, adjacency_matrix: &BTreeMap<usize, Vec<usize>>) -> bool {
     let mut colors = repeat(None).take(num_nodes).collect::<Vec<_>>();
-    for node in 1..=num_nodes {
-        if colors[node - 1].is_none() && !is_bipartite_checker(&mut colors, node, &adjacency_matrix)
+    for node in 0..num_nodes {
+        if colors[node].is_none() && !is_bipartite_checker(&mut colors, node, &adjacency_matrix)
         {
             return false;
         }
@@ -47,18 +47,18 @@ fn is_bipartite_checker(
 ) -> bool {
     let mut queue = VecDeque::new();
     queue.push_back(node);
-    colors[node - 1] = Some(true);
+    colors[node] = Some(true);
     while !queue.is_empty() {
         let node = queue.pop_front().unwrap();
         if let Some(edge_list) = adjacency_matrix.get(&node) {
-            for child in edge_list {
-                if *child == node {
+            for &child in edge_list {
+                if child == node {
                     return false;
                 }
-                if colors[*child - 1].is_none() {
-                    colors[*child - 1] = Some(!colors[node - 1].unwrap());
-                    queue.push_back(*child);
-                } else if colors[node - 1] == colors[*child - 1] {
+                if colors[child].is_none() {
+                    colors[child] = Some(!colors[node].unwrap());
+                    queue.push_back(child);
+                } else if colors[node] == colors[child] {
                     return false;
                 }
             }
