@@ -1,18 +1,23 @@
-use crate::textbook_track::r23_ba1b::get_sorted_kmer_counts;
-use crate::utils;
-use crate::utils::Parseable;
+use std::collections::HashSet;
+
 use failure::Error;
-use hashbrown::HashSet;
+
+use crate::textbook_track::r23_ba1b::get_sorted_kmer_counts;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 pub fn rosalind_ba1e() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba1e.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1e.txt")?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let numbers = usize::parse_line(lines[1])?;
     let (k, l, t) = (numbers[0], numbers[1], numbers[2]);
-    utils::print_array(
-        &find_l_t_clumps(lines[0], k, l, t)
-            .into_iter()
-            .collect::<Vec<_>>(),
+    println!(
+        "{}",
+        utility::io::format_array(
+            &find_l_t_clumps(lines[0], k, l, t)
+                .into_iter()
+                .collect::<Vec<_>>(),
+        )
     );
     Ok(())
 }

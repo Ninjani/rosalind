@@ -1,12 +1,15 @@
-use crate::utils;
+use failure::Error;
 
-pub fn rosalind_ba3c() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba3c.txt");
+use crate::utility;
+
+pub fn rosalind_ba3c() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3c.txt")?;
     let kmers: Vec<_> = contents.split('\n').collect();
     let overlap_graph = get_overlap_graph(&kmers, kmers[0].len() - 1);
     for (kmer_1, kmer_2) in overlap_graph {
         println!("{} -> {}", kmer_1, kmer_2);
     }
+    Ok(())
 }
 
 pub fn get_overlap_graph(sequences: &[&str], overlap_length: usize) -> Vec<(String, String)> {

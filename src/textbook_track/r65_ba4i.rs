@@ -1,9 +1,10 @@
+use failure::Error;
+
 use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
 use crate::textbook_track::r63_ba4g::{get_top_with_ties, leaderboard_cyclo_peptide_sequencing};
 use crate::textbook_track::r64_ba4h::get_spectral_convolution;
-use crate::utils;
-use crate::utils::Parseable;
-use failure::Error;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Implement ConvolutionCyclopeptideSequencing
 ///
@@ -13,7 +14,7 @@ use failure::Error;
 /// (and ties) of the convolution of Spectrum that fall between 57 and 200, and where the size
 /// of Leaderboard is restricted to the top N (and ties).
 pub fn rosalind_ba4i() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba4i.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4i.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (m, n, spectrum) = (
         lines[0].parse::<usize>()?,

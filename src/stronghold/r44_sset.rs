@@ -1,16 +1,17 @@
-use crate::utils;
 use failure::Error;
+
+use crate::utility;
 
 /// Counting Subsets
 ///
 /// Given: A positive integer n (n≤1000).
 ///
 /// Return: The total number of subsets of {1,2,…,n} modulo 1,000,000.
-pub fn rosalind_sset() -> Result<(), Error> {
-    let n = utils::input_from_file("data/stronghold/rosalind_sset.txt").parse::<usize>()?;
+pub fn rosalind_sset(filename: &str) -> Result<usize, Error> {
+    let n = utility::io::input_from_file(filename)?.parse::<usize>()?;
     let num_subsets = pow_mod(2, n, 10usize.pow(6));
     println!("{}", num_subsets);
-    Ok(())
+    Ok(num_subsets)
 }
 
 /// Modular Exponentiation
@@ -40,4 +41,19 @@ fn pow_mod(base: usize, exponent: usize, modulus: usize) -> usize {
         base = (base * base) % modulus;
     }
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sset() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_sset")?;
+        assert_eq!(
+            rosalind_sset(&input_file)?,
+            utility::io::input_from_file(&output_file)?.parse::<usize>()?
+        );
+        Ok(())
+    }
 }

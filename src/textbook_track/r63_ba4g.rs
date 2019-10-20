@@ -1,13 +1,15 @@
+use std::collections::HashSet;
+use std::iter::FromIterator;
+
+use failure::Error;
+use itertools::Itertools;
+
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r61_ba4e::{expand, spectrum_list_to_counts};
 use crate::textbook_track::r62_ba4f::score_cyclic_peptide;
 use crate::textbook_track::r66_ba4j::get_linear_spectrum;
-use crate::utils;
-use crate::utils::Parseable;
-use failure::Error;
-use hashbrown::HashSet;
-use itertools::Itertools;
-use std::iter::FromIterator;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Implement LeaderboardCyclopeptideSequencing
 ///
@@ -15,10 +17,10 @@ use std::iter::FromIterator;
 ///
 /// Return: LeaderPeptide after running LeaderboardCyclopeptideSequencing(Spectrum, N).
 pub fn rosalind_ba4g() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba4g.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4g.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (n, spectrum) = (lines[0].parse::<usize>()?, usize::parse_line(lines[1])?);
-    let aa_to_mass = &get_aa_to_mass_usize();
+    let aa_to_mass = get_aa_to_mass_usize()?;
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
     let peptide =
         leaderboard_cyclo_peptide_sequencing(&spectrum, n, &masses.into_iter().collect::<Vec<_>>())
@@ -45,7 +47,7 @@ pub fn leaderboard_cyclo_peptide_sequencing(
             let mass = peptide.iter().sum::<usize>();
             if mass == parent_mass
                 && score_cyclic_peptide(peptide, spectrum)
-                    > score_cyclic_peptide(&leaderpeptide, spectrum)
+                > score_cyclic_peptide(&leaderpeptide, spectrum)
             {
                 leaderpeptide = peptide.clone();
             } else if mass > parent_mass {

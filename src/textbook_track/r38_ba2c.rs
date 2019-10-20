@@ -1,11 +1,13 @@
-use crate::utils;
-use crate::utils::Parseable;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
 use ndarray::Array2;
 
+use crate::utility;
+use crate::utility::io::Parseable;
+
 pub fn rosalind_ba2c() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba2c.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2c.txt")?;
     let mut lines = contents.split('\n');
     let (text, k) = (
         lines.next().unwrap(),

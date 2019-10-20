@@ -1,8 +1,9 @@
+use failure::Error;
+
 use crate::textbook_track::hidden_markov_models::{
     get_chars_and_index, ProfileHMM, ProfileHMMError,
 };
-use crate::utils;
-use failure::Error;
+use crate::utility;
 
 /// W.I.P
 /// Construct a Profile HMM
@@ -12,7 +13,7 @@ use failure::Error;
 ///
 /// Return: The transition and emission probabilities of the profile HMM HMM(Alignment, θ).
 pub fn rosalind_ba10f() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10f.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba10f.txt")?;
     let mut sections = contents.split("--------");
     let threshold_pseudocount = sections
         .next()
@@ -26,7 +27,7 @@ pub fn rosalind_ba10f() -> Result<(), Error> {
         sections
             .next()
             .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alphabet".into()))?,
-    );
+    )?;
     let msa_section = sections
         .next()
         .ok_or_else(|| ProfileHMMError::InputFormatError("Missing alignment".into()))?;

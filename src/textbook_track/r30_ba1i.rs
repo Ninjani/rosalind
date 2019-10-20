@@ -1,17 +1,21 @@
-use crate::stronghold::r6_hamm::hamming;
-use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
-use crate::utils;
-use crate::utils::Parseable;
+use std::collections::{HashMap, HashSet};
+
 use failure::Error;
-use hashbrown::{HashMap, HashSet};
+
+use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 pub fn rosalind_ba1i() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba1i.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1i.txt")?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let numbers = usize::parse_line(lines[1])?;
     let (k, mismatch) = (numbers[0], numbers[1]);
     let counts_tuple = get_sorted_kmer_counts_approx(lines[0], k, mismatch);
-    utils::print_array(&get_most_frequent_kmers(&counts_tuple));
+    println!(
+        "{}",
+        utility::io::format_array(&get_most_frequent_kmers(&counts_tuple))
+    );
     Ok(())
 }
 
@@ -26,7 +30,7 @@ pub fn get_mismatch_sequences(sequence: &str, mismatch: usize) -> Vec<String> {
         let suffix: String = sequence[1..].iter().collect();
         let suffix_mismatch_sequences = get_mismatch_sequences(&suffix, mismatch);
         for neighbor in suffix_mismatch_sequences {
-            if hamming(&suffix, &neighbor) < mismatch {
+            if utility::string::hamming(&suffix, &neighbor) < mismatch {
                 for c in "ACGT".chars() {
                     mismatch_sequences.insert(format!("{}{}", c, neighbor));
                 }

@@ -1,15 +1,18 @@
-use crate::utils;
+use failure::Error;
 use ndarray::Array2;
+
+use crate::utility;
 
 /// Find a Longest Common Subsequence of Two Strings
 ///
 /// Given: Two strings.
 ///
 /// Return: A longest common subsequence of these strings.
-pub fn rosalind_ba5c() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba5c.txt");
+pub fn rosalind_ba5c() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5c.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
     println!("{}", get_longest_common_subsequence(lines[0], lines[1]));
+    Ok(())
 }
 
 fn lcs_backtrack(string_1: &str, string_2: &str) -> Array2<usize> {

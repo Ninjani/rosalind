@@ -1,35 +1,44 @@
-use crate::utils;
-use hashbrown::HashMap;
+use failure::Error;
 
-pub fn get_degrees<T: Eq + Clone + ::std::hash::Hash>(edges: &[(T, T)]) -> HashMap<T, usize> {
-    let mut degrees = HashMap::new();
-    for (node_1, node_2) in edges {
-        {
-            let degree_1 = degrees.entry(node_1.clone()).or_insert(0);
-            *degree_1 += 1;
-        }
-        {
-            let degree_2 = degrees.entry(node_2.clone()).or_insert(0);
-            *degree_2 += 1;
-        }
-    }
-    degrees
-}
+use crate::utility;
 
 /// Degree Array
 ///
 /// Given: A simple graph with n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the degree of vertex i.
-pub fn rosalind_deg() {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_deg.txt");
-    let mut lines = contents
+pub fn rosalind_deg(filename: &str) -> Result<Vec<usize>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
-    let degrees = get_degrees(&edges);
-    for node in 0..num_nodes {
-        print!("{}", degrees.get(&node).unwrap_or(&0));
+    let graph = utility::graph::IntegerGraph::from_edge_list(&mut lines, false, false)?;
+    let mut degrees = Vec::with_capacity(graph.num_nodes);
+    for node in 0..graph.num_nodes {
+        degrees.push(
+            graph
+                .adjacency_list
+                .get(&graph.nodes[node])
+                .unwrap_or(&Vec::new())
+                .len(),
+        );
+    }
+    println!("{}", utility::io::format_array(&degrees));
+    Ok(degrees)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn deg() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_deg")?;
+        let output = usize::parse_line(&utility::io::input_from_file(&output_file)?)?;
+        assert_eq!(rosalind_deg(&input_file)?, output);
+        Ok(())
     }
 }

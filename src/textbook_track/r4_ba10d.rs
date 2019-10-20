@@ -1,7 +1,8 @@
-use crate::textbook_track::hidden_markov_models::{HMMError, HMM};
-use crate::utils;
 use failure::Error;
 use ndarray::Array2;
+
+use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
+use crate::utility;
 
 /// Compute the Probability of a String Emitted by an HMM
 ///
@@ -10,8 +11,8 @@ use ndarray::Array2;
 /// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The probability Pr(x) that the HMM emits x.
-pub fn rosalind_ba10d() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10d.txt");
+pub fn rosalind_ba10d(filename: &str) -> Result<f64, Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections
         .next()
@@ -19,8 +20,9 @@ pub fn rosalind_ba10d() -> Result<(), Error> {
         .trim()
         .to_owned();
     let hmm = HMM::read_hmm(&mut sections)?;
-    println!("{:e}", hmm.get_probability_of_sequence(&sequence)?);
-    Ok(())
+    let probability = hmm.get_probability_of_sequence(&sequence)?;
+    println!("{:e}", probability);
+    Ok(probability)
 }
 
 impl HMM {
@@ -45,5 +47,24 @@ impl HMM {
         Ok((0..self.states.len())
             .map(|k| f_sums[[k, sequence.len() - 1]])
             .sum())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_approx_eq::assert_approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn ba10d() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_ba10d")?;
+        let output: f64 = utility::io::input_from_file(&output_file)?.parse()?;
+        assert_approx_eq!(
+            rosalind_ba10d(&input_file)?,
+            output,
+            utility::testing::ROSALIND_FLOAT_ERROR_F64
+        );
+        Ok(())
     }
 }

@@ -1,16 +1,18 @@
-use crate::textbook_track::r96_ba7b::{get_limb_length, read_matrix};
-use crate::utils;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
 use itertools::Itertools;
 use ndarray::Array2;
 use petgraph::graph::NodeIndex;
 use petgraph::stable_graph::StableGraph;
 
-// W.I.P
+use crate::textbook_track::r96_ba7b::{get_limb_length, read_matrix};
+use crate::utility;
+
+/// W.I.P
 
 pub fn rosalind_ba7c() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba7c.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba7c.txt")?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;
     let mut distance_matrix = read_matrix(&lines.collect::<Vec<_>>())?;

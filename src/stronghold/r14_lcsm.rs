@@ -1,8 +1,24 @@
-use crate::utils;
 use bio::data_structures::suffix_array as SA;
-use std::iter;
+use failure::Error;
+
+use crate::utility;
 
 const SENTINEL: &str = "$";
+
+/// Finding a Shared Motif
+///
+/// Given: A collection of k (k≤100) DNA strings of length at most 1 kbp each in FASTA format.
+///
+/// Return: A longest common substring of the collection.
+/// (If multiple solutions exist, you may return any single solution.)
+pub fn rosalind_lcsm(filename: &str) -> Result<String, Error> {
+    let sequences = utility::io::read_fasta_file(filename)?
+        .values()
+        .map(|s| s.to_owned())
+        .collect::<Vec<String>>();
+    let output = LongestCommonMotif::get_lcm(sequences);
+    Ok(output)
+}
 
 /// Computing Longest Common Substrings Using Suffix Arrays (Maxim A. Babenko, Tatiana A. Starikovskaya, 2008)
 pub struct LongestCommonMotif {
@@ -23,7 +39,7 @@ impl LongestCommonMotif {
         let types = sequences
             .iter()
             .enumerate()
-            .flat_map(|(i, s)| iter::repeat(i).take(s.len() + 1))
+            .flat_map(|(i, s)| (0..=s.len()).map(move |_| i))
             .collect::<Vec<usize>>();
         let suffix_array = SA::suffix_array(combined_sequence.as_bytes());
         let lcp_array = SA::lcp(combined_sequence.as_bytes(), &suffix_array).decompress();
@@ -34,16 +50,15 @@ impl LongestCommonMotif {
             types,
             suffix_array,
             lcp_array,
-            counts: iter::repeat(0).take(n_sequences).collect(),
+            counts: (0..n_sequences).map(|_| 0).collect(),
             n_pos: 0,
         }
     }
 
     fn get_type(&self, index: usize) -> Option<usize> {
-        if index < self.suffix_array.len() {
-            Some(self.types[self.suffix_array[index]])
-        } else {
-            None
+        match self.suffix_array.get(index) {
+            Some(index) => self.types.get(*index).cloned(),
+            None => None,
         }
     }
 
@@ -119,15 +134,25 @@ impl LongestCommonMotif {
     }
 }
 
-/// Finding a Shared Motif
-///
-/// Given: A collection of k (k≤100) DNA strings of length at most 1 kbp each in FASTA format.
-///
-/// Return: A longest common substring of the collection. (If multiple solutions exist, you may return any single solution.)
-pub fn rosalind_lcsm() {
-    let sequences = utils::read_fasta_file("data/stronghold/rosalind_lcsm.txt")
-        .values()
-        .map(|s| s.to_owned())
-        .collect::<Vec<String>>();
-    println!("{}", LongestCommonMotif::get_lcm(sequences));
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn lcsm() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_lcsm")?;
+        let output = utility::io::input_from_file(&output_file)?
+            .trim()
+            .to_owned();
+        let result = rosalind_lcsm(&input_file)?;
+        let sequences = utility::io::read_fasta_file(&input_file)?
+            .values()
+            .map(|s| s.to_owned())
+            .collect::<Vec<String>>();
+        assert_eq!(output.len(), result.len());
+        assert!(sequences
+            .into_iter()
+            .all(|sequence| sequence.contains(&result)));
+        Ok(())
+    }
 }

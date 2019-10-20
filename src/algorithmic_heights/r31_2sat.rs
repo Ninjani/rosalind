@@ -1,35 +1,85 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
-use crate::algorithmic_heights::DFS;
-use crate::utils;
+use std::collections::{btree_map::BTreeMap, HashMap, HashSet};
+
 use failure::Error;
-use hashbrown::{HashMap, HashSet};
 
-/// TODO: Fix 1-indexed to 0-indexed
+use crate::utility;
 
-fn read_2sat_adjacency_list(
-    lines: &mut Iterator<Item = String>,
-) -> (usize, usize, Vec<(usize, usize)>) {
-    let length_input = lines
-        .next()
-        .unwrap()
-        .split(' ')
-        .map(str::parse)
-        .collect::<Result<Vec<usize>, _>>()
-        .unwrap();
-    let (num_variables, num_clauses) = (length_input[0], length_input[1]);
-    let mut edges = Vec::with_capacity(num_clauses * 2);
-    let mut line;
-    for _ in 0..num_clauses {
-        line = lines.next().unwrap();
-        let parts = line
+/// 2-Satisfiability
+///
+/// Given: A positive integer k≤20 and k 2SAT formulas represented as follows.
+/// The first line gives the number of variables n≤103 and the number of clauses m≤104,
+/// each of the following m lines gives a clause of length 2 by specifying two different
+/// literals: e.g., a clause (x3∨x⎯⎯⎯5) is given by 3 -5.
+///
+/// Return: For each formula, output 0 if it cannot be satisfied
+/// or 1 followed by a satisfying assignment otherwise.
+pub fn rosalind_2sat(filename: &str) -> Result<Vec<Option<Vec<isize>>>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input
+        .split('\n')
+        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.to_owned());
+    let num_sections = lines.next().unwrap().parse::<usize>()?;
+    let mut output = Vec::with_capacity(num_sections);
+    for _ in 0..num_sections {
+        match get_assignment(&mut lines)? {
+            Some(true_variables) => {
+                println!(
+                    "1 {}",
+                    true_variables
+                        .iter()
+                        .map(|v| v.to_string())
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                );
+                output.push(Some(true_variables));
+            }
+            None => {
+                println!("0");
+                output.push(None);
+            }
+        }
+    }
+    Ok(output)
+}
+
+impl utility::graph::IntegerGraph {
+    fn from_2sat_adjacency_list(
+        lines: &mut dyn Iterator<Item=String>,
+        run_dfs: bool,
+    ) -> Result<Self, Error> {
+        let length_input = lines
+            .next()
+            .unwrap()
             .split(' ')
             .map(str::parse)
-            .collect::<Result<Vec<isize>, _>>()
-            .unwrap();
-        edges.push((get_node(-parts[0]), get_node(parts[1])));
-        edges.push((get_node(-parts[1]), get_node(parts[0])));
+            .collect::<Result<Vec<usize>, _>>()?;
+        let (num_variables, num_clauses) = (length_input[0], length_input[1]);
+        let mut adjacency_list = BTreeMap::new();
+        let mut line;
+        for _ in 0..num_clauses {
+            line = lines.next().unwrap();
+            let parts = line
+                .split(' ')
+                .map(str::parse)
+                .collect::<Result<Vec<isize>, _>>()?;
+            {
+                let edge_list_1 = adjacency_list
+                    .entry(get_node(-parts[0]))
+                    .or_insert_with(Vec::new);
+                edge_list_1.push(get_node(parts[1]));
+                let edge_list_1 = adjacency_list
+                    .entry(get_node(-parts[1]))
+                    .or_insert_with(Vec::new);
+                edge_list_1.push(get_node(parts[0]));
+            }
+        }
+        Ok(Self::new(
+            adjacency_list,
+            (1..=num_variables * 2).collect(),
+            run_dfs,
+        ))
     }
-    (num_variables * 2, num_clauses * 2, edges)
 }
 
 fn get_node(variable: isize) -> usize {
@@ -57,60 +107,86 @@ fn get_negated_node(node: usize) -> usize {
     }
 }
 
-pub fn rosalind_2sat() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_2sat.txt");
-    let mut lines = contents
-        .split('\n')
-        .filter(|s| !s.trim().is_empty())
-        .map(|s| s.to_owned());
-    let num_sections = lines.next().unwrap().parse::<usize>()?;
-    for _ in 0..num_sections {
-        let (num_nodes, _, edges) = read_2sat_adjacency_list(&mut lines);
-        let adjacency_matrix = make_adjacency_list(&edges, true);
-        let node_order = DFS::get_sink_scc_node_order(&adjacency_matrix, num_nodes);
-        let dfs_scc = DFS::run_dfs_given_node_order(adjacency_matrix, num_nodes, &node_order);
-        let mut satisfiable = true;
-        for i in (0..num_nodes - 1).step_by(2) {
-            if dfs_scc.connected_components[i] == dfs_scc.connected_components[i + 1] {
-                satisfiable = false;
-                break;
-            }
+fn get_assignment(lines: &mut dyn Iterator<Item=String>) -> Result<Option<Vec<isize>>, Error> {
+    let mut graph = utility::graph::IntegerGraph::from_2sat_adjacency_list(lines, false)?;
+    let graph_reverse = graph.get_reverse_graph(true);
+    let mut node_order = graph_reverse
+        .postvisit
+        .into_iter()
+        .enumerate()
+        .collect::<Vec<_>>();
+    node_order.sort_by(|a, b| b.1.cmp(&a.1));
+    let node_order: Vec<usize> = node_order.iter().map(|(i, _)| *i).collect();
+    graph.run_dfs_given_node_order(&node_order);
+    let mut satisfiable = true;
+    for node in (0..graph.num_nodes - 1).step_by(2) {
+        if graph.connected_components[node] == graph.connected_components[node + 1] {
+            satisfiable = false;
+            break;
         }
-        if satisfiable {
-            let mut component_to_nodes = HashMap::new();
-            for (i, component) in dfs_scc.connected_components.iter().enumerate() {
-                component_to_nodes
-                    .entry(component)
-                    .or_insert_with(Vec::new)
-                    .push(i + 1);
-            }
-            let mut seen = HashSet::with_capacity(num_nodes);
-            let mut assignment = (0..num_nodes).map(|_| false).collect::<Vec<_>>();
-            let mut n_node;
-            for node in node_order {
-                if !seen.contains(&node) {
-                    for c_node in &component_to_nodes[&dfs_scc.connected_components[node - 1]] {
-                        if !seen.contains(c_node) {
-                            n_node = get_negated_node(*c_node);
-                            seen.insert(*c_node);
-                            seen.insert(n_node);
-                            assignment[*c_node - 1] = true;
-                            assignment[n_node - 1] = false;
-                        }
+    }
+    if satisfiable {
+        let mut component_to_nodes = HashMap::new();
+        for (i, component) in graph.connected_components.iter().enumerate() {
+            component_to_nodes
+                .entry(component)
+                .or_insert_with(Vec::new)
+                .push(graph.nodes[i]);
+        }
+        let mut seen = HashSet::with_capacity(graph.num_nodes);
+        let mut assignment = (0..graph.num_nodes).map(|_| false).collect::<Vec<_>>();
+        let mut n_node;
+        for node_index in node_order {
+            if !seen.contains(&graph.nodes[node_index]) {
+                for c_node in &component_to_nodes[&graph.connected_components[node_index]] {
+                    if !seen.contains(c_node) {
+                        n_node = get_negated_node(*c_node);
+                        seen.insert(*c_node);
+                        seen.insert(n_node);
+                        assignment[graph.node_to_index[c_node]] = true;
+                        assignment[graph.node_to_index[&n_node]] = false;
                     }
                 }
             }
-            let true_variables = assignment
+        }
+        Ok(Some(
+            assignment
                 .into_iter()
                 .enumerate()
                 .filter(|(_, s)| *s)
-                .map(|(i, _)| get_variable(i + 1).to_string())
-                .collect::<Vec<_>>()
-                .join(" ");
-            println!("1 {}", true_variables);
-        } else {
-            println!("0");
-        }
+                .map(|(i, _)| get_variable(graph.nodes[i]))
+                .collect(),
+        ))
+    } else {
+        Ok(None)
     }
-    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn _2sat() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_2sat")?;
+        let result = rosalind_2sat(&input_file)?;
+        for (input_assignment, output_assignment) in result.into_iter().zip(
+            utility::io::input_from_file(&output_file)?
+                .split('\n')
+                .filter(|line| !line.trim().is_empty()),
+        ) {
+            if let Ok(0) = output_assignment.trim().parse::<usize>() {
+                assert!(input_assignment.is_none())
+            } else {
+                assert!(input_assignment.is_some());
+                assert_eq!(
+                    input_assignment.unwrap()[..],
+                    isize::parse_line(output_assignment.trim())?[1..]
+                );
+            }
+        }
+        Ok(())
+    }
 }

@@ -1,30 +1,35 @@
-use crate::utils;
 use failure::Error;
-use hashbrown::HashMap;
 
-const MASS_FILE: &str = "data/monoisotopic_mass.txt";
-
-/// Reads monoisotopic mass table
-pub fn get_aa_to_mass() -> Result<HashMap<char, f64>, Error> {
-    let mut mass_table = HashMap::new();
-    let mass_contents = utils::input_from_file(MASS_FILE);
-    for line in mass_contents.split('\n') {
-        let mut aa_mass = line.split_whitespace();
-        if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {
-            mass_table.insert(aa.chars().next().unwrap(), mass.parse::<f64>()?);
-        }
-    }
-    Ok(mass_table)
-}
+use crate::utility;
 
 /// Calculating Protein Mass
 ///
 /// Given: A protein string P of length at most 1000 aa.
 ///
 /// Return: The total weight of P. Consult the monoisotopic mass table.
-pub fn rosalind_prtm() -> Result<(), Error> {
-    let protein = utils::input_from_file("data/stronghold/rosalind_prtm.txt");
-    let mass_table = get_aa_to_mass()?;
-    println!("{}", protein.chars().map(|c| &mass_table[&c]).sum::<f64>());
-    Ok(())
+pub fn rosalind_prtm(filename: &str) -> Result<f64, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mass_table = utility::io::get_aa_to_mass()?;
+    let output = input.chars().map(|c| &mass_table[&c]).sum::<f64>();
+    println!("{}", output);
+    Ok(output)
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_approx_eq::assert_approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn prtm() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_prtm")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<f64>()?;
+        assert_approx_eq!(
+            rosalind_prtm(&input_file)?,
+            output,
+            utility::testing::ROSALIND_FLOAT_ERROR_F64
+        );
+        Ok(())
+    }
 }

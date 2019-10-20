@@ -1,9 +1,15 @@
-use crate::utils;
+use failure::Error;
 
-pub fn rosalind_ba1d() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba1d.txt");
+use crate::utility;
+
+pub fn rosalind_ba1d() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1d.txt")?;
     let lines = contents.split('\n').collect::<Vec<_>>();
-    utils::print_array(&find_pattern(lines[1], lines[0]));
+    println!(
+        "{}",
+        utility::io::format_array(&find_pattern(lines[1], lines[0]))
+    );
+    Ok(())
 }
 
 fn find_pattern(text: &str, pattern: &str) -> Vec<usize> {

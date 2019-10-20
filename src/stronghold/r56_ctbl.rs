@@ -1,12 +1,14 @@
-use crate::stronghold::r49_nwck::parse_newick;
-use crate::utils;
+use std::collections::HashSet;
+
 use failure::Error;
-use hashbrown::HashSet;
-use petgraph::graph::{IndexType, NodeIndex};
-use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
+use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::Graph;
+use petgraph::visit::EdgeRef;
+
+use crate::stronghold::r49_nwck::parse_newick;
+use crate::utility;
 
 /// Creating a Character Table
 ///
@@ -16,9 +18,9 @@ use petgraph::Graph;
 /// The columns of the character table should encode the taxa ordered lexicographically;
 /// the rows of the character table may be given in any order. Also, for any given character,
 /// the particular subset of taxa to which 1s are assigned is arbitrary.
-pub fn rosalind_ctbl() -> Result<(), Error> {
-    let tree_data = utils::input_from_file("data/stronghold/rosalind_ctbl.txt");
-    let tree = parse_newick(&tree_data)?;
+pub fn rosalind_ctbl(filename: &str) -> Result<(), Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let tree = parse_newick(&input)?;
     let mut nodes = tree
         .node_indices()
         .map(|n| (n, tree.node_weight(n).unwrap()))

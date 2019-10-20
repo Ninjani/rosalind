@@ -1,17 +1,19 @@
-use crate::utils;
+use failure::Error;
 use ndarray::Array2;
+
+use crate::utility;
+
 /// Finding a Shared Spliced Motif
 ///
 /// Given: Two DNA strings s and t (each having length at most 1 kbp) in FASTA format.
 ///
 /// Return: A longest common subsequence of s and t. (If more than one solution exists, you may return any one.)
-pub fn rosalind_lcsq() {
-    let fasta = utils::read_fasta_file("data/stronghold/rosalind_lcsq.txt");
+pub fn rosalind_lcsq(filename: &str) -> Result<String, Error> {
+    let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
-    println!(
-        "{}",
-        longest_common_subsequence(&sequences[0], &sequences[1])
-    );
+    let subsequence = longest_common_subsequence(&sequences[0], &sequences[1]);
+    println!("{}", subsequence);
+    Ok(subsequence)
 }
 
 pub fn longest_common_subsequence(string_1: &str, string_2: &str) -> String {
@@ -61,5 +63,40 @@ fn lcs_backtrack(
         lcs_backtrack(c_matrix, sequence_1, sequence_2, i, j - 1)
     } else {
         lcs_backtrack(c_matrix, sequence_1, sequence_2, i - 1, j)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn is_spliced_motif(sequence: &str, subsequence: &str) -> bool {
+        let mut motif_chars = subsequence.chars().peekable();
+        let mut motif_char = *motif_chars.peek().unwrap();
+        for (_, current_char) in sequence.chars().enumerate() {
+            if current_char == motif_char {
+                motif_chars.next().unwrap();
+                match motif_chars.peek() {
+                    Some(character) => motif_char = *character,
+                    None => return true,
+                }
+            }
+        }
+        false
+    }
+
+    #[test]
+    fn lcsq() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_lcsq")?;
+        let subsequence = rosalind_lcsq(&input_file)?;
+        assert_eq!(
+            subsequence.len(),
+            utility::io::input_from_file(&output_file)?.len()
+        );
+        let fasta = utility::io::read_fasta_file(&input_file)?;
+        for (_, sequence) in fasta {
+            assert!(is_spliced_motif(&sequence, &subsequence));
+        }
+        Ok(())
     }
 }

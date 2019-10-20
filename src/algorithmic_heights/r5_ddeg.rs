@@ -1,50 +1,55 @@
-use crate::algorithmic_heights::r3_deg::get_degrees;
-use crate::utils;
-use std::collections::btree_map::BTreeMap;
+use failure::Error;
 
-/// Get adjacency matrix from list of edges
-pub fn make_adjacency_list<T: Eq + Copy + Ord + ::std::hash::Hash>(
-    edges: &[(T, T)],
-    directed: bool,
-) -> BTreeMap<T, Vec<T>> {
-    let mut adjacency_list = BTreeMap::new();
-    for (node_1, node_2) in edges {
-        {
-            let edge_list_1 = adjacency_list.entry(*node_1).or_insert_with(Vec::new);
-            edge_list_1.push(*node_2);
-        }
-        if !directed {
-            let edge_list_2 = adjacency_list.entry(*node_2).or_insert_with(Vec::new);
-            edge_list_2.push(*node_1);
-        }
-    }
-    adjacency_list
-}
+use crate::utility;
 
 /// Double-Degree Array
 ///
 /// Given: A simple graph with n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the sum of the degrees of i's neighbors.
-pub fn rosalind_ddeg() {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_ddeg.txt");
-    let mut lines = contents
+pub fn rosalind_ddeg(filename: &str) -> Result<Vec<usize>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
-    let degrees = get_degrees(&edges);
-    let adjacency_matrix = make_adjacency_list(&edges, false);
-    for node in 0..num_nodes {
-        match adjacency_matrix.get(&node) {
-            Some(edge_list) => print!(
-                "{} ",
+    let graph = utility::graph::IntegerGraph::from_edge_list(&mut lines, false, false)?;
+    let degrees: Vec<_> = (0..graph.num_nodes)
+        .map(|n| {
+            graph
+                .adjacency_list
+                .get(&graph.nodes[n])
+                .unwrap_or(&Vec::new())
+                .len()
+        })
+        .collect();
+    let mut degree_sums = Vec::with_capacity(graph.num_nodes);
+    for node in 0..graph.num_nodes {
+        match graph.adjacency_list.get(&graph.nodes[node]) {
+            Some(edge_list) => degree_sums.push(
                 edge_list
                     .iter()
-                    .map(|n| degrees.get(&n).unwrap_or(&0))
-                    .sum::<usize>()
+                    .map(|n| degrees.get(graph.node_to_index[n]).unwrap_or(&0))
+                    .sum::<usize>(),
             ),
-            None => print!("0 "),
+            None => degree_sums.push(0),
         }
+    }
+    println!("{}", utility::io::format_array(&degree_sums));
+    Ok(degree_sums)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn ddeg() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_ddeg")?;
+        let output = usize::parse_line(&utility::io::input_from_file(&output_file)?)?;
+        assert_eq!(rosalind_ddeg(&input_file)?, output);
+        Ok(())
     }
 }

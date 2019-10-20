@@ -1,11 +1,13 @@
-use crate::utils;
-use failure::Error;
-use hashbrown::HashMap;
-use radix::RadixNum;
 use std::char;
+use std::collections::HashMap;
+
+use failure::Error;
+use radix::RadixNum;
+
+use crate::utility;
 
 pub fn rosalind_ba1l() -> Result<(), Error> {
-    let dna = utils::input_from_file("data/textbook_track/rosalind_ba1l.txt");
+    let dna = utility::io::input_from_file("data/textbook_track/rosalind_ba1l.txt")?;
     println!(
         "{}",
         pattern_to_number(&dna, &"ACGT".chars().collect::<Vec<_>>())?
@@ -34,5 +36,5 @@ fn pattern_to_number(pattern: &str, alphabet: &[char]) -> Result<usize, Error> {
             .collect::<String>(),
         num_alphabets,
     )?
-    .as_decimal()?)
+        .as_decimal()?)
 }

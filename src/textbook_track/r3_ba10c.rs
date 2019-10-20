@@ -1,8 +1,9 @@
-use crate::textbook_track::hidden_markov_models::{HMMError, HMM};
-use crate::utils;
-use crate::utils::Comparable;
 use failure::Error;
 use ndarray::Array2;
+
+use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
+use crate::utility;
+use crate::utility::math::Comparable;
 
 /// Implement the Viterbi Algorithm
 ///
@@ -11,8 +12,8 @@ use ndarray::Array2;
 /// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: A path that maximizes the (unconditional) probability Pr(x, π) over all possible paths π.
-pub fn rosalind_ba10c() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10c.txt");
+pub fn rosalind_ba10c(filename: &str) -> Result<String, Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections
         .next()
@@ -20,8 +21,9 @@ pub fn rosalind_ba10c() -> Result<(), Error> {
         .trim()
         .to_owned();
     let hmm = HMM::read_hmm(&mut sections)?;
-    println!("{}", hmm.run_viterbi(&sequence)?);
-    Ok(())
+    let path = hmm.run_viterbi(&sequence)?;
+    println!("{}", path);
+    Ok(path)
 }
 
 impl HMM {
@@ -34,12 +36,12 @@ impl HMM {
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Empty sequence".into()))?;
         for k in 0..self.states.len() {
-            v_maxes[[k, 0]] = self.emission_matrix[[k, self.alphabet_index[&first_char]]] * 1.
+            v_maxes[[k, 0]] = (self.emission_matrix[[k, self.alphabet_index[&first_char]]] * 1.)
                 / self.states.len() as f64;
         }
         for (i, s_char) in sequence_chars.enumerate() {
             for k in 0..self.states.len() {
-                let (max_index, max_value) = f64::array_index_max(
+                let (max_index, max_value) = f64::argmax_max(
                     &(0..self.states.len())
                         .map(|j| self.transition_matrix[[j, k]] * v_maxes[[j, i]])
                         .collect::<Vec<_>>(),
@@ -49,7 +51,7 @@ impl HMM {
                 pointers[[k, i + 1]] = max_index;
             }
         }
-        let (mut max_index, _) = f64::array_index_max(
+        let (mut max_index, _) = f64::argmax_max(
             &((0..self.states.len())
                 .map(|k| v_maxes[[k, sequence.len() - 1]])
                 .collect::<Vec<_>>()),
@@ -60,5 +62,18 @@ impl HMM {
             path.push(self.states[max_index]);
         }
         Ok(path.into_iter().rev().collect())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ba10c() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_ba10c")?;
+        let output = utility::io::input_from_file(&output_file)?;
+        assert_eq!(rosalind_ba10c(&input_file)?, output);
+        Ok(())
     }
 }

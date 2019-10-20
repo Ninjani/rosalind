@@ -1,7 +1,10 @@
-use crate::textbook_track::r74_ba5e::{align, read_scoring_matrix, AlignmentParameters};
-use crate::utils;
-use ndarray::Array2;
 use std::isize;
+
+use failure::Error;
+use ndarray::Array2;
+
+use crate::textbook_track::r74_ba5e::{align, AlignmentParameters, read_scoring_matrix};
+use crate::utility;
 
 /// Find a Highest-Scoring Local Alignment of Two Strings
 ///
@@ -10,13 +13,14 @@ use std::isize;
 /// Return: The maximum score of a local alignment of the strings, followed by a local alignment of
 /// these strings achieving the maximum score. Use the PAM250 scoring matrix and indel penalty σ = 5.
 /// (If multiple local alignments achieving the maximum score exist, you may return any one.)
-pub fn rosalind_ba5f() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba5f.txt");
+pub fn rosalind_ba5f() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5f.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/pam250.txt");
+    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/pam250.txt")?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
     let (score, aln_string_1, aln_string_2) = local_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);
+    Ok(())
 }
 
 pub fn local_alignment_backtrack(
@@ -36,9 +40,9 @@ pub fn local_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                        parameters.amino_acid_order[&chars_1[i - 1]],
-                        parameters.amino_acid_order[&chars_2[j - 1]],
-                    )]),
+                    parameters.amino_acid_order[&chars_1[i - 1]],
+                    parameters.amino_acid_order[&chars_2[j - 1]],
+                )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()

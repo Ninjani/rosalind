@@ -1,27 +1,29 @@
+use std::collections::{HashMap, HashSet};
+
+use failure::Error;
+use petgraph::Directed;
+use petgraph::Direction::Outgoing;
+use petgraph::graph::{IndexType, NodeIndex};
+use petgraph::Graph;
+use petgraph::visit::EdgeRef;
+
 use crate::textbook_track::r12_ba11a::{get_graph_spectrum, get_mass_to_aa};
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
-use crate::utils;
-use crate::utils::Parseable;
-use failure::Error;
-use hashbrown::{HashMap, HashSet};
-use petgraph::graph::{IndexType, NodeIndex};
-use petgraph::visit::EdgeRef;
-use petgraph::Directed;
-use petgraph::Direction::Outgoing;
-use petgraph::Graph;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Given: A space-delimited list of integers, Spectrum.
 ///
 /// Return: An amino acid string with an ideal spectrum that matches Spectrum.
 pub fn rosalind_ba11b() -> Result<(), Error> {
     let mut spectrum = vec![0];
-    spectrum.append(&mut usize::parse_line(&utils::input_from_file(
+    spectrum.append(&mut usize::parse_line(&utility::io::input_from_file(
         "data/textbook_track/rosalind_ba11b.txt",
-    ))?);
+    )?)?);
     let (source, sink) = (spectrum[0], spectrum[spectrum.len() - 1]);
-    let mass_to_aa = get_mass_to_aa();
-    let aa_to_mass = get_aa_to_mass_usize();
+    let mass_to_aa = get_mass_to_aa()?;
+    let aa_to_mass = get_aa_to_mass_usize()?;
     let adjacency_list = get_graph_spectrum(&spectrum, &mass_to_aa);
     let mut graph = Graph::new();
     let mut node_to_index = HashMap::new();
@@ -50,7 +52,7 @@ pub fn rosalind_ba11b() -> Result<(), Error> {
 
 pub fn get_ideal_spectrum(peptide: &[usize]) -> Vec<usize> {
     let prefix_masses = get_prefix_masses(peptide);
-    let mut spectrum = Vec::new();
+    let mut spectrum = Vec::with_capacity(2 * peptide.len());
     for i in 0..peptide.len() {
         spectrum.push(prefix_masses[peptide.len()] - prefix_masses[i]);
         spectrum.push(prefix_masses[i]);

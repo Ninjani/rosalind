@@ -1,4 +1,6 @@
-use crate::utils;
+use failure::Error;
+
+use crate::utility;
 
 /// Creating a Character Table from Genetic Strings
 ///
@@ -7,9 +9,9 @@ use crate::utils;
 /// Return: A character table for which each nontrivial character encodes the symbol choice at a
 /// single position of the strings. (Note: the choice of assigning '1' and '0' to the two states
 /// of each SNP in the strings is arbitrary.)
-pub fn rosalind_cstr() {
-    let contents = utils::input_from_file("data/stronghold/rosalind_cstr.txt");
-    let strings: Vec<Vec<_>> = contents.split('\n').map(|s| s.chars().collect()).collect();
+pub fn rosalind_cstr(filename: &str) -> Result<(), Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let strings: Vec<Vec<_>> = input.split('\n').map(|s| s.chars().collect()).collect();
     let num_strings = strings.len();
     let table: Vec<_> = (0..num_strings)
         .map(|i| {
@@ -33,4 +35,5 @@ pub fn rosalind_cstr() {
             );
         }
     }
+    Ok(())
 }

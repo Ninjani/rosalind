@@ -1,10 +1,13 @@
-use crate::utils;
+use failure::Error;
 
-pub fn rosalind_ba1a() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba1a.txt");
+use crate::utility;
+
+pub fn rosalind_ba1a() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1a.txt")?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (text, pattern) = (lines[0], lines[1]);
     println!("{}", pattern_count(text, pattern));
+    Ok(())
 }
 
 pub fn pattern_count(text: &str, pattern: &str) -> usize {

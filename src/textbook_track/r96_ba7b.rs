@@ -1,6 +1,7 @@
-use crate::utils;
 use failure::Error;
 use ndarray::{Array, Array2};
+
+use crate::utility;
 
 /// Compute Limb Lengths in a Tree
 ///
@@ -10,7 +11,7 @@ use ndarray::{Array, Array2};
 /// Return: The limb length of the leaf in Tree(D) corresponding to row j of this
 /// distance matrix (use 0-based indexing).
 pub fn rosalind_ba7b() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba7b.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba7b.txt")?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;
     let leaf_number = lines.next().unwrap().parse::<usize>()?;

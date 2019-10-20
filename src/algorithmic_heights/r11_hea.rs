@@ -1,16 +1,17 @@
-use crate::utils;
 use failure::Error;
+
+use crate::utility;
 
 /// Building a Heap
 ///
 /// Given: A positive integer n≤10^5 and array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A permuted array A satisfying the binary max heap property: for any 2≤i≤n, A[⌊i/2⌋]≥A[i].
-pub fn rosalind_hea() -> Result<(), Error> {
-    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hea.txt")?;
+pub fn rosalind_hea(filename: &str) -> Result<Vec<isize>, Error> {
+    let (length, mut array) = utility::io::read_isize_array(filename)?;
     build_max_heap(&mut array, length);
-    utils::print_array(&array);
-    Ok(())
+    println!("{}", utility::io::format_array(&array));
+    Ok(array)
 }
 
 fn build_max_heap<T: PartialOrd + PartialEq + Copy>(array: &mut [T], length: usize) {
@@ -34,5 +35,18 @@ fn max_heapify<T: PartialOrd + PartialEq + Copy>(array: &mut [T], i: usize) {
     if largest != i {
         array.swap(i, largest);
         max_heapify(array, largest);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hea() -> Result<(), Error> {
+        let input_file = utility::testing::get_input_file("rosalind_hea")?;
+        let result = rosalind_hea(&input_file)?;
+        assert!((2..=result.len()).all(|i| result[(i / 2) - 1] >= result[i - 1]));
+        Ok(())
     }
 }

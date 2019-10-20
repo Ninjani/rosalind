@@ -1,6 +1,9 @@
-use crate::utils;
-use hashbrown::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+
+use failure::Error;
+
+use crate::utility;
 
 /// Introduction to Pattern Matching
 ///
@@ -11,15 +14,18 @@ use std::hash::Hash;
 /// through n in any order you like. Each edge of the adjacency list of T will be encoded by a triple
 /// containing the integer representing the edge's parent node, followed by the integer representing the
 /// edge's child node, and finally the symbol labeling the edge.
-pub fn rosalind_trie() {
-    let contents = utils::input_from_file("data/stronghold/rosalind_trie.txt");
+pub fn rosalind_trie(filename: &str) -> Result<Vec<(usize, usize, char)>, Error> {
+    let input = utility::io::input_from_file(filename)?;
     let mut trie = Trie::<usize, char>::new();
-    for (i, line) in contents.split('\n').enumerate() {
+    for (i, line) in input.split('\n').enumerate() {
         trie.insert(&line.chars().collect::<Vec<_>>(), i)
     }
+    let mut result = Vec::new();
     for (i, j, c) in trie.traverse(&'$')[1..].iter() {
         println!("{} {} {}", i, j, c);
+        result.push((*i, *j, *c));
     }
+    Ok(result)
 }
 
 #[derive(Clone, Debug)]
@@ -112,5 +118,20 @@ impl<T: Eq + Clone, U: Eq + Hash + Clone> Trie<T, U> {
     pub fn traverse(&self, start: &U) -> Vec<(usize, usize, U)> {
         let mut discovered = HashSet::new();
         Trie::dfs(&self.root, start, 1, &mut discovered)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn trie() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_trie")?;
+        assert!(rosalind_trie(&input_file)?
+            .into_iter()
+            .zip(utility::io::input_from_file(&output_file)?.split('\n'))
+            .all(|((i, j, c), y)| &format!("{} {} {}", i, j, c) == y.trim()));
+        Ok(())
     }
 }

@@ -1,64 +1,80 @@
-use crate::algorithmic_heights::r17_dij::{make_weighted_adjacency_matrix, State};
-use crate::utils;
-use crate::utils::Parseable;
+use std::collections::BinaryHeap;
+
 use failure::Error;
-use std::collections::{BinaryHeap, HashMap};
-use std::iter::repeat;
+
+use crate::algorithmic_heights::r17_dij::State;
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Shortest Cycle Through a Given Edge
 ///
 /// Given: A positive integer k≤20 and k simple directed graphs with positive integer edge weights and at most 10^3 vertices in the edge list format.
 ///
 /// Return: For each graph, output the length of a shortest cycle going through the first specified edge if there is a cycle and "-1" otherwise.
-pub fn rosalind_cte() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_cte.txt");
-    let mut sections = contents.split('\n');
+pub fn rosalind_cte(filename: &str) -> Result<Vec<isize>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut sections = input.split('\n').filter(|line| !line.trim().is_empty());
     let num_graphs = sections.next().unwrap().parse::<usize>()?;
+    let mut output = Vec::with_capacity(num_graphs);
     for _ in 0..num_graphs {
         let length_input = usize::parse_line(sections.next().unwrap())?;
         let (num_nodes, num_edges) = (length_input[0], length_input[1]);
         let mut graph = vec![format!("{} {}", num_nodes, num_edges)];
         graph.extend((0..num_edges).map(|_| sections.next().unwrap().to_owned()));
         let mut lines = graph.into_iter();
-        let (num_nodes, _, edges) = utils::read_weighted_edge_list(&mut lines, true)?;
-        let adjacency_matrix = make_weighted_adjacency_matrix(&edges);
-        let (start, end, weight) = edges[0];
-        let min_distances = dijkstra_min_distances(num_nodes, &adjacency_matrix, end);
-        match min_distances[start] {
-            Some(cost) => print!("{} ", cost + weight as usize),
-            None => print!("-1 "),
+        let weighted_graph = utility::graph::WeightedGraph::from_weighted_edge_list(&mut lines)?;
+        let (start, end, weight) = weighted_graph.edges[0];
+        let min_distances =
+            weighted_graph.get_dijkstra_min_distances(weighted_graph.node_to_index[&end]);
+        match min_distances[weighted_graph.node_to_index[&start]] {
+            Some(cost) => output.push(cost as isize + weight as isize),
+            None => output.push(-1),
         }
     }
-    Ok(())
+    println!("{}", utility::io::format_array(&output));
+    Ok(output)
 }
 
-fn dijkstra_min_distances(
-    num_nodes: usize,
-    adjacency_matrix: &HashMap<usize, Vec<(usize, isize)>>,
-    start_node: usize,
-) -> Vec<Option<usize>> {
-    let mut distances = repeat(None).take(num_nodes).collect::<Vec<_>>();
-    let mut heap = BinaryHeap::with_capacity(num_nodes);
-    heap.push(State {
-        cost: 0,
-        node: start_node,
-    });
-    while let Some(State { cost, node }) = heap.pop() {
-        if distances[node].is_some() {
-            continue;
-        }
-        distances[node] = Some(cost);
-        if let Some(edge_list) = adjacency_matrix.get(&node) {
-            for (child, weight) in edge_list {
-                let next = State {
-                    cost: cost + (*weight as usize),
-                    node: *child,
-                };
-                if distances[next.node].is_none() {
-                    heap.push(next);
+impl utility::graph::WeightedGraph {
+    fn get_dijkstra_min_distances(&self, start_node: usize) -> Vec<Option<usize>> {
+        let mut distances = (0..self.num_nodes).map(|_| None).collect::<Vec<_>>();
+        let mut heap = BinaryHeap::with_capacity(self.num_nodes);
+        heap.push(State {
+            cost: 0,
+            node: start_node,
+        });
+        while let Some(State { cost, node }) = heap.pop() {
+            if distances[node].is_some() {
+                continue;
+            }
+            distances[node] = Some(cost);
+            if let Some(edge_list) = self.adjacency_list.get(&self.nodes[node]) {
+                for (child, weight) in edge_list {
+                    let next = State {
+                        cost: cost + (*weight as usize),
+                        node: self.node_to_index[child],
+                    };
+                    if distances[next.node].is_none() {
+                        heap.push(next);
+                    }
                 }
             }
         }
+        distances
     }
-    distances
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn cte() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_cte")?;
+        let output = isize::parse_line(&utility::io::input_from_file(&output_file)?)?;
+        assert_eq!(rosalind_cte(&input_file)?, output);
+        Ok(())
+    }
 }

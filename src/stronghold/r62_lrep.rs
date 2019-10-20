@@ -1,11 +1,13 @@
-use crate::stronghold::r56_ctbl::traverse;
-use crate::utils;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
-use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
+use petgraph::visit::EdgeRef;
+
+use crate::stronghold::r56_ctbl::traverse;
+use crate::utility;
 
 /// W.I.P
 fn make_suffix_tree(
@@ -34,7 +36,7 @@ fn make_suffix_tree(
 }
 
 pub fn rosalind_lrep() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/stronghold/rosalind_lrep.txt");
+    let contents = utility::io::input_from_file("data/stronghold/rosalind_lrep.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (dna, k) = (lines[0], lines[1].parse::<usize>()?);
     let dna: Vec<_> = dna.chars().collect();

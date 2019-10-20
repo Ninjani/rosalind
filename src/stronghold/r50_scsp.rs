@@ -1,18 +1,20 @@
+use failure::Error;
+
 use crate::stronghold::r38_lcsq::longest_common_subsequence;
-use crate::utils;
+use crate::utility;
 
 /// Interleaving Two Motifs
 ///
 /// Given: Two DNA strings s and t.
 ///
-/// Return: A shortest common supersequence of s and t. If multiple solutions exist, you may output any one.
-pub fn rosalind_scsp() {
-    let contents = utils::input_from_file("data/stronghold/rosalind_scsp.txt");
-    let sequences: Vec<_> = contents.split('\n').collect();
-    println!(
-        "{}",
-        shortest_common_supersequence(sequences[0], sequences[1])
-    );
+/// Return: A shortest common supersequence of s and t.
+/// If multiple solutions exist, you may output any one.
+pub fn rosalind_scsp(filename: &str) -> Result<String, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let sequences: Vec<_> = input.split('\n').collect();
+    let result = shortest_common_supersequence(sequences[0], sequences[1]);
+    println!("{}", result);
+    Ok(result)
 }
 
 pub fn shortest_common_supersequence(string_1: &str, string_2: &str) -> String {
@@ -41,4 +43,23 @@ pub fn shortest_common_supersequence(string_1: &str, string_2: &str) -> String {
         chars_1.into_iter().collect::<String>(),
         chars_2.into_iter().collect::<String>()
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn scsp() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_scsp")?;
+        let result = rosalind_scsp(&input_file)?;
+        assert_eq!(
+            result.len(),
+            utility::io::input_from_file(&output_file)?.len()
+        );
+        for sequence in utility::io::input_from_file(&output_file)?.split('\n') {
+            assert!(sequence.contains(&result));
+        }
+        Ok(())
+    }
 }

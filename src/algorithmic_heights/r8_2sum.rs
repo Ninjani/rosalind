@@ -1,17 +1,21 @@
-use crate::utils;
-use crate::utils::Parseable;
 use failure::Error;
+
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// 2SUM
 ///
-/// Given: A positive integer k≤20, a positive integer n≤10^4, and k arrays of size n containing integers from −10^5 to 10^5.
+/// Given: A positive integer k≤20, a positive integer n≤10^4, and k arrays of size n
+/// containing integers from −10^5 to 10^5.
 ///
-/// Return: For each array A[1..n], output two different indices 1≤p<q≤n such that A[p]=−A[q] if exist, and "-1" otherwise.
-pub fn rosalind_2sum() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_2sum.txt");
-    let mut lines = contents.split('\n');
+/// Return: For each array A[1..n], output two different indices 1≤p<q≤n such that A[p]=−A[q]
+/// if exist, and "-1" otherwise.
+pub fn rosalind_2sum(filename: &str) -> Result<Vec<Option<(usize, usize)>>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input.split('\n');
     let length_input = usize::parse_line(lines.next().unwrap())?;
     let length = length_input[1];
+    let mut output = Vec::with_capacity(length_input[0]);
     for line in lines {
         let mut array_indices = isize::parse_line(line)?
             .into_iter()
@@ -24,12 +28,16 @@ pub fn rosalind_2sum() -> Result<(), Error> {
             Some((index_1, index_2)) => {
                 let mut real_indices = vec![indices[index_1] + 1, indices[index_2] + 1];
                 real_indices.sort();
-                utils::print_array(&real_indices);
+                println!("{}", utility::io::format_array(&real_indices));
+                output.push(Some((real_indices[0], real_indices[1])));
             }
-            None => println!("-1"),
+            None => {
+                println!("-1");
+                output.push(None);
+            }
         }
     }
-    Ok(())
+    Ok(output)
 }
 
 fn two_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, usize)> {
@@ -54,4 +62,32 @@ fn two_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, usiz
         }
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn _2sum() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_2sum")?;
+        let result = rosalind_2sum(&input_file)?;
+        let num_nones = utility::io::input_from_file(&output_file)?
+            .split('\n')
+            .filter(|line| line.trim() == "-1")
+            .count();
+        assert_eq!(result.iter().filter(|x| x.is_none()).count(), num_nones);
+        for (indices, line) in result.into_iter().zip(
+            utility::io::input_from_file(&input_file)?
+                .split('\n')
+                .skip(1),
+        ) {
+            let array = isize::parse_line(line)?;
+            if let Some((p, q)) = indices {
+                assert!(p < q);
+                assert_eq!(array[p - 1], -array[q - 1]);
+            }
+        }
+        Ok(())
+    }
 }

@@ -1,18 +1,20 @@
-use crate::textbook_track::hidden_markov_models::{
-    get_chars_and_index, read_probability_matrix, HMMError, HMM,
-};
-use crate::utils;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
 use ndarray::Array2;
+
+use crate::textbook_track::hidden_markov_models::{
+    get_chars_and_index, HMM, HMMError, read_probability_matrix,
+};
+use crate::utility;
 
 /// Compute the Probability of a Hidden Path
 ///
 /// Given: A hidden path π followed by the states States and transition matrix Transition of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The probability of this path, Pr(π). You may assume that initial probabilities are equal.
-pub fn rosalind_ba10a() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10a.txt");
+pub fn rosalind_ba10a(filename: &str) -> Result<f64, Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let hidden_path = sections
         .next()
@@ -23,7 +25,7 @@ pub fn rosalind_ba10a() -> Result<(), Error> {
         &sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
-    );
+    )?;
     let transition_matrix = read_probability_matrix(
         sections
             .next()
@@ -40,8 +42,9 @@ pub fn rosalind_ba10a() -> Result<(), Error> {
         transition_matrix,
         emission_matrix,
     };
-    println!("{:e}", hmm.get_probability_of_hidden_path(&hidden_path));
-    Ok(())
+    let probability = hmm.get_probability_of_hidden_path(&hidden_path);
+    println!("{:e}", probability);
+    Ok(probability)
 }
 
 impl HMM {
@@ -54,5 +57,24 @@ impl HMM {
             ]];
         }
         probability
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_approx_eq::assert_approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn ba10a() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_ba10a")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<f64>()?;
+        assert_approx_eq!(
+            rosalind_ba10a(&input_file)?,
+            output,
+            utility::testing::ROSALIND_FLOAT_ERROR_F64
+        );
+        Ok(())
     }
 }

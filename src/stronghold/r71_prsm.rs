@@ -1,8 +1,9 @@
-use crate::stronghold::r20_prtm::get_aa_to_mass;
+use std::collections::HashMap;
+
+use failure::Error;
+
 use crate::stronghold::r55_conv::{get_max_multiplicity, get_minkowski_difference};
-use crate::utils;
-use failure::{err_msg, Error};
-use hashbrown::HashMap;
+use crate::utility;
 
 /// Matching a Spectrum to a Protein
 ///
@@ -11,13 +12,14 @@ use hashbrown::HashMap;
 ///
 /// Return: The maximum multiplicity of R⊖S[sk] taken over all strings sk, followed by the string sk
 /// for which this maximum multiplicity occurs (you may output any such value if multiple solutions exist).
-pub fn rosalind_prsm() -> Result<(), Error> {
-    let aa_to_mass = get_aa_to_mass()?;
-    let contents = utils::input_from_file("data/stronghold/rosalind_prsm.txt");
-    let lines: Vec<_> = contents.split('\n').collect();
+pub fn rosalind_prsm(filename: &str) -> Result<(), Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let aa_to_mass = utility::io::get_aa_to_mass()?;
+    let lines: Vec<_> = input.split('\n').collect();
     let num_proteins = lines[0].parse::<usize>()?;
-    let proteins: Vec<_> = lines[1..=num_proteins].iter().collect();
-    let spectrum: Vec<_> = lines[num_proteins + 1..]
+    let (proteins, spectrum) = lines.split_at(num_proteins + 1);
+    let (_, proteins) = proteins.split_at(1);
+    let spectrum: Vec<_> = spectrum
         .iter()
         .map(|x| x.parse::<f64>())
         .collect::<Result<Vec<_>, _>>()?;
@@ -30,13 +32,13 @@ pub fn rosalind_prsm() -> Result<(), Error> {
                     &spectrum,
                     &get_complete_spectrum(protein, &aa_to_mass),
                 ))
-                .unwrap()
-                .0,
+                    .unwrap()
+                    .0,
                 i,
             )
         })
         .max()
-        .ok_or_else(|| err_msg("NoneError"))?;
+        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
     println!("{}\n{}", max_multiplicity, proteins[max_index]);
     Ok(())
 }

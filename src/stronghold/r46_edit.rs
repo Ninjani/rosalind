@@ -1,16 +1,20 @@
-use crate::utils;
+use failure::Error;
 use ndarray::Array2;
+
+use crate::utility;
 
 /// Edit Distance
 ///
 /// Given: Two protein strings s and t in FASTA format (each of length at most 1000 aa).
 ///
 /// Return: The edit distance dE(s,t).
-pub fn rosalind_edit() {
-    let fasta = utils::read_fasta_file("data/stronghold/rosalind_edit.txt");
+pub fn rosalind_edit(filename: &str) -> Result<usize, Error> {
+    let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let (string_1, string_2) = (&sequences[0], &sequences[1]);
-    println!("{}", get_edit_distance(string_1, string_2));
+    let result = get_edit_distance(string_1, string_2);
+    println!("{}", result);
+    Ok(result)
 }
 
 pub fn get_edit_distance(string_1: &str, string_2: &str) -> usize {
@@ -36,4 +40,19 @@ pub fn get_edit_distance(string_1: &str, string_2: &str) -> usize {
         }
     }
     distances[(string_1.len(), string_2.len())]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn edit() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_edit")?;
+        assert_eq!(
+            rosalind_edit(&input_file)?,
+            utility::io::input_from_file(&output_file)?.parse::<usize>()?
+        );
+        Ok(())
+    }
 }

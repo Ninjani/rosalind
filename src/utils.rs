@@ -1,14 +1,15 @@
 use bio::pattern_matching::{bom, shift_and};
 use failure::Error;
-use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 use num::BigUint;
+use std::collections::{HashMap, HashSet};
+use std::collections::btree_map::BTreeMap;
 use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
-use std::collections::btree_map::BTreeMap;
 use std::string::ToString;
+
 const CODON_FILE: &str = "data/codons.txt";
 pub const STOP_CODON_AA: &str = "Stop";
 pub const START_CODON: &str = "AUG";
@@ -22,37 +23,55 @@ pub fn input_from_file(filename: &str) -> String {
 }
 
 /// Input iterator to "separator"-separated string of items
-pub fn format_line<T: ToString>(items: impl Iterator<Item = T>, separator: &str) -> String {
-    items.map(|c| c.to_string()).collect::<Vec<_>>().join(separator)
+pub fn format_line<T: ToString>(items: impl Iterator<Item=T>, separator: &str) -> String {
+    items
+        .map(|c| c.to_string())
+        .collect::<Vec<_>>()
+        .join(separator)
 }
 
 /// Print a space-separated array
 pub fn print_array<T: ToString>(input: &[T]) {
     println!(
         "{}",
-        input.iter().map(|c| c.to_string()).collect::<Vec<_>>().join(" ")
+        input
+            .iter()
+            .map(|c| c.to_string())
+            .collect::<Vec<_>>()
+            .join(" ")
     );
 }
 
 /// Print a comma-separated set
-pub fn print_set<T: ToString + ::std::cmp::Eq + ::std::hash::Hash>(
-    input: &HashSet<T>,
-) {
+pub fn print_set<T: ToString + ::std::cmp::Eq + ::std::hash::Hash>(input: &HashSet<T>) {
     println!(
         "{{{}}}",
-        input.iter().map(|c| c.to_string()).collect::<Vec<_>>().join(", ")
+        input
+            .iter()
+            .map(|c| c.to_string())
+            .collect::<Vec<_>>()
+            .join(", ")
     );
 }
+
+///// Count occurrences of each character in a string
+//pub fn char_counter(input: &str) -> HashMap<char, usize> {
+//    let mut counter = HashMap::new();
+//    for character in input.chars() {
+//        if let Some(value) = counter.get_mut(&character) {
+//            *value += 1;
+//            continue;
+//        }
+//        counter.insert(character, 1usize);
+//    }
+//    counter
+//}
 
 /// Count occurrences of each character in a string
 pub fn char_counter(input: &str) -> HashMap<char, usize> {
     let mut counter = HashMap::new();
     for character in input.chars() {
-        if let Some(value) = counter.get_mut(&character) {
-            *value += 1;
-            continue;
-        }
-        counter.insert(character, 1usize);
+        *counter.entry(character).or_insert(0) += 1;
     }
     counter
 }
@@ -183,7 +202,7 @@ pub fn factorial(n: usize) -> BigUint {
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_edge_list(lines: &mut Iterator<Item = String>, substract: bool) -> (usize, usize, Vec<(usize, usize)>) {
+pub fn read_edge_list(lines: &mut Iterator<Item=String>) -> (usize, usize, Vec<(usize, usize)>) {
     let length_input = lines
         .next()
         .unwrap()
@@ -201,12 +220,7 @@ pub fn read_edge_list(lines: &mut Iterator<Item = String>, substract: bool) -> (
             .map(str::parse)
             .collect::<Result<Vec<_>, _>>()
             .unwrap();
-        if substract {
-            edges.push((parts[0] - 1, parts[1] - 1));
-        } else {
-            edges.push((parts[0], parts[1]));
-        }
-
+        edges.push((parts[0], parts[1]));
     }
     (num_nodes, num_edges, edges)
 }
@@ -219,7 +233,7 @@ pub fn read_edge_list(lines: &mut Iterator<Item = String>, substract: bool) -> (
 /// ```
 pub fn read_adjacency_list(
     contents: &str,
-    zero_start: bool,
+    subtract_one: bool,
 ) -> Result<(usize, BTreeMap<usize, Vec<usize>>), Error> {
     let lines = contents.split('\n');
     let mut adjacency_list = BTreeMap::new();
@@ -227,8 +241,8 @@ pub fn read_adjacency_list(
     for line in lines {
         let parts: Vec<_> = line.split(" -> ").collect();
         let mut node_1 = parts[0].parse::<usize>()?;
-        if zero_start {
-            node_1 += 1;
+        if subtract_one {
+            node_1 -= 1;
         }
         if node_1 > num_nodes {
             num_nodes = node_1;
@@ -238,7 +252,7 @@ pub fn read_adjacency_list(
             .map(str::parse)
             .collect::<Result<Vec<usize>, _>>()?
             .into_iter()
-            .map(|x| if zero_start { x + 1 } else { x })
+            .map(|x| if subtract_one { x - 1 } else { x })
             .collect::<Vec<_>>();
         for n in &nodes_2 {
             if *n > num_nodes {
@@ -247,7 +261,7 @@ pub fn read_adjacency_list(
         }
         adjacency_list.insert(node_1, nodes_2);
     }
-    Ok((num_nodes, adjacency_list))
+    Ok((num_nodes + 1, adjacency_list))
 }
 
 /// Reads a Rosalind edge list into an adjacency matrix
@@ -257,10 +271,9 @@ pub fn read_adjacency_list(
 /// node_1 node_2
 /// ...
 /// ```
-pub fn read_edge_list_to_adjacency_list(
+pub fn read_adjacency_matrix(
     contents: &str,
     directed: bool,
-    subtract: bool
 ) -> Result<(usize, BTreeMap<usize, Vec<usize>>), Error> {
     let mut lines = contents.split('\n');
     let num_nodes = lines.next().unwrap().parse::<usize>()?;
@@ -270,12 +283,8 @@ pub fn read_edge_list_to_adjacency_list(
             .split(' ')
             .map(str::parse)
             .collect::<Result<Vec<_>, _>>()?;
-        let mut node_1 = parts[0];
-        let mut node_2 = parts[1];
-        if subtract {
-            node_1 -= 1;
-            node_2 -= 1;
-        }
+        let node_1 = parts[0];
+        let node_2 = parts[1];
         {
             let edge_list_1 = adjacency_matrix.entry(node_1).or_insert_with(Vec::new);
             edge_list_1.push(node_2);
@@ -296,8 +305,7 @@ pub fn read_edge_list_to_adjacency_list(
 /// ...
 /// ```
 pub fn read_weighted_edge_list(
-    lines: &mut Iterator<Item = String>,
-    subtract: bool
+    lines: &mut Iterator<Item=String>,
 ) -> Result<(usize, usize, Vec<(usize, usize, isize)>), Error> {
     let length_input = lines
         .next()
@@ -310,12 +318,8 @@ pub fn read_weighted_edge_list(
     for _ in 0..num_edges {
         let line = lines.next().unwrap();
         let parts = line.split(' ').collect::<Vec<_>>();
-        let mut node_1 = parts[0].parse::<usize>()?;
-        let mut node_2 = parts[1].parse::<usize>()?;
-        if subtract {
-            node_1 -= 1;
-            node_2 -= 1;
-        }
+        let node_1 = parts[0].parse::<usize>()?;
+        let node_2 = parts[1].parse::<usize>()?;
         let weight = parts[2].parse::<isize>()?;
         edges.push((node_1, node_2, weight));
     }
@@ -347,6 +351,16 @@ pub trait Parseable: Sized {
 impl Parseable for isize {
     /// Parse line as space-separated array
     fn parse_line(line: &str) -> Result<Vec<isize>, ParseError> {
+        Ok(line
+            .split(' ')
+            .map(str::parse)
+            .collect::<Result<Vec<_>, ParseIntError>>()?)
+    }
+}
+
+impl Parseable for i32 {
+    /// Parse line as space-separated array
+    fn parse_line(line: &str) -> Result<Vec<i32>, ParseError> {
         Ok(line
             .split(' ')
             .map(str::parse)
@@ -413,20 +427,20 @@ pub fn parse_chars(line: &str) -> Vec<char> {
 
 /// max/min argmax/argmin for floats
 pub trait Comparable: Sized {
-    fn array_max(array: &[Self]) -> Self;
-    fn array_min(array: &[Self]) -> Self;
-    fn array_index_max(array: &[Self]) -> (usize, Self);
-    fn array_index_min(array: &[Self]) -> (usize, Self);
+    fn max(array: &[Self]) -> Self;
+    fn min(array: &[Self]) -> Self;
+    fn argmax_max(array: &[Self]) -> (usize, Self);
+    fn argmin_min(array: &[Self]) -> (usize, Self);
 }
 
 impl Comparable for f64 {
-    fn array_max(array: &[Self]) -> Self {
+    fn max(array: &[Self]) -> Self {
         array.to_vec().into_iter().fold(::std::f64::NAN, f64::max)
     }
-    fn array_min(array: &[Self]) -> Self {
+    fn min(array: &[Self]) -> Self {
         array.to_vec().into_iter().fold(0., f64::min)
     }
-    fn array_index_max(array: &[Self]) -> (usize, Self) {
+    fn argmax_max(array: &[Self]) -> (usize, Self) {
         let mut max_index = 0;
         let mut max_value = ::std::f64::MIN;
         for (i, a) in array.to_vec().into_iter().enumerate() {
@@ -437,7 +451,7 @@ impl Comparable for f64 {
         }
         (max_index, max_value)
     }
-    fn array_index_min(array: &[Self]) -> (usize, Self) {
+    fn argmin_min(array: &[Self]) -> (usize, Self) {
         let mut min_index = 0;
         let mut min_value = ::std::f64::MAX;
         for (i, a) in array.to_vec().into_iter().enumerate() {
@@ -462,9 +476,10 @@ pub fn read_set(line: &str) -> Result<HashSet<usize>, Error> {
 }
 
 pub fn set_pop<T: ::std::hash::Hash + Eq + Clone>(set: &mut HashSet<T>) -> Option<T> {
-    match set.iter().next() {
-        Some(x) => set.take(&x.clone()),
-        None => None
+    let next_value = set.iter().next().cloned();
+    match next_value {
+        Some(x) => set.take(&x),
+        None => None,
     }
 }
 

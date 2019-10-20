@@ -1,10 +1,12 @@
+use std::collections::{HashMap, HashSet};
+
+use failure::Error;
+
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r59_ba4c::get_cyclic_spectrum;
 use crate::textbook_track::r66_ba4j::get_linear_spectrum;
-use crate::utils;
-use crate::utils::Parseable;
-use failure::Error;
-use hashbrown::{HashMap, HashSet};
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Find a Cyclic Peptide with Theoretical Spectrum Matching an Ideal Spectrum
 ///
@@ -12,10 +14,10 @@ use hashbrown::{HashMap, HashSet};
 ///
 /// Return: Every amino acid string Peptide such that Cyclospectrum(Peptide) = Spectrum (if such a string exists).
 pub fn rosalind_ba4e() -> Result<(), Error> {
-    let spectrum = usize::parse_line(&utils::input_from_file(
+    let spectrum = usize::parse_line(&utility::io::input_from_file(
         "data/textbook_track/rosalind_ba4e.txt",
-    ))?;
-    let aa_to_mass = &get_aa_to_mass_usize();
+    )?)?;
+    let aa_to_mass = get_aa_to_mass_usize()?;
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
     let peptides: Vec<_> =
         cyclo_peptide_sequencing(&spectrum, &masses.into_iter().collect::<Vec<_>>())
@@ -28,7 +30,7 @@ pub fn rosalind_ba4e() -> Result<(), Error> {
                     .join("-")
             })
             .collect();
-    utils::print_array(&peptides);
+    println!("{}", utility::io::format_array(&peptides));
     Ok(())
 }
 

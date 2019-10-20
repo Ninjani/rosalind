@@ -1,17 +1,19 @@
-use crate::utils;
-use crate::utils::Parseable;
 use failure::Error;
+
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// 3SUM
 ///
 /// Given: A positive integer k≤20, a postive integer n≤10^4, and k arrays of size n containing integers from −10^5 to 10^5.
 ///
 /// Return: For each array A[1..n], output three different indices 1≤p<q<r≤n such that A[p]+A[q]+A[r]=0 if exist, and "-1" otherwise.
-pub fn rosalind_3sum() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_3sum.txt");
-    let mut lines = contents.split('\n');
+pub fn rosalind_3sum(filename: &str) -> Result<Vec<Option<(usize, usize, usize)>>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input.split('\n');
     let length_input = usize::parse_line(lines.next().unwrap())?;
     let length = length_input[1];
+    let mut output = Vec::with_capacity(length_input[0]);
     for line in lines {
         let mut array_indices = isize::parse_line(line)?
             .into_iter()
@@ -28,12 +30,16 @@ pub fn rosalind_3sum() -> Result<(), Error> {
                     indices[index_3] + 1,
                 ];
                 real_indices.sort();
-                utils::print_array(&real_indices);
+                println!("{}", utility::io::format_array(&real_indices));
+                output.push(Some((real_indices[0], real_indices[1], real_indices[2])));
             }
-            None => println!("-1"),
+            None => {
+                println!("-1");
+                output.push(None);
+            }
         }
     }
-    Ok(())
+    Ok(output)
 }
 
 fn three_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, usize, usize)> {
@@ -52,4 +58,33 @@ fn three_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, us
         }
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn _3sum() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_3sum")?;
+        let result = rosalind_3sum(&input_file)?;
+        let num_nones = utility::io::input_from_file(&output_file)?
+            .split('\n')
+            .filter(|line| line.trim() == "-1")
+            .count();
+        assert_eq!(result.iter().filter(|x| x.is_none()).count(), num_nones);
+        for (indices, line) in result.into_iter().zip(
+            utility::io::input_from_file(&input_file)?
+                .split('\n')
+                .skip(1),
+        ) {
+            let array = isize::parse_line(line)?;
+            if let Some((p, q, r)) = indices {
+                assert_eq!(array[p - 1] + array[q - 1] + array[r - 1], 0);
+            }
+        }
+        Ok(())
+    }
 }

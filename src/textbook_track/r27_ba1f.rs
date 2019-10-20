@@ -1,8 +1,11 @@
-use crate::utils;
+use failure::Error;
 
-pub fn rosalind_ba1f() {
-    let genome = utils::input_from_file("data/textbook_track/rosalind_ba1f.txt");
-    utils::print_array(&minimize_skews(&genome));
+use crate::utility;
+
+pub fn rosalind_ba1f() -> Result<(), Error> {
+    let genome = utility::io::input_from_file("data/textbook_track/rosalind_ba1f.txt")?;
+    println!("{}", utility::io::format_array(&minimize_skews(&genome)));
+    Ok(())
 }
 
 fn get_counts(text: &str, character: char) -> Vec<usize> {

@@ -1,22 +1,40 @@
-use crate::utils;
+use failure::Error;
 
-/// Get hamming distance between two equal-length strings
-pub fn hamming(string_1: &str, string_2: &str) -> usize {
-    string_1
-        .chars()
-        .zip(string_2.chars())
-        .filter(|(c1, c2)| c1 != c2)
-        .count()
-}
+use crate::utility;
+use crate::utility::errors;
 
 /// Counting Point Mutations
 ///
 /// Given: Two DNA strings s and t of equal length (not exceeding 1 kbp).
 ///
 /// Return: The Hamming distance d_H(s,t).
-pub fn rosalind_hamm() {
-    let contents = utils::input_from_file("data/stronghold/rosalind_hamm.txt");
-    let sequences = contents.split('\n').collect::<Vec<&str>>();
-    let (sequence_1, sequence_2) = (sequences[0], sequences[1]);
-    println!("{}", hamming(sequence_1, sequence_2));
+pub fn rosalind_hamm(filename: &str) -> Result<usize, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let sequences = input.split('\n').collect::<Vec<&str>>();
+    let (sequence_1, sequence_2) = (
+        sequences.get(0).ok_or_else(|| {
+            errors::RosalindParseError::InputFormatError(String::from("first sequence missing"))
+        })?,
+        sequences.get(1).ok_or_else(|| {
+            errors::RosalindParseError::InputFormatError(String::from("second sequence missing"))
+        })?,
+    );
+    let output = utility::string::hamming(sequence_1, sequence_2);
+    println!("{}", output);
+    Ok(output)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hamm() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_hamm")?;
+        assert_eq!(
+            rosalind_hamm(&input_file)?,
+            utility::io::input_from_file(&output_file)?.parse::<usize>()?
+        );
+        Ok(())
+    }
 }

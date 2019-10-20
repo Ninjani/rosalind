@@ -1,7 +1,10 @@
-use crate::textbook_track::r74_ba5e::{align, read_scoring_matrix, AlignmentParameters};
-use crate::utils;
-use ndarray::{Array, Array2};
 use std::isize;
+
+use failure::Error;
+use ndarray::{Array, Array2};
+
+use crate::textbook_track::r74_ba5e::{align, AlignmentParameters, read_scoring_matrix};
+use crate::utility;
 
 /// Find a Highest-Scoring Fitting Alignment of Two Strings
 ///
@@ -11,10 +14,10 @@ use std::isize;
 /// achieving this maximum score. Use the simple scoring method in which matches count +1 and both
 /// the mismatch and indel penalties are equal to 1. (If multiple fitting alignments achieving
 /// the maximum score exist, you may return any one.)
-pub fn rosalind_ba5h() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba5h.txt");
+pub fn rosalind_ba5h() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5h.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (_, amino_acids) = read_scoring_matrix("data/pam250.txt");
+    let (_, amino_acids) = read_scoring_matrix("data/pam250.txt")?;
     let mut scoring_matrix = Array2::zeros((amino_acids.len(), amino_acids.len()));
     scoring_matrix.fill(-1);
     scoring_matrix.diag_mut().assign(&Array::from_vec(
@@ -23,6 +26,7 @@ pub fn rosalind_ba5h() {
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 1);
     let (score, aln_string_1, aln_string_2) = fitting_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);
+    Ok(())
 }
 
 pub fn fitting_alignment_backtrack(
@@ -45,9 +49,9 @@ pub fn fitting_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                        parameters.amino_acid_order[&chars_1[i - 1]],
-                        parameters.amino_acid_order[&chars_2[j - 1]],
-                    )]),
+                    parameters.amino_acid_order[&chars_1[i - 1]],
+                    parameters.amino_acid_order[&chars_2[j - 1]],
+                )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()

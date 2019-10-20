@@ -1,12 +1,50 @@
-use crate::utils;
+use std::collections::HashMap;
+
 use failure::Error;
 use regex::Regex;
 use reqwest;
 
-const UNIPROT: &str = "http://www.uniprot.org/uniprot/";
+use crate::utility;
+
+const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
+
+/// Finding a Protein Motif
+///
+/// Given: At most 15 UniProt Protein Database access IDs.
+///
+/// Return: For each protein possessing the N-glycosylation motif, output its given access ID
+/// followed by a list of locations in the protein string where the motif can be found.
+pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> {
+    let motif = Regex::new("N[^P][ST][^P]")?;
+    let uniprot_ids = input.split('\n').collect::<Vec<&str>>();
+    let sequences: Vec<_> = uniprot_ids
+        .iter()
+        .map(|key| (*key, parse_sequence(&get_fasta_from_uniprot(key).unwrap())))
+        .collect();
+    let output = sequences
+        .into_iter()
+        .filter_map(|(uniprot_id, sequence)| {
+            let indices = find_all(&motif, &sequence);
+            if !indices.is_empty() {
+                Some((uniprot_id.to_owned(), indices))
+            } else {
+                None
+            }
+        })
+        .collect::<HashMap<_, _>>();
+    println!(
+        "{}",
+        output
+            .iter()
+            .map(|(k, v)| format!("{}\n{}", k, utility::io::format_array(v)))
+            .collect::<Vec<_>>()
+            .join("\n")
+    );
+    Ok(output)
+}
 
 fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
-    let url = format!("{}{}.fasta", UNIPROT, uniprot_id);
+    let url = format!("{}{}.fasta", UNIPROT_URL, uniprot_id);
     Ok(reqwest::get(&url)?.text()?)
 }
 
@@ -32,25 +70,25 @@ fn find_all(motif: &Regex, sequence: &str) -> Vec<usize> {
     }
 }
 
-/// Finding a Protein Motif
-///
-/// Given: At most 15 UniProt Protein Database access IDs.
-///
-/// Return: For each protein possessing the N-glycosylation motif, output its given access ID followed by a list of locations in the protein string where the motif can be found.
-pub fn rosalind_mprt() -> Result<(), Error> {
-    let motif = Regex::new("N[^P][ST][^P]")?;
-    let contents = utils::input_from_file("data/stronghold/rosalind_mprt.txt");
-    let uniprot_ids = contents.split('\n').collect::<Vec<&str>>();
-    let sequences: Vec<_> = uniprot_ids
-        .iter()
-        .map(|key| (*key, parse_sequence(&get_fasta_from_uniprot(key).unwrap())))
-        .collect();
-    for (uniprot_id, sequence) in sequences {
-        let indices = find_all(&motif, &sequence);
-        if !indices.is_empty() {
-            println!("{}", uniprot_id);
-            utils::print_array(&indices);
-        }
+#[cfg(test)]
+mod tests {
+    use itertools::Itertools;
+
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn mprt() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_mprt")?;
+        let mut output = HashMap::new();
+        for (key, positions) in utility::io::input_from_file(&output_file)?
+            .split('\n')
+            .tuple_windows()
+            {
+                output.insert(key.to_owned(), usize::parse_line(positions)?);
+            }
+        assert_eq!(rosalind_mprt(&input_file)?, output);
+        Ok(())
     }
-    Ok(())
 }

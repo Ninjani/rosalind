@@ -1,14 +1,15 @@
-use crate::stronghold::r6_hamm::hamming;
-use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
-use crate::utils;
-use crate::utils::Parseable;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
 
+use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
+use crate::utility;
+use crate::utility::io::Parseable;
+
 pub fn rosalind_ba2d() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba2d.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2d.txt")?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);
@@ -41,7 +42,7 @@ fn get_count_matrix(sequences: &[String], pseudocounts: bool) -> Array2<usize> {
             .iter()
             .map(|sequence| sequence.chars().nth(i).unwrap())
             .collect::<String>();
-        let counter = utils::char_counter(&position_string);
+        let counter = utility::string::char_counter(&position_string);
         matrix
             .column_mut(i)
             .assign(&Array1::from_iter("ACGT".chars().map(|c| {
@@ -72,7 +73,10 @@ fn get_consensus(count_matrix: &Array2<usize>) -> String {
 
 pub fn score_motifs(motifs: &[String], pseudocounts: bool) -> usize {
     let consensus = get_consensus(&get_count_matrix(motifs, pseudocounts));
-    motifs.iter().map(|motif| hamming(motif, &consensus)).sum()
+    motifs
+        .iter()
+        .map(|motif| utility::string::hamming(motif, &consensus))
+        .sum()
 }
 
 pub fn greedy_motif_search(dna: &[String], k: usize, t: usize, pseudocounts: bool) -> Vec<String> {

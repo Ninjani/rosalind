@@ -1,12 +1,14 @@
-use crate::utils;
-use failure::Error;
-use hashbrown::HashMap;
-use radix::RadixNum;
 use std::char;
+use std::collections::HashMap;
 use std::iter::repeat;
 
+use failure::Error;
+use radix::RadixNum;
+
+use crate::utility;
+
 pub fn rosalind_ba1m() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba1m.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1m.txt")?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (number, k) = (lines[0].parse::<usize>()?, lines[1].parse::<usize>()?);
     let mut dna = number_to_pattern(number, &"ACGT".chars().collect::<Vec<_>>())?;

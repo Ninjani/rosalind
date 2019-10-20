@@ -1,9 +1,34 @@
-use crate::utils;
-use hashbrown::HashMap;
+use std::collections::HashMap;
+
+use failure::Error;
+
+use crate::utility;
+
+/// Overlap Graphs
+///
+/// Given: A collection of DNA strings in FASTA format having total length at most 10 kbp.
+///
+/// Return: The adjacency list corresponding to O_3. You may return edges in any order.
+pub fn rosalind_grph(filename: &str) -> Result<Vec<(String, String)>, Error> {
+    let sequences = utility::io::read_fasta_file(filename)?;
+    let overlap_length = 3;
+    let output: Vec<(String, String)> = get_overlap_graph(&sequences, overlap_length)
+        .into_iter()
+        .collect();
+    println!(
+        "{}",
+        output
+            .iter()
+            .map(|(key_0, key_1)| format!("{} {}", key_0, key_1))
+            .collect::<Vec<_>>()
+            .join("\n")
+    );
+    Ok(output)
+}
 
 /// Make graph connecting sequences overlapping by overlap_length
-pub fn get_overlap_graph<S: ::std::hash::BuildHasher>(
-    sequences: &HashMap<String, String, S>,
+pub fn get_overlap_graph(
+    sequences: &HashMap<String, String>,
     overlap_length: usize,
 ) -> Vec<(String, String)> {
     let nodes = sequences
@@ -30,15 +55,30 @@ pub fn get_overlap_graph<S: ::std::hash::BuildHasher>(
     edges
 }
 
-/// Overlap Graphs
-///
-/// Given: A collection of DNA strings in FASTA format having total length at most 10 kbp.
-///
-/// Return: The adjacency list corresponding to O_3. You may return edges in any order.
-pub fn rosalind_grph() {
-    let sequences = utils::read_fasta_file("data/stronghold/rosalind_grph.txt");
-    let overlap_length = 3;
-    for (key_0, key_1) in get_overlap_graph(&sequences, overlap_length) {
-        println!("{} {}", key_0, key_1);
+#[cfg(test)]
+mod tests {
+    use std::collections::HashSet;
+
+    use itertools::Itertools;
+
+    use super::*;
+
+    #[test]
+    fn grph() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_grph")?;
+        let output_edges: HashSet<_> = utility::io::input_from_file(&output_file)?
+            .split('\n')
+            .map(|line| {
+                let (s1, s2) = line.split_whitespace().collect_tuple().unwrap();
+                (s1.to_owned(), s2.to_owned())
+            })
+            .collect();
+        assert_eq!(
+            rosalind_grph(&input_file)?
+                .into_iter()
+                .collect::<HashSet<_>>(),
+            output_edges
+        );
+        Ok(())
     }
 }

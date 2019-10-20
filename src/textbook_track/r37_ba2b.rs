@@ -1,9 +1,9 @@
-use crate::stronghold::r6_hamm::hamming;
-use crate::utils;
 use failure::Error;
 
+use crate::utility;
+
 pub fn rosalind_ba2b() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba2b.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2b.txt")?;
     let mut lines = contents.split('\n');
     let k = lines.next().unwrap().parse::<usize>()?;
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();
@@ -17,7 +17,7 @@ fn hamming_in_text(text: &str, pattern: &str) -> usize {
     let text: Vec<_> = text.chars().collect();
     for i in 0..=(text.len() - k) {
         let text_kmer: String = text[i..(i + k)].iter().collect();
-        let distance = hamming(&text_kmer, pattern);
+        let distance = utility::string::hamming(&text_kmer, pattern);
         if distance < min_distance {
             min_distance = distance
         }

@@ -1,12 +1,13 @@
+use failure::Error;
+use rand::{Rng, thread_rng};
+
 use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
 use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
-use crate::utils;
-use crate::utils::Parseable;
-use failure::Error;
-use rand::{thread_rng, Rng};
+use crate::utility;
+use crate::utility::io::Parseable;
 
 pub fn rosalind_ba2f() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba2f.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2f.txt")?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);
@@ -38,7 +39,7 @@ pub fn rosalind_ba2f() -> Result<(), Error> {
 //                return BestMotifs
 fn randomized_motif_search(dna: &[String], k: usize, t: usize, pseudocounts: bool) -> Vec<String> {
     let mut motifs: Vec<_> = (0..t)
-        .map(|i| utils::kmerize(&dna[i], k)[thread_rng().gen_range(0, t)].clone())
+        .map(|i| utility::string::kmerize(&dna[i], k)[thread_rng().gen_range(0, t)].clone())
         .collect();
     let mut best_motifs = motifs.clone();
     let mut profile;

@@ -1,63 +1,57 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
-use crate::algorithmic_heights::DFS;
-use crate::utils;
-use failure::Error;
 use std::collections::btree_map::BTreeMap;
-use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
+
+use failure::Error;
+
+use crate::utility;
 
 /// Strongly Connected Components
 ///
 /// Given: A simple directed graph with n≤103 vertices in the edge list format.
 ///
 /// Return: The number of strongly connected components in the graph.
-pub fn rosalind_scc() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_scc.txt");
-    let mut lines = contents
+pub fn rosalind_scc(filename: &str) -> Result<usize, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
-    let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
-    let adjacency_matrix = make_adjacency_list(&edges, true);
-    let node_order = DFS::get_sink_scc_node_order(&adjacency_matrix, num_nodes);
-    println!(
-        "{}",
-        DFS::run_dfs_given_node_order(adjacency_matrix, num_nodes, &node_order)
-            .num_connected_components
-    );
-    Ok(())
+    let mut graph = utility::graph::IntegerGraph::from_edge_list(&mut lines, true, false)?;
+    let graph_reverse = graph.get_reverse_graph(true);
+    let mut node_order = graph_reverse
+        .postvisit
+        .into_iter()
+        .enumerate()
+        .collect::<Vec<_>>();
+    node_order.sort_by(|a, b| b.1.cmp(&a.1));
+    graph.run_dfs_given_node_order(&node_order.into_iter().map(|(i, _)| i).collect::<Vec<_>>());
+    println!("{}", graph.num_connected_components);
+    Ok(graph.num_connected_components)
 }
 
-impl DFS {
-    pub fn get_sink_scc_node_order(
-        adjacency_matrix: &BTreeMap<usize, Vec<usize>>,
-        num_nodes: usize,
-    ) -> Vec<usize> {
-        let graph_reverse = DFS::run_dfs_reverse(&adjacency_matrix, num_nodes);
-        let mut node_order = graph_reverse
-            .postvisit
-            .into_iter()
-            .enumerate()
-            .collect::<Vec<_>>();
-        node_order.sort_by(|a, b| b.1.cmp(&a.1));
-        node_order.into_iter().map(|(i, _)| i).collect()
-    }
-
-    fn run_dfs_reverse(adjacency_list: &BTreeMap<usize, Vec<usize>>, num_nodes: usize) -> Self {
-        DFS::run_dfs(reverse_adjacency_list(adjacency_list), num_nodes)
-    }
-
-    pub fn run_dfs_given_node_order(
-        adjacency_list: BTreeMap<usize, Vec<usize>>,
-        num_nodes: usize,
-        node_order: &[usize],
-    ) -> Self {
-        let mut dfs = DFS::new(adjacency_list, num_nodes);
-        for &node in node_order {
-            if !dfs.visited[node] {
-                dfs.explore(node);
-                dfs.num_connected_components += 1;
+impl utility::graph::IntegerGraph {
+    pub fn get_reverse_graph(&self, run_dfs: bool) -> Self {
+        let mut adj_list_rev = BTreeMap::new();
+        for (node_2, edge_list) in &self.adjacency_list {
+            for node_1 in edge_list {
+                adj_list_rev
+                    .entry(*node_1)
+                    .or_insert_with(Vec::new)
+                    .push(*node_2);
             }
         }
-        dfs
+        Self::new(adj_list_rev, self.nodes.clone(), run_dfs)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn scc() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_scc")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<usize>()?;
+        assert_eq!(rosalind_scc(&input_file)?, output);
+        Ok(())
     }
 }

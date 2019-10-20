@@ -1,7 +1,7 @@
-use crate::utils;
-use crate::utils::Parseable;
 use failure::Error;
-use std::slice::SliceConcatExt;
+
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Implement GreedySorting to Sort a Permutation by Reversals
 ///
@@ -10,7 +10,7 @@ use std::slice::SliceConcatExt;
 /// Return: The sequence of permutations corresponding to applying GreedySorting to P,
 /// ending with the identity permutation.
 pub fn rosalind_ba6a() -> Result<(), Error> {
-    let line = utils::input_from_file("data/textbook_track/rosalind_ba6a.txt");
+    let line = utility::io::input_from_file("data/textbook_track/rosalind_ba6a.txt")?;
     let mut permutation = isize::parse_line(&line[1..(line.len() - 1)])?;
     greedy_reversal_sorting(&mut permutation);
     Ok(())
@@ -47,8 +47,8 @@ fn greedy_reversal_sorting(permutation: &mut [isize]) -> usize {
                         .collect::<Vec<_>>()[..],
                     &permutation[(k_position + 1)..],
                 ]
-                .concat()
-                .to_vec(),
+                    .concat()
+                    .to_vec(),
             );
             print_permutation(&permutation);
             distance += 1;

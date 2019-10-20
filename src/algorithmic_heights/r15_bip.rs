@@ -1,68 +1,81 @@
-use crate::algorithmic_heights::r5_ddeg::make_adjacency_list;
-use crate::utils;
-use failure::Error;
 use std::collections::VecDeque;
-use std::iter::repeat;
-use std::collections::btree_map::BTreeMap;
+
+use failure::Error;
+
+use crate::utility;
 
 /// Testing Bipartiteness
 ///
 /// Given: A positive integer k≤20 and k simple graphs in the edge list format with at most 10^3 vertices each.
 ///
 /// Return: For each graph, output "1" if it is bipartite and "-1" otherwise.
-pub fn rosalind_bip() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_bip.txt");
-    let mut lines = contents
+pub fn rosalind_bip(filename: &str) -> Result<Vec<isize>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let mut lines = input
         .split('\n')
         .filter(|s| !s.trim().is_empty())
         .map(|s| s.to_owned());
     let num_sections = lines.next().unwrap().parse::<usize>()?;
+    let mut output = Vec::with_capacity(num_sections);
     for _ in 0..num_sections {
-        let (num_nodes, _, edges) = utils::read_edge_list(&mut lines, true);
-        let adjacency_matrix = make_adjacency_list(&edges, false);
-        if is_bipartite(num_nodes, &adjacency_matrix) {
-            print!("1 ");
+        let graph = utility::graph::IntegerGraph::from_edge_list(&mut lines, false, false)?;
+        if graph.is_bipartite() {
+            output.push(1);
         } else {
-            print!("-1 ");
+            output.push(-1);
         }
     }
-    Ok(())
+    println!("{}", utility::io::format_array(&output));
+    Ok(output)
 }
 
-fn is_bipartite(num_nodes: usize, adjacency_matrix: &BTreeMap<usize, Vec<usize>>) -> bool {
-    let mut colors = repeat(None).take(num_nodes).collect::<Vec<_>>();
-    for node in 0..num_nodes {
-        if colors[node].is_none() && !is_bipartite_checker(&mut colors, node, &adjacency_matrix)
-        {
-            return false;
+impl utility::graph::IntegerGraph {
+    pub fn is_bipartite(&self) -> bool {
+        let mut colors = (0..self.num_nodes).map(|_| None).collect::<Vec<_>>();
+        for node in 0..self.num_nodes {
+            if colors[node].is_none() && !self.is_bipartite_checker(&mut colors, node) {
+                return false;
+            }
         }
+        true
     }
-    true
-}
 
-fn is_bipartite_checker(
-    colors: &mut [Option<bool>],
-    node: usize,
-    adjacency_matrix: &BTreeMap<usize, Vec<usize>>,
-) -> bool {
-    let mut queue = VecDeque::new();
-    queue.push_back(node);
-    colors[node] = Some(true);
-    while !queue.is_empty() {
-        let node = queue.pop_front().unwrap();
-        if let Some(edge_list) = adjacency_matrix.get(&node) {
-            for &child in edge_list {
-                if child == node {
-                    return false;
-                }
-                if colors[child].is_none() {
-                    colors[child] = Some(!colors[node].unwrap());
-                    queue.push_back(child);
-                } else if colors[node] == colors[child] {
-                    return false;
+    fn is_bipartite_checker(&self, colors: &mut [Option<bool>], node: usize) -> bool {
+        let mut queue = VecDeque::new();
+        queue.push_back(node);
+        colors[node] = Some(true);
+        while !queue.is_empty() {
+            let node = queue.pop_front().unwrap();
+            if let Some(edge_list) = self.adjacency_list.get(&self.nodes[node]) {
+                for child in edge_list {
+                    let child = self.node_to_index[child];
+                    if child == node {
+                        return false;
+                    }
+                    if colors[child].is_none() {
+                        colors[child] = Some(!colors[node].unwrap());
+                        queue.push_back(child);
+                    } else if colors[node] == colors[child] {
+                        return false;
+                    }
                 }
             }
         }
+        true
     }
-    true
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn bip() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_bip")?;
+        let output = isize::parse_line(&utility::io::input_from_file(&output_file)?)?;
+        assert_eq!(rosalind_bip(&input_file)?, output);
+        Ok(())
+    }
 }

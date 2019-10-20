@@ -1,6 +1,7 @@
-use crate::utils;
-use crate::utils::Parseable;
 use failure::Error;
+
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Compute the Number of Breakpoints in a Permutation
 ///
@@ -8,7 +9,7 @@ use failure::Error;
 ///
 /// Return: The number of breakpoints in P.
 pub fn rosalind_ba6b() -> Result<(), Error> {
-    let line = utils::input_from_file("data/textbook_track/rosalind_ba6b.txt");
+    let line = utility::io::input_from_file("data/textbook_track/rosalind_ba6b.txt")?;
     let mut permutation = vec![0];
     permutation.extend(isize::parse_line(&line[1..(line.len() - 1)])?);
     permutation.push(permutation.len() as isize);

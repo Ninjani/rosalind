@@ -1,10 +1,12 @@
-use crate::textbook_track::hidden_markov_models::{
-    get_chars_and_index, read_probability_matrix, HMMError, HMM,
-};
-use crate::utils;
+use std::collections::HashMap;
+
 use failure::Error;
-use hashbrown::HashMap;
 use ndarray::{Array1, Array2};
+
+use crate::textbook_track::hidden_markov_models::{
+    get_chars_and_index, HMM, HMMError, read_probability_matrix,
+};
+use crate::utility;
 
 /// Compute the Probability of an Outcome Given a Hidden Path
 ///
@@ -13,8 +15,8 @@ use ndarray::{Array1, Array2};
 /// of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The conditional probability Pr(x|π) that string x will be emitted by the HMM given the hidden path π.
-pub fn rosalind_ba10b() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba10b.txt");
+pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections
         .next()
@@ -25,7 +27,7 @@ pub fn rosalind_ba10b() -> Result<(), Error> {
         &sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing alphabet".into()))?,
-    );
+    )?;
     let hidden_path = sections
         .next()
         .ok_or_else(|| HMMError::InputFormatError("Missing hidden path".into()))?
@@ -35,7 +37,7 @@ pub fn rosalind_ba10b() -> Result<(), Error> {
         &sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
-    );
+    )?;
     let transition_matrix = HMM::transition_matrix_from_path(&hidden_path, &state_index);
     let emission_matrix = read_probability_matrix(
         sections
@@ -52,11 +54,9 @@ pub fn rosalind_ba10b() -> Result<(), Error> {
         transition_matrix,
         emission_matrix,
     };
-    println!(
-        "{:e}",
-        hmm.get_probability_of_sequence_given_path(&sequence, &hidden_path)
-    );
-    Ok(())
+    let probability = hmm.get_probability_of_sequence_given_path(&sequence, &hidden_path);
+    println!("{:e}", probability);
+    Ok(probability)
 }
 
 impl HMM {
@@ -86,5 +86,24 @@ impl HMM {
             ]];
         }
         probability
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_approx_eq::assert_approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn ba10b() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_ba10b")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<f64>()?;
+        assert_approx_eq!(
+            rosalind_ba10b(&input_file)?,
+            output,
+            utility::testing::ROSALIND_FLOAT_ERROR_F64
+        );
+        Ok(())
     }
 }

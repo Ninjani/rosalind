@@ -1,7 +1,10 @@
-use crate::textbook_track::r74_ba5e::read_scoring_matrix;
-use crate::utils;
-use hashbrown::HashMap;
+use std::collections::HashMap;
+
+use failure::Error;
 use ndarray::{Array2, Array3};
+
+use crate::textbook_track::r74_ba5e::read_scoring_matrix;
+use crate::utility;
 
 /// Align Two Strings Using Affine Gap Penalties
 ///
@@ -10,14 +13,15 @@ use ndarray::{Array2, Array3};
 /// Return: The maximum alignment score between v and w, followed by an alignment of v and w
 /// achieving this maximum score. Use the BLOSUM62 scoring matrix, a gap opening penalty of 11,
 /// and a gap extension penalty of 1.
-pub fn rosalind_ba5j() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba5j.txt");
+pub fn rosalind_ba5j() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5j.txt")?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt");
+    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 11, 1);
     let (score, aln_string_1, aln_string_2) =
         affine_gap_penalties_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);
+    Ok(())
 }
 
 pub struct AlignmentParameters {
@@ -102,9 +106,9 @@ pub fn affine_gap_penalties_alignment_backtrack(
                 scores[(i, j, 0)], // 0
                 (scores[(i - 1, j - 1, 1)]
                     + parameters.scoring_matrix[(
-                        parameters.amino_acid_order[&chars_1[i - 1]],
-                        parameters.amino_acid_order[&chars_2[j - 1]],
-                    )]), // 1
+                    parameters.amino_acid_order[&chars_1[i - 1]],
+                    parameters.amino_acid_order[&chars_2[j - 1]],
+                )]), // 1
                 scores[(i, j, 2)], // 2
             ]);
             scores[(i, j, 1)] = max_value;

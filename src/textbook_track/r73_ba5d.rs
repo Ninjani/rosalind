@@ -1,12 +1,14 @@
-use crate::utils;
+use std::collections::{HashMap, HashSet};
+use std::isize;
+
 use failure::Error;
-use hashbrown::{HashMap, HashSet};
+use petgraph::Directed;
+use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
-use petgraph::Directed;
-use petgraph::Direction::{Incoming, Outgoing};
-use std::isize;
+
+use crate::utility;
 
 /// Find the Longest Path in a DAG
 ///
@@ -14,7 +16,7 @@ use std::isize;
 ///
 /// Return: The length of a longest path in the graph, followed by a longest path. (If multiple longest paths exist, you may return any one.)
 pub fn rosalind_ba5d() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba5d.txt");
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5d.txt")?;
     let mut lines = contents.split('\n');
     let (source, sink) = (
         lines.next().unwrap().parse::<usize>()?,
@@ -36,7 +38,7 @@ pub fn rosalind_ba5d() -> Result<(), Error> {
 }
 
 pub fn read_edge_weighted_list(
-    lines: impl Iterator<Item = String>,
+    lines: impl Iterator<Item=String>,
 ) -> (
     StableGraph<usize, isize, Directed, u32>,
     HashMap<usize, NodeIndex<u32>>,
@@ -72,7 +74,7 @@ pub fn get_topological_ordering<T, U, Ix: IndexType>(
         .collect();
     let mut node;
     while !candidates.is_empty() {
-        node = utils::set_pop(&mut candidates).unwrap();
+        node = utility::math::set_pop(&mut candidates).unwrap();
         let edges: Vec<_> = graph
             .edges_directed(node, Outgoing)
             .map(|e| (e.id(), e.target()))

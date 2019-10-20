@@ -1,7 +1,8 @@
-use crate::utils;
-use crate::utils::Parseable;
 use failure::Error;
-use rand::{thread_rng, Rng};
+use rand::{Rng, thread_rng};
+
+use crate::utility;
+use crate::utility::io::Parseable;
 
 /// Median
 ///
@@ -9,14 +10,15 @@ use rand::{thread_rng, Rng};
 /// from −10^5 to 10^5, a positive number k≤n.
 ///
 /// Return: The k-th smallest element of A.
-pub fn rosalind_med() -> Result<(), Error> {
-    let contents = utils::input_from_file("data/algorithmic_heights/rosalind_med.txt");
-    let lines: Vec<_> = contents.split('\n').collect();
+pub fn rosalind_med(filename: &str) -> Result<isize, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let lines: Vec<_> = input.split('\n').collect();
     let length = lines[0].parse::<usize>()?;
     let mut array = isize::parse_line(lines[1])?;
     let k = lines[2].parse::<usize>()?;
-    println!("{}", select(&mut array, 0, length - 1, k - 1));
-    Ok(())
+    let output = select(&mut array, 0, length - 1, k - 1);
+    println!("{}", output);
+    Ok(output)
 }
 
 pub fn partition(array: &mut [isize], left: usize, right: usize, pivot_index: usize) -> usize {
@@ -49,5 +51,18 @@ fn select(array: &mut [isize], left: usize, right: usize, k: usize) -> isize {
         } else {
             right = pivot_index - 1;
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn med() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_med")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<isize>()?;
+        assert_eq!(rosalind_med(&input_file)?, output);
+        Ok(())
     }
 }

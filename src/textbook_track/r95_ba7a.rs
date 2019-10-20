@@ -1,16 +1,19 @@
-use crate::textbook_track::r73_ba5d::read_edge_weighted_list;
-use crate::utils;
+use failure::Error;
 use itertools::Itertools;
 use petgraph::algo::astar;
+
+use crate::textbook_track::r73_ba5d::read_edge_weighted_list;
+use crate::utility;
 
 /// Compute Distances Between Leaves
 ///
 /// Given: An integer n followed by the adjacency list of a weighted tree with n leaves.
 ///
 /// Return: A space-separated n x n (di, j), where di, j is the length of the path between leaves i and j.
-pub fn rosalind_ba7a() {
-    let contents = utils::input_from_file("data/textbook_track/rosalind_ba7a.txt");
+pub fn rosalind_ba7a() -> Result<(), Error> {
+    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba7a.txt")?;
     make_distance_matrix(&contents);
+    Ok(())
 }
 
 fn make_distance_matrix(contents: &str) {
@@ -28,10 +31,10 @@ fn make_distance_matrix(contents: &str) {
                     *leaf_1,
                     |finish| finish == *leaf_2,
                     |e| *e.weight(),
-                    |_| 0
+                    |_| 0,
                 )
-                .unwrap()
-                .0
+                    .unwrap()
+                    .0
             );
         }
         println!();

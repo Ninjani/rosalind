@@ -1,12 +1,19 @@
-use crate::textbook_track::r66_ba4j::get_prefix_masses;
-use crate::utils;
-use hashbrown::HashMap;
+use std::collections::HashMap;
 
-pub fn rosalind_ba4c() {
-    let peptide = utils::input_from_file("data/textbook_track/rosalind_ba4c.txt");
-    let aa_to_mass = get_aa_to_mass_usize();
+use failure::Error;
+
+use crate::textbook_track::r66_ba4j::get_prefix_masses;
+use crate::utility;
+
+pub fn rosalind_ba4c() -> Result<(), Error> {
+    let peptide = utility::io::input_from_file("data/textbook_track/rosalind_ba4c.txt")?;
+    let aa_to_mass = get_aa_to_mass_usize()?;
     let peptide_masses: Vec<_> = peptide.trim().chars().map(|c| aa_to_mass[&c]).collect();
-    utils::print_array(&get_cyclic_spectrum(&peptide_masses));
+    println!(
+        "{}",
+        utility::io::format_array(&get_cyclic_spectrum(&peptide_masses))
+    );
+    Ok(())
 }
 
 pub fn get_cyclic_spectrum(peptide: &[usize]) -> Vec<usize> {
@@ -28,17 +35,17 @@ pub fn get_cyclic_spectrum(peptide: &[usize]) -> Vec<usize> {
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 
 /// Reads monoisotopic mass table
-pub fn get_aa_to_mass_usize() -> HashMap<char, usize> {
+pub fn get_aa_to_mass_usize() -> Result<HashMap<char, usize>, Error> {
     let mut mass_table = HashMap::new();
-    let mass_contents = utils::input_from_file(MASS_FILE);
+    let mass_contents = utility::io::input_from_file(MASS_FILE)?;
     for line in mass_contents.split('\n') {
         let mut aa_mass = line.split_whitespace();
         if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {
             mass_table.insert(
                 aa.chars().next().unwrap(),
-                mass.parse::<f64>().unwrap().floor() as usize,
+                mass.parse::<f64>()?.floor() as usize,
             );
         }
     }
-    mass_table
+    Ok(mass_table)
 }

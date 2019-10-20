@@ -1,15 +1,17 @@
-use crate::utils;
 use failure::Error;
+
+use crate::utility;
 
 /// Counting Inversions
 ///
 /// Given: A positive integer n≤10^5 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: The number of inversions in A.
-pub fn rosalind_inv() -> Result<(), Error> {
-    let (_, array) = utils::read_isize_array("data/algorithmic_heights/rosalind_inv.txt")?;
-    println!("{}", merge_sort_count(&array).1);
-    Ok(())
+pub fn rosalind_inv(filename: &str) -> Result<usize, Error> {
+    let (_, array) = utility::io::read_isize_array(filename)?;
+    let count = merge_sort_count(&array).1;
+    println!("{}", count);
+    Ok(count)
 }
 
 fn merge_sort_count<T: PartialOrd + PartialEq + Copy>(array: &[T]) -> (Vec<T>, usize) {
@@ -46,4 +48,17 @@ pub fn merge_count<T: PartialOrd + PartialEq + Copy>(
     sorted_array.extend(&left_array[i..]);
     sorted_array.extend(&right_array[j..]);
     (sorted_array, inversions)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inv() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_inv")?;
+        let output = utility::io::input_from_file(&output_file)?.parse::<usize>()?;
+        assert_eq!(rosalind_inv(&input_file)?, output);
+        Ok(())
+    }
 }

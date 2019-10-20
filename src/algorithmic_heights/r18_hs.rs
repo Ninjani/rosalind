@@ -1,16 +1,17 @@
-use crate::utils;
 use failure::Error;
+
+use crate::utility;
 
 /// Heap Sort
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array A.
-pub fn rosalind_hs() -> Result<(), Error> {
-    let (length, mut array) = utils::read_isize_array("data/algorithmic_heights/rosalind_hs.txt")?;
+pub fn rosalind_hs(filename: &str) -> Result<Vec<isize>, Error> {
+    let (length, mut array) = utility::io::read_isize_array(filename)?;
     heap_sort(&mut array, length);
-    utils::print_array(&array);
-    Ok(())
+    println!("{}", utility::io::format_array(&array));
+    Ok(array)
 }
 
 fn heap_sort<T: Copy + PartialOrd + PartialEq>(array: &mut [T], length: usize) {
@@ -49,5 +50,18 @@ fn sift_down<T: PartialOrd + PartialEq + Copy>(array: &mut [T], i: usize, length
             array.swap(root, largest);
             root = largest;
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hs() -> Result<(), Error> {
+        let input_file = utility::testing::get_input_file("rosalind_hs")?;
+        let result = rosalind_hs(&input_file)?;
+        assert!((1..result.len()).all(|i| result[i - 1] <= result[i]));
+        Ok(())
     }
 }

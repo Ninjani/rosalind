@@ -1,10 +1,11 @@
-use crate::utils;
-use failure::{err_msg, Error};
+use failure::Error;
 use itertools::Itertools;
-use petgraph::algo::dijkstra;
-use petgraph::visit::EdgeRef;
-use petgraph::Direction::Incoming;
 use petgraph::{Graph, Undirected};
+use petgraph::algo::dijkstra;
+use petgraph::Direction::Incoming;
+use petgraph::visit::EdgeRef;
+
+use crate::utility;
 
 /// Distances in Trees
 ///
@@ -13,9 +14,9 @@ use petgraph::{Graph, Undirected};
 ///
 /// Return: A collection of n positive integers, for which the kth integer represents the distance
 /// between xk and yk in Tk.
-pub fn rosalind_nwck() -> Result<(), Error> {
-    let trees_data = utils::input_from_file("data/stronghold/rosalind_nwck.txt");
-    let trees = trees_data.split("\n\n");
+pub fn rosalind_nwck(filename: &str) -> Result<Vec<usize>, Error> {
+    let input = utility::io::input_from_file(filename)?;
+    let trees = input.split("\n\n");
     let mut path_lengths = Vec::new();
     for tree_data in trees {
         let tree_data: Vec<_> = tree_data.split('\n').collect();
@@ -23,14 +24,14 @@ pub fn rosalind_nwck() -> Result<(), Error> {
         let (start, end) = tree_data[1]
             .split(' ')
             .collect_tuple()
-            .ok_or_else(|| err_msg("NoneError"))?;
+            .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
         match get_path_length(&tree, start, end) {
             Some(path_length) => path_lengths.push(path_length as usize),
             None => panic!("Start/end not found"),
         }
     }
-    utils::print_array(&path_lengths);
-    Ok(())
+    println!("{}", utility::io::format_array(&path_lengths));
+    Ok(path_lengths)
 }
 
 pub fn get_path_length(
@@ -94,7 +95,9 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
             }
             ")" => {
                 // Finish current branch
-                node_index = ancestors.pop().ok_or_else(|| err_msg("NoneError"))?;
+                node_index = ancestors
+                    .pop()
+                    .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
             }
             _ => {
                 let x = tokens[i - 1].as_str();
@@ -102,7 +105,8 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
                     // Name
                     *tree
                         .node_weight_mut(node_index)
-                        .ok_or_else(|| err_msg("NoneError"))? = token.to_owned();
+                        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)? =
+                        token.to_owned();
                 } else if x == ":" {
                     // Edge weight
                     let edge_ids: Vec<_> = tree
@@ -112,11 +116,29 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
                     for edge_id in edge_ids {
                         *tree
                             .edge_weight_mut(edge_id)
-                            .ok_or_else(|| err_msg("NoneError"))? = token.parse::<f64>()?;
+                            .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)? =
+                            token.parse::<f64>()?;
                     }
                 }
             }
         }
     }
     Ok(tree)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::utility::io::Parseable;
+
+    use super::*;
+
+    #[test]
+    fn nwck() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_nwck")?;
+        assert_eq!(
+            rosalind_nwck(&input_file)?,
+            usize::parse_line(&utility::io::input_from_file(&output_file)?)?
+        );
+        Ok(())
+    }
 }

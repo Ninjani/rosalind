@@ -1,20 +1,21 @@
-use crate::utils;
+use failure::Error;
+
+use crate::utility;
 
 /// Transitions and Transversions
 ///
 /// Given: Two DNA strings s1 and s2 of equal length (at most 1 kbp).
 ///
 /// Return: The transition/transversion ratio R(s1,s2).
-pub fn rosalind_tran() {
-    let fasta = utils::read_fasta_file("data/stronghold/rosalind_tran.txt");
+pub fn rosalind_tran(filename: &str) -> Result<f64, Error> {
+    let fasta = utility::io::read_fasta_file(filename)?;
     let sequences = fasta.values().collect::<Vec<_>>();
     let sequence_1 = sequences[0];
     let sequence_2 = sequences[1];
-    println!(
-        "{}",
-        (count_transitions(sequence_1, sequence_2) as f64)
-            / (count_transversions(sequence_1, sequence_2)) as f64
-    );
+    let ratio = (count_transitions(sequence_1, sequence_2) as f64)
+        / (count_transversions(sequence_1, sequence_2)) as f64;
+    println!("{}", ratio);
+    Ok(ratio)
 }
 
 /// Check if two nucleotides represent a transition
@@ -46,4 +47,22 @@ fn count_transversions(sequence_1: &str, sequence_2: &str) -> usize {
         .zip(sequence_2.chars())
         .filter(|(c1, c2)| is_transversion(*c1, *c2))
         .count()
+}
+
+#[cfg(test)]
+mod tests {
+    use assert_approx_eq::assert_approx_eq;
+
+    use super::*;
+
+    #[test]
+    fn tran() -> Result<(), Error> {
+        let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_tran")?;
+        assert_approx_eq!(
+            rosalind_tran(&input_file)?,
+            utility::io::input_from_file(&output_file)?.parse::<f64>()?,
+            utility::testing::ROSALIND_FLOAT_ERROR_F64
+        );
+        Ok(())
+    }
 }
