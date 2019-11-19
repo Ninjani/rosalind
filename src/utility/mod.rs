@@ -4,3 +4,4 @@ pub mod io;
 pub mod math;
 pub mod string;
 pub mod testing;
+pub mod hidden_markov_models;

@@ -3,10 +3,10 @@ use std::collections::HashMap;
 use failure::Error;
 use ndarray::Array2;
 
-use crate::textbook_track::hidden_markov_models::{
+use crate::utility;
+use crate::utility::hidden_markov_models::{
     get_chars_and_index, HMM, HMMError, read_probability_matrix,
 };
-use crate::utility;
 
 /// Compute the Probability of a Hidden Path
 ///
