@@ -97,4 +97,3 @@ pub fn get_all_sample_data(folder_name: &str) -> Result<(), Error> {
     }
     Ok(())
 }
-

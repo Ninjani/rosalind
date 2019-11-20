@@ -1,9 +1,9 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::hidden_markov_models::{
+use crate::textbook_track::hidden_markov_models::{
     get_chars_and_index, ProfileHMM, ProfileHMMError,
 };
+use crate::utility;
 
 /// Construct a Profile HMM
 ///
