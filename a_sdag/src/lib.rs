@@ -1,5 +1,6 @@
 use failure::Error;
 
+use a_ts::TopologicalSort;
 use utility;
 
 /// Shortest Paths in DAG
@@ -35,8 +36,16 @@ pub fn rosalind_sdag(filename: &str) -> Result<Vec<Option<i32>>, Error> {
     Ok(distances)
 }
 
-impl utility::graph::WeightedGraph {
-    pub fn get_shortest_path_length(
+pub trait DAGShortestPath {
+    fn get_shortest_path_length(
+        &self,
+        source_node: usize,
+        topo_sort: &[usize],
+    ) -> Vec<Option<i32>>;
+}
+
+impl DAGShortestPath for utility::graph::WeightedGraph {
+    fn get_shortest_path_length(
         &self,
         source_node: usize,
         topo_sort: &[usize],

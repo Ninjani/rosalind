@@ -7,10 +7,8 @@ use std::num::{ParseFloatError, ParseIntError};
 use failure::Error;
 use itertools::Itertools;
 
-use utility::{
-    errors,
-    graph::{IntegerGraph, WeightedGraph},
-};
+use crate::errors;
+use crate::graph::{IntegerGraph, WeightedGraph};
 
 const CODON_FILE: &str = "data/codons.txt";
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";

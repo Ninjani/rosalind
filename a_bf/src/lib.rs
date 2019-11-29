@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate failure;
 use failure::Error;
 
 use utility;
@@ -29,10 +31,14 @@ pub fn rosalind_bf(filename: &str) -> Result<Vec<Option<i32>>, Error> {
     Ok(output)
 }
 
+pub trait BellmanFord {
+    fn bellman_ford(&self, start_index: usize) -> Option<Vec<i32>>;
+}
+
 /// Finds lengths of shortest weighted (incl. negative weights) paths from start_node to each other node
 /// None if a negative weight cycle exists
-impl utility::graph::WeightedGraph {
-    pub fn bellman_ford(&self, start_index: usize) -> Option<Vec<i32>> {
+impl BellmanFord for utility::graph::WeightedGraph {
+    fn bellman_ford(&self, start_index: usize) -> Option<Vec<i32>> {
         fn update(dists: &mut [i32], index_1: usize, index_2: usize, weight: i32) -> bool {
             if dists[index_1] < ::std::i32::MAX && dists[index_1] + weight < dists[index_2] {
                 dists[index_2] = dists[index_1] + weight;

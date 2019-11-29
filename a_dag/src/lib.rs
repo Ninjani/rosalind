@@ -27,8 +27,12 @@ pub fn rosalind_dag(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn is_acyclic(&self) -> bool {
+pub trait AcyclicCheck {
+    fn is_acyclic(&self) -> bool;
+}
+
+impl AcyclicCheck for utility::graph::IntegerGraph {
+    fn is_acyclic(&self) -> bool {
         for node_index in 0..self.num_nodes {
             if let Some(edge_list) = self.adjacency_list.get(&self.nodes[node_index]) {
                 for next_node in edge_list {

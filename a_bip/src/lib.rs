@@ -29,8 +29,13 @@ pub fn rosalind_bip(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn is_bipartite(&self) -> bool {
+pub trait BipartiteChecker {
+    fn is_bipartite(&self) -> bool;
+    fn is_bipartite_checker(&self, colors: &mut [Option<bool>], node: usize) -> bool;
+}
+
+impl BipartiteChecker for utility::graph::IntegerGraph {
+    fn is_bipartite(&self) -> bool {
         let mut colors = (0..self.num_nodes).map(|_| None).collect::<Vec<_>>();
         for node in 0..self.num_nodes {
             if colors[node].is_none() && !self.is_bipartite_checker(&mut colors, node) {

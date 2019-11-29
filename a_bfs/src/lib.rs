@@ -26,19 +26,22 @@ pub fn rosalind_bfs(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(lengths)
 }
 
-impl utility::graph::IntegerGraph {
-    fn get_path_length(node: usize, path: &HashMap<usize, Option<usize>>) -> usize {
-        let mut node = node;
-        let mut length = 0;
-        while let Some(n) = path[&node] {
-            node = n;
-            length += 1;
-        }
-        length
-    }
+pub trait BFS {
+    fn bfs_length(&self, start_node: usize, end_node: usize) -> Option<usize>;
+}
 
+impl BFS for utility::graph::IntegerGraph {
     /// Finds length of shortest path from start_node to end_node using breadth-first search
     fn bfs_length(&self, start_node: usize, end_node: usize) -> Option<usize> {
+        fn get_path_length(node: usize, path: &HashMap<usize, Option<usize>>) -> usize {
+            let mut node = node;
+            let mut length = 0;
+            while let Some(n) = path[&node] {
+                node = n;
+                length += 1;
+            }
+            length
+        }
         let mut open_set = VecDeque::new();
         let mut closed_set = HashSet::new();
         open_set.push_back(start_node);
@@ -47,7 +50,7 @@ impl utility::graph::IntegerGraph {
         while !open_set.is_empty() {
             let subtree_root = open_set.pop_front().unwrap();
             if subtree_root == end_node {
-                return Some(Self::get_path_length(subtree_root, &path));
+                return Some(get_path_length(subtree_root, &path));
             }
             if let Some(edge_list) = self.adjacency_list.get(&self.nodes[subtree_root]) {
                 for child in edge_list {

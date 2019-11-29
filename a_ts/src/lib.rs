@@ -17,8 +17,11 @@ pub fn rosalind_ts(filename: &str) -> Result<Vec<usize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn get_topological_sort(&self) -> Vec<usize> {
+pub trait TopologicalSort {
+    fn get_topological_sort(&self) -> Vec<usize>;
+}
+impl TopologicalSort for utility::graph::IntegerGraph {
+    fn get_topological_sort(&self) -> Vec<usize> {
         let mut postvisit = self.postvisit.iter().enumerate().collect::<Vec<_>>();
         postvisit.sort_by(|a, b| b.1.cmp(&a.1));
         postvisit.into_iter().map(|(i, _)| self.nodes[i]).collect()

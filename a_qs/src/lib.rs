@@ -1,7 +1,7 @@
 use failure::Error;
 use rand::{Rng, thread_rng};
 
-use crate::algorithmic_heights::r24_med::partition;
+use a_med::partition;
 use utility;
 use utility::io::Parseable;
 

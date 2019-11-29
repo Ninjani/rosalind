@@ -1,6 +1,7 @@
 use failure::Error;
 use itertools::Itertools;
 
+use a_ts::TopologicalSort;
 use utility;
 
 /// Semi-Connected Graph
@@ -29,8 +30,11 @@ pub fn rosalind_sc(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn is_semi_connected(&self) -> bool {
+pub trait SemiConnectedCheck {
+    fn is_semi_connected(&self) -> bool;
+}
+impl SemiConnectedCheck for utility::graph::IntegerGraph {
+    fn is_semi_connected(&self) -> bool {
         for (node_1, node_2) in self.get_topological_sort().into_iter().tuple_windows() {
             if let Some(edges) = self.adjacency_list.get(&node_1) {
                 if !edges.contains(&node_2) {

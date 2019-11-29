@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::algorithmic_heights::r7_mer::merge;
+use a_mer::merge;
 use utility;
 
 /// Merge Sort

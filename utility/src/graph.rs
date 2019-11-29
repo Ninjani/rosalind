@@ -72,6 +72,19 @@ impl IntegerGraph {
         Self::new(adjacency_list, weighted_graph.nodes.clone(), run_dfs)
     }
 
+    pub fn get_reverse_graph(&self, run_dfs: bool) -> Self {
+        let mut adj_list_rev = BTreeMap::new();
+        for (node_2, edge_list) in &self.adjacency_list {
+            for node_1 in edge_list {
+                adj_list_rev
+                    .entry(*node_1)
+                    .or_insert_with(Vec::new)
+                    .push(*node_2);
+            }
+        }
+        Self::new(adj_list_rev, self.nodes.clone(), run_dfs)
+    }
+
     /// Convert an adjacency list of nodes of any type to an indexed adjacency list
     /// where each node is given an index (starting from 0)
     pub fn convert_graph<T: Eq + Clone + Hash>(

@@ -1,5 +1,3 @@
-use std::collections::btree_map::BTreeMap;
-
 use failure::Error;
 
 use utility;
@@ -26,21 +24,6 @@ pub fn rosalind_scc(filename: &str) -> Result<usize, Error> {
     graph.run_dfs_given_node_order(&node_order.into_iter().map(|(i, _)| i).collect::<Vec<_>>());
     println!("{}", graph.num_connected_components);
     Ok(graph.num_connected_components)
-}
-
-impl utility::graph::IntegerGraph {
-    pub fn get_reverse_graph(&self, run_dfs: bool) -> Self {
-        let mut adj_list_rev = BTreeMap::new();
-        for (node_2, edge_list) in &self.adjacency_list {
-            for node_1 in edge_list {
-                adj_list_rev
-                    .entry(*node_1)
-                    .or_insert_with(Vec::new)
-                    .push(*node_2);
-            }
-        }
-        Self::new(adj_list_rev, self.nodes.clone(), run_dfs)
-    }
 }
 
 #[cfg(test)]

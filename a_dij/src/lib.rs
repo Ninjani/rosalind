@@ -19,7 +19,7 @@ pub fn rosalind_dij(filename: &str) -> Result<Vec<isize>, Error> {
     let graph = utility::graph::WeightedGraph::from_weighted_edge_list(&mut lines)?;
     let mut lengths = Vec::with_capacity(graph.num_nodes);
     for node in 0..graph.num_nodes {
-        match graph.dijkstra(0, node) {
+        match graph.get_dijkstra_start_to_end_distance(0, node) {
             Some(cost) => lengths.push(cost as isize),
             None => lengths.push(-1),
         }
@@ -50,9 +50,12 @@ impl PartialOrd for State {
     }
 }
 
+pub trait DijkstraStartToEnd {
+    fn get_dijkstra_start_to_end_distance(&self, start_node: usize, end_node: usize) -> Option<usize>;
+}
 /// Finds length of shortest (weighted) path from start_node to end_node using Dijkstra's Algorithm
-impl utility::graph::WeightedGraph {
-    pub fn dijkstra(&self, start_node: usize, end_node: usize) -> Option<usize> {
+impl DijkstraStartToEnd for utility::graph::WeightedGraph {
+    fn get_dijkstra_start_to_end_distance(&self, start_node: usize, end_node: usize) -> Option<usize> {
         let mut distances = (0..self.num_nodes)
             .map(|_| ::std::usize::MAX)
             .collect::<Vec<_>>();

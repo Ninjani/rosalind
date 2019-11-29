@@ -43,11 +43,11 @@ pub fn rosalind_2sat(filename: &str) -> Result<Vec<Option<Vec<isize>>>, Error> {
     Ok(output)
 }
 
-pub trait From2sat {
+pub trait From2sat: Sized {
     fn from_2sat_adjacency_list(
         lines: &mut dyn Iterator<Item=String>,
         run_dfs: bool,
-    ) -> Result<Self, Error>
+    ) -> Result<Self, Error>;
 }
 impl From2sat for utility::graph::IntegerGraph {
     fn from_2sat_adjacency_list(

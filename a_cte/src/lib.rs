@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use failure::Error;
 
-use crate::algorithmic_heights::r17_dij::State;
+use a_dij::State;
 use utility;
 use utility::io::Parseable;
 
@@ -25,7 +25,7 @@ pub fn rosalind_cte(filename: &str) -> Result<Vec<isize>, Error> {
         let weighted_graph = utility::graph::WeightedGraph::from_weighted_edge_list(&mut lines)?;
         let (start, end, weight) = weighted_graph.edges[0];
         let min_distances =
-            weighted_graph.get_dijkstra_min_distances(weighted_graph.node_to_index[&end]);
+            weighted_graph.get_dijkstra_start_to_all_distances(weighted_graph.node_to_index[&end]);
         match min_distances[weighted_graph.node_to_index[&start]] {
             Some(cost) => output.push(cost as isize + weight as isize),
             None => output.push(-1),
@@ -35,8 +35,12 @@ pub fn rosalind_cte(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::WeightedGraph {
-    fn get_dijkstra_min_distances(&self, start_node: usize) -> Vec<Option<usize>> {
+pub trait DijkstraStartToAll {
+    fn get_dijkstra_start_to_all_distances(&self, start_node: usize) -> Vec<Option<usize>>;
+}
+
+impl DijkstraStartToAll for utility::graph::WeightedGraph {
+    fn get_dijkstra_start_to_all_distances(&self, start_node: usize) -> Vec<Option<usize>> {
         let mut distances = (0..self.num_nodes).map(|_| None).collect::<Vec<_>>();
         let mut heap = BinaryHeap::with_capacity(self.num_nodes);
         heap.push(State {

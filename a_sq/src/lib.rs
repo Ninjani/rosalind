@@ -29,7 +29,11 @@ pub fn rosalind_sq(filename: &str) -> Result<Vec<isize>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
+pub trait HasSquare {
+    fn has_square(&self) -> bool;
+}
+
+impl HasSquare for utility::graph::IntegerGraph {
     fn has_square(&self) -> bool {
         for i in 0..self.num_nodes - 1 {
             for j in (i + 1)..self.num_nodes {

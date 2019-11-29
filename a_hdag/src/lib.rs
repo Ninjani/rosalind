@@ -1,6 +1,8 @@
 use failure::Error;
 
 use utility;
+use a_dag::AcyclicCheck;
+use a_ts::TopologicalSort;
 
 /// Given: A positive integer k≤20 and k simple directed acyclic graphs
 /// in the edge list format with at most 103 vertices each.
@@ -38,8 +40,11 @@ pub fn rosalind_hdag(filename: &str) -> Result<Vec<Option<Vec<usize>>>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn get_hamiltonian_path(&self) -> Option<Vec<usize>> {
+pub trait Hamiltonian {
+    fn get_hamiltonian_path(&self) -> Option<Vec<usize>>;
+}
+impl Hamiltonian for utility::graph::IntegerGraph {
+    fn get_hamiltonian_path(&self) -> Option<Vec<usize>> {
         if !self.is_acyclic() {
             None
         } else {

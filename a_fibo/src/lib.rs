@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::stronghold::r4_fib::fibonacci;
+use s_fib::fibonacci;
 use utility;
 
 /// Fibonacci Numbers
