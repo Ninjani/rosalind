@@ -2,7 +2,7 @@ use std::collections::btree_map::BTreeMap;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Completing a Tree
 ///

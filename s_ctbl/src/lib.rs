@@ -8,7 +8,7 @@ use petgraph::Graph;
 use petgraph::visit::EdgeRef;
 
 use crate::stronghold::r49_nwck::parse_newick;
-use crate::utility;
+use utility;
 
 /// Creating a Character Table
 ///

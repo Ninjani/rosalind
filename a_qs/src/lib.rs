@@ -2,8 +2,8 @@ use failure::Error;
 use rand::{Rng, thread_rng};
 
 use crate::algorithmic_heights::r24_med::partition;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Quick Sort
 ///

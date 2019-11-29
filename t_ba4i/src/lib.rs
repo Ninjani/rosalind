@@ -3,8 +3,8 @@ use failure::Error;
 use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
 use crate::textbook_track::r63_ba4g::{get_top_with_ties, leaderboard_cyclo_peptide_sequencing};
 use crate::textbook_track::r64_ba4h::get_spectral_convolution;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Implement ConvolutionCyclopeptideSequencing
 ///

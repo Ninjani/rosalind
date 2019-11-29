@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use failure::Error;
 use itertools::Itertools;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Comparing Spectra with the Spectral Convolution
 ///

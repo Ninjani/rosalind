@@ -3,7 +3,7 @@ use std::hash::Hash;
 use failure::Error;
 
 use crate::stronghold::r54_trie::Trie;
-use crate::utility;
+use utility;
 
 /// Implement TrieMatching
 ///

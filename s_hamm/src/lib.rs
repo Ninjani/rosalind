@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::errors;
+use utility;
+use utility::errors;
 
 /// Counting Point Mutations
 ///

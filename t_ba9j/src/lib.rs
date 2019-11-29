@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba9j(filename: &str) -> Result<String, Error> {
     let bwt_string = utility::io::input_from_file(filename)?;

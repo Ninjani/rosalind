@@ -3,7 +3,7 @@ use std::hash::Hash;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Introduction to Pattern Matching
 ///

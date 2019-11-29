@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Creating a Character Table from Genetic Strings
 ///

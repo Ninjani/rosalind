@@ -4,7 +4,7 @@ use failure::Error;
 use regex::Regex;
 use reqwest;
 
-use crate::utility;
+use utility;
 
 const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
 
@@ -74,7 +74,7 @@ fn find_all(motif: &Regex, sequence: &str) -> Vec<usize> {
 mod tests {
     use itertools::Itertools;
 
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

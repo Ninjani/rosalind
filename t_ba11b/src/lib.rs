@@ -10,8 +10,8 @@ use petgraph::visit::EdgeRef;
 use crate::textbook_track::r12_ba11a::{get_graph_spectrum, get_mass_to_aa};
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Given: A space-delimited list of integers, Spectrum.
 ///

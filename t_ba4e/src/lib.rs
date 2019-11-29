@@ -5,8 +5,8 @@ use failure::Error;
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r59_ba4c::get_cyclic_spectrum;
 use crate::textbook_track::r66_ba4j::get_linear_spectrum;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Find a Cyclic Peptide with Theoretical Spectrum Matching an Ideal Spectrum
 ///

@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use failure::Error;
 
 use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba3m() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3m.txt")?;

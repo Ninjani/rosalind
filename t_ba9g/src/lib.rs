@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Construct the suffix array of a string.
 ///

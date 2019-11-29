@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Speeding Up Motif Finding
 ///
@@ -35,7 +35,7 @@ fn compute_failure_array(string: &str) -> Vec<isize> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

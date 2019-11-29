@@ -2,7 +2,7 @@ use failure::Error;
 use ndarray::{Array1, Array2};
 
 use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix};
-use crate::utility;
+use utility;
 
 /// Find a Middle Edge in an Alignment Graph in Linear Space
 ///

@@ -5,7 +5,7 @@ use std::iter::repeat;
 use failure::Error;
 use radix::RadixNum;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba1m() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1m.txt")?;

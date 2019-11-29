@@ -7,8 +7,8 @@ use petgraph::Graph;
 use petgraph::graph::NodeIndex;
 use petgraph::Incoming;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Implement Hierarchical Clustering
 ///

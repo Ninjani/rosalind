@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use crate::stronghold::r3_revc::reverse_complement;
 use crate::textbook_track::r45_ba3b::reverse_kmerize;
 use crate::textbook_track::r47_ba3d::de_bruijn_graph;
-use crate::utility;
+use utility;
 
 /// W.I.P
 pub fn rosalind_gasm(input: &str) {

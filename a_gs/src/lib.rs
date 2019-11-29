@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// W.I.P
 pub fn rosalind_gs() -> Result<(), Error> {

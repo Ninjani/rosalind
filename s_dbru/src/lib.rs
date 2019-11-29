@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use failure::Error;
 
 use crate::stronghold::r3_revc::reverse_complement;
-use crate::utility;
+use utility;
 
 /// Nodes of Bk
 /// correspond to all k-mers that are present as a substring of a (k+1)-mer from S∪Src.

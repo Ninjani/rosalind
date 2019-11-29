@@ -7,7 +7,7 @@ use petgraph::graph::NodeIndex;
 use petgraph::stable_graph::StableGraph;
 
 use crate::textbook_track::r96_ba7b::{get_limb_length, read_matrix};
-use crate::utility;
+use utility;
 
 /// W.I.P
 

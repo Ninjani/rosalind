@@ -4,7 +4,7 @@ use failure::Error;
 use ndarray::{Array, Array2};
 
 use crate::textbook_track::r74_ba5e::{align, AlignmentParameters, read_scoring_matrix};
-use crate::utility;
+use utility;
 
 /// Find a Highest-Scoring Overlap Alignment of Two Strings
 ///

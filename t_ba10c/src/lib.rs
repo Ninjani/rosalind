@@ -2,8 +2,8 @@ use failure::Error;
 use ndarray::Array2;
 
 use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
-use crate::utility;
-use crate::utility::math::Comparable;
+use utility;
+use utility::math::Comparable;
 
 /// Implement the Viterbi Algorithm
 ///

@@ -5,7 +5,7 @@ use itertools::Itertools;
 
 use crate::textbook_track::r110_ba9c::SuffixTree;
 use crate::textbook_track::r112_ba9e::NodeColor;
-use crate::utility;
+use utility;
 
 /// Find the Shortest Non-Shared Substring of Two Strings
 ///

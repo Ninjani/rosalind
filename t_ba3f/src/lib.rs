@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba3f() -> Result<(), Error> {
     let graph = utility::graph::IntegerGraph::from_adjacency_list(

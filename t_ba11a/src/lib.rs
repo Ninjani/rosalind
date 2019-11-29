@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 

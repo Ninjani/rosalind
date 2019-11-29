@@ -4,7 +4,7 @@ use failure::Error;
 use ndarray::{Array2, Array3};
 
 use crate::textbook_track::r74_ba5e::read_scoring_matrix;
-use crate::utility;
+use utility;
 
 /// Align Two Strings Using Affine Gap Penalties
 ///

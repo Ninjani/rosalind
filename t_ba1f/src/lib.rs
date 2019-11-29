@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba1f() -> Result<(), Error> {
     let genome = utility::io::input_from_file("data/textbook_track/rosalind_ba1f.txt")?;

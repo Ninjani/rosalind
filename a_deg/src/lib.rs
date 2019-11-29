@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Degree Array
 ///
@@ -30,7 +30,7 @@ pub fn rosalind_deg(filename: &str) -> Result<Vec<usize>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

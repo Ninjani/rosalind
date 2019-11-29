@@ -1,8 +1,8 @@
 use failure::Error;
 use num::bigint::BigUint;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Partial Permutations
 ///

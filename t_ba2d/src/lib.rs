@@ -5,8 +5,8 @@ use itertools::Itertools;
 use ndarray::{Array1, Array2};
 
 use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub fn rosalind_ba2d() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2d.txt")?;

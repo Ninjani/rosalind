@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array2;
 
-use crate::utility;
+use utility;
 
 /// Creating a Distance Matrix
 ///
@@ -39,7 +39,7 @@ fn p_distance(string_1: &str, string_2: &str) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

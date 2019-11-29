@@ -3,7 +3,7 @@ use failure::Error;
 use crate::textbook_track::hidden_markov_models::{
     get_chars_and_index, ProfileHMM, ProfileHMMError,
 };
-use crate::utility;
+use utility;
 
 /// Construct a Profile HMM
 ///

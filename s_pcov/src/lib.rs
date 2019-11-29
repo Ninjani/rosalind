@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::textbook_track::r47_ba3d::de_bruijn_graph;
-use crate::utility;
+use utility;
 
 /// Genome Assembly with Perfect Coverage
 ///

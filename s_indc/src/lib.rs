@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array1;
 
-use crate::utility;
+use utility;
 
 /// Independent Segregation of Chromosomes
 ///
@@ -29,7 +29,7 @@ pub fn rosalind_indc(filename: &str) -> Result<Vec<f64>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

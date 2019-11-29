@@ -2,7 +2,7 @@ use failure::Error;
 use itertools::Itertools;
 
 use crate::textbook_track::r45_ba3b::reverse_kmerize;
-use crate::utility;
+use utility;
 
 pub type PairedRead = (String, String);
 

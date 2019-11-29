@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Catalan Numbers and RNA Secondary Structures
 ///

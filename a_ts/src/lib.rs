@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Given: A simple directed acyclic graph with n≤103 vertices in the edge list format.
 ///
@@ -27,7 +27,7 @@ impl utility::graph::IntegerGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

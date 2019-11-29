@@ -4,7 +4,7 @@ use std::hash::Hash;
 use failure::Error;
 
 use crate::textbook_track::r118_ba9k::get_last_to_first_mapping;
-use crate::utility;
+use utility;
 
 /// Implement BWMatching
 ///

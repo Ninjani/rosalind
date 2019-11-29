@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 
 use crate::stronghold::r23_lexf::enumerate_lex;
-use crate::utility;
+use utility;
 
 /// k-Mer Composition
 ///
@@ -31,7 +31,7 @@ pub fn rosalind_kmer(filename: &str) -> Result<Vec<Vec<usize>>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

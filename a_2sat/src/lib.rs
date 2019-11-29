@@ -2,7 +2,7 @@ use std::collections::{btree_map::BTreeMap, HashMap, HashSet};
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// 2-Satisfiability
 ///
@@ -43,7 +43,13 @@ pub fn rosalind_2sat(filename: &str) -> Result<Vec<Option<Vec<isize>>>, Error> {
     Ok(output)
 }
 
-impl utility::graph::IntegerGraph {
+pub trait From2sat {
+    fn from_2sat_adjacency_list(
+        lines: &mut dyn Iterator<Item=String>,
+        run_dfs: bool,
+    ) -> Result<Self, Error>
+}
+impl From2sat for utility::graph::IntegerGraph {
     fn from_2sat_adjacency_list(
         lines: &mut dyn Iterator<Item=String>,
         run_dfs: bool,
@@ -164,7 +170,7 @@ fn get_assignment(lines: &mut dyn Iterator<Item=String>) -> Result<Option<Vec<is
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

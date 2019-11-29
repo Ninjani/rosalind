@@ -5,8 +5,8 @@ use random_choice::random_choice;
 
 use crate::textbook_track::r38_ba2c::get_probability_kmer;
 use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub fn rosalind_ba2g() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2g.txt")?;

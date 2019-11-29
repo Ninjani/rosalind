@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array2;
 
-use crate::utility;
+use utility;
 
 /// Edit Distance
 ///

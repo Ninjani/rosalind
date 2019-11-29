@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Double-Degree Array
 ///
@@ -41,7 +41,7 @@ pub fn rosalind_ddeg(filename: &str) -> Result<Vec<usize>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

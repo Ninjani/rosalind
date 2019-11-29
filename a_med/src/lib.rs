@@ -1,8 +1,8 @@
 use failure::Error;
 use rand::{Rng, thread_rng};
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Median
 ///

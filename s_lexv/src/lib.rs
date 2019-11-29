@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 use itertools::Itertools;
 
-use crate::utility;
+use utility;
 
 /// Ordering Strings of Varying Length Lexicographically
 ///

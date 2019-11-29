@@ -2,8 +2,8 @@ use failure::Error;
 use inline_python::{Context, pyo3, python};
 use itertools::Itertools;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub type Polynomial = Vec<(i32, i32)>;
 

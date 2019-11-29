@@ -3,7 +3,7 @@ use itertools::Itertools;
 use petgraph::algo::astar;
 
 use crate::textbook_track::r73_ba5d::read_edge_weighted_list;
-use crate::utility;
+use utility;
 
 /// Compute Distances Between Leaves
 ///

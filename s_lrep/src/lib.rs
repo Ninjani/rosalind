@@ -7,7 +7,7 @@ use petgraph::Graph;
 use petgraph::visit::EdgeRef;
 
 use crate::stronghold::r56_ctbl::traverse;
-use crate::utility;
+use utility;
 
 /// W.I.P
 fn make_suffix_tree(

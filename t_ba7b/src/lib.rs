@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::{Array, Array2};
 
-use crate::utility;
+use utility;
 
 /// Compute Limb Lengths in a Tree
 ///

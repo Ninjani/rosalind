@@ -1,8 +1,8 @@
 use failure::Error;
 
 use crate::stronghold::r28_prob::nucleotide_probs_from_gc_content;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Expected Number of Restriction Sites
 ///

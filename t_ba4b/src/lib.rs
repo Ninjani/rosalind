@@ -4,7 +4,7 @@ use failure::Error;
 
 use crate::stronghold::r2_rna::transcribe;
 use crate::stronghold::r3_revc::reverse_complement;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba4b() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4b.txt")?;

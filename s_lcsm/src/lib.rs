@@ -1,7 +1,7 @@
 use bio::data_structures::suffix_array as SA;
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 const SENTINEL: &str = "$";
 

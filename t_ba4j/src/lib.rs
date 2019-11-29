@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::utility;
+use utility;
 
 /// Generate the Theoretical Spectrum of a Linear Peptide
 ///

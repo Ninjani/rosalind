@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use failure::Error;
 use ndarray::{Array2, Array3, Axis};
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 #[derive(Fail, Debug)]
 pub enum HMMError {

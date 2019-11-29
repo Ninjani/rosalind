@@ -7,7 +7,7 @@ use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
 use crate::textbook_track::r55_ba3l::{
     get_string_spelled_by_gapped_patterns, PairedRead, read_paired_reads,
 };
-use crate::utility;
+use utility;
 
 /// Reconstruct a String from its Paired Composition
 ///

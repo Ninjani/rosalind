@@ -3,8 +3,8 @@ use std::collections::HashSet;
 use failure::Error;
 
 use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub fn rosalind_ba1a() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2a.txt")?;

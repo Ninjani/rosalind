@@ -5,7 +5,7 @@ use petgraph::algo::dijkstra;
 use petgraph::Direction::Incoming;
 use petgraph::visit::EdgeRef;
 
-use crate::utility;
+use utility;
 
 /// Distances in Trees
 ///
@@ -128,7 +128,7 @@ pub fn parse_newick(tree_data: &str) -> Result<Graph<String, f64>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

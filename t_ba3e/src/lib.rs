@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::textbook_track::r47_ba3d::de_bruijn_graph;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba3e() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3e.txt")?;

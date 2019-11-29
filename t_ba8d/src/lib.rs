@@ -2,8 +2,8 @@ use failure::Error;
 use itertools::Itertools;
 
 use crate::textbook_track::r102_ba8a::euclidean_distance;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Implement the Soft k-Means Clustering Algorithm
 ///

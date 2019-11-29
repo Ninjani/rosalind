@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::stronghold::r38_lcsq::longest_common_subsequence;
-use crate::utility;
+use utility;
 
 /// Interleaving Two Motifs
 ///

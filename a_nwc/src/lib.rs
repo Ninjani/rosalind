@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Given: A positive integer k≤20 and k simple directed graphs
 /// with integer edge weights from −103 to 103 and n≤103 vertices in the edge list format.
@@ -35,7 +35,7 @@ pub fn rosalind_nwc(filename: &str) -> Result<Vec<isize>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

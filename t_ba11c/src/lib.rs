@@ -2,7 +2,7 @@ use failure::Error;
 
 use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
-use crate::utility;
+use utility;
 
 /// Convert a Peptide into a Peptide Vector
 ///

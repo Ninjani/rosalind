@@ -7,7 +7,7 @@ use petgraph::stable_graph::EdgeReference;
 use petgraph::visit::EdgeRef;
 
 use crate::textbook_track::r110_ba9c::SuffixTree;
-use crate::utility;
+use utility;
 
 /// Find the longest repeat in a string.
 ///

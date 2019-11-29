@@ -3,7 +3,7 @@ use std::hash::Hash;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba9k(filename: &str) -> Result<usize, Error> {
     let contents = utility::io::input_from_file(filename)?;

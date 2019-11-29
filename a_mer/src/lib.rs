@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Merge Two Sorted Arrays
 ///
@@ -38,7 +38,7 @@ pub fn merge<T: PartialOrd + PartialEq + Copy>(left_array: &[T], right_array: &[
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

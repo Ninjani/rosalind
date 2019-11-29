@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Mendel's First Law
 ///

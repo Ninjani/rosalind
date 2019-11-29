@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use failure::Error;
 use ndarray::Array2;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub fn rosalind_ba2c() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2c.txt")?;

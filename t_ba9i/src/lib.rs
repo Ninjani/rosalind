@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba9i(filename: &str) -> Result<String, Error> {
     let input_string = utility::io::input_from_file(filename)?;

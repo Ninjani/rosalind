@@ -7,7 +7,7 @@ use std::num::{ParseFloatError, ParseIntError};
 use failure::Error;
 use itertools::Itertools;
 
-use crate::utility::{
+use utility::{
     errors,
     graph::{IntegerGraph, WeightedGraph},
 };

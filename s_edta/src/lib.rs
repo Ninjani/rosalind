@@ -2,7 +2,7 @@ use failure::Error;
 use ndarray::Array2;
 use stronghold::r46_edit::get_edit_distance;
 
-use crate::utility;
+use utility;
 
 /// WIP
 /// Edit Distance Alignment

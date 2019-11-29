@@ -1,7 +1,7 @@
 use failure::Error;
 use num::BigUint;
 
-use crate::utility;
+use utility;
 
 /// Perfect Matchings and RNA Secondary Structures
 ///

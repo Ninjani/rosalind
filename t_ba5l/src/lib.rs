@@ -2,7 +2,7 @@ use failure::Error;
 
 use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix};
 use crate::textbook_track::r80_ba5k::LinearSpaceAlignment;
-use crate::utility;
+use utility;
 
 /// W.I.P
 

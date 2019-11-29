@@ -9,7 +9,7 @@ use petgraph::stable_graph::StableGraph;
 
 use crate::textbook_track::r110_ba9c::SuffixTree;
 use crate::textbook_track::r112_ba9e::NodeColor;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error> {
     let contents = utility::io::input_from_file(filename)?;

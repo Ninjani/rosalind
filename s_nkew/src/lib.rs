@@ -3,7 +3,7 @@ use itertools::Itertools;
 use petgraph::Undirected;
 
 use crate::stronghold::r49_nwck::{get_path_length, parse_newick};
-use crate::utility;
+use utility;
 
 /// Newick Format with Edge Weights
 ///
@@ -33,7 +33,7 @@ pub fn rosalind_nkew(filename: &str) -> Result<Vec<usize>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

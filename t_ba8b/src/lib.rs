@@ -2,8 +2,8 @@ use failure::Error;
 use itertools::Itertools;
 
 use crate::textbook_track::r102_ba8a::center_distance;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Compute the Squared Error Distortion
 ///
@@ -46,7 +46,7 @@ fn squared_error_distortion(points: &[Vec<f64>], centers: &[Vec<f64>]) -> f64 {
 mod tests {
     use assert_approx_eq::assert_approx_eq;
 
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

@@ -3,7 +3,7 @@ use std::iter::FromIterator;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Introduction to Set Operations
 ///

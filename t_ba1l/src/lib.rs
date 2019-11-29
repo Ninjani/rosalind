@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use failure::Error;
 use radix::RadixNum;
 
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba1l() -> Result<(), Error> {
     let dna = utility::io::input_from_file("data/textbook_track/rosalind_ba1l.txt")?;

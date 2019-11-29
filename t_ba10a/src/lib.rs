@@ -6,7 +6,7 @@ use ndarray::Array2;
 use crate::textbook_track::hidden_markov_models::{
     get_chars_and_index, HMM, HMMError, read_probability_matrix,
 };
-use crate::utility;
+use utility;
 
 /// Compute the Probability of a Hidden Path
 ///

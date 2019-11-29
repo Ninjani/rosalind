@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use failure::Error;
 use radix::RadixNum;
 
-use crate::utility;
+use utility;
 
 /// Enumerating k-mers Lexicographically
 ///

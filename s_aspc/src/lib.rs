@@ -1,8 +1,8 @@
 use failure::Error;
 use num::BigUint;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Introduction to Alternative Splicing
 ///

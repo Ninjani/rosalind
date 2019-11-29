@@ -3,8 +3,8 @@ use std::collections::BinaryHeap;
 use failure::Error;
 
 use crate::algorithmic_heights::r17_dij::State;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Shortest Cycle Through a Given Edge
 ///
@@ -66,7 +66,7 @@ impl utility::graph::WeightedGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

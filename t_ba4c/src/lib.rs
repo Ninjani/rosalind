@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 
 use crate::textbook_track::r66_ba4j::get_prefix_masses;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba4c() -> Result<(), Error> {
     let peptide = utility::io::input_from_file("data/textbook_track/rosalind_ba4c.txt")?;

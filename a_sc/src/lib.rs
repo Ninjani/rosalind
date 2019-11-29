@@ -1,7 +1,7 @@
 use failure::Error;
 use itertools::Itertools;
 
-use crate::utility;
+use utility;
 
 /// Semi-Connected Graph
 ///
@@ -44,7 +44,7 @@ impl utility::graph::IntegerGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

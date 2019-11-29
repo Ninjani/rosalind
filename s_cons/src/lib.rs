@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Consensus and Profile
 ///
@@ -65,7 +65,7 @@ fn format_profile(profile: &[HashMap<char, usize>]) -> String {
 mod tests {
     use itertools::Itertools;
 
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

@@ -4,7 +4,7 @@ use failure::Error;
 use itertools::Itertools;
 
 use crate::stronghold::r19_perm::get_permutations;
-use crate::utility;
+use utility;
 
 /// Enumerating Oriented Gene Orderings
 ///

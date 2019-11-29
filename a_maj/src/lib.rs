@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Majority Element
 ///
@@ -54,7 +54,7 @@ fn find_majority_element<T: PartialEq + PartialOrd + Copy>(
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

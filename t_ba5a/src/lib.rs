@@ -2,7 +2,7 @@ use std::usize;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Find the Minimum Number of Coins Needed to Make Change
 ///

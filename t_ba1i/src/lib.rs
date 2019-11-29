@@ -3,8 +3,8 @@ use std::collections::{HashMap, HashSet};
 use failure::Error;
 
 use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 pub fn rosalind_ba1i() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1i.txt")?;

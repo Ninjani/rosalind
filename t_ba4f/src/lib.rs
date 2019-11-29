@@ -2,8 +2,8 @@ use failure::Error;
 
 use crate::textbook_track::r59_ba4c::{get_aa_to_mass_usize, get_cyclic_spectrum};
 use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Compute the Score of a Cyclic Peptide Against a Spectrum
 ///

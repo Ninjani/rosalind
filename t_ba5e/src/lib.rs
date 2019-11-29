@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 use ndarray::{Array, Array2};
 
-use crate::utility;
+use utility;
 
 /// Find a Highest-Scoring Alignment of Two Strings
 ///

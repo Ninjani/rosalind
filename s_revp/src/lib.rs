@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Locating Restriction Sites
 ///

@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// nth fibonacci number given that a number is active only for m months
 fn mortal_fibonacci(n: u64, m: u64) -> u64 {

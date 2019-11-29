@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// 3SUM
 ///
@@ -62,7 +62,7 @@ fn three_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, us
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

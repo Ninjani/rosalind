@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::textbook_track::r114_ba9g::SuffixArray;
-use crate::utility;
+use utility;
 
 /// Pattern Matching with the Suffix Array
 ///

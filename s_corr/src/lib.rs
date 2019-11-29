@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use failure::Error;
 
 use crate::stronghold::r3_revc::reverse_complement;
-use crate::utility;
+use utility;
 
 /// Error Correction in Reads
 ///

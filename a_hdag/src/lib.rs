@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Given: A positive integer k≤20 and k simple directed acyclic graphs
 /// in the edge list format with at most 103 vertices each.
@@ -61,7 +61,7 @@ impl utility::graph::IntegerGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::stronghold::r46_edit::get_edit_distance;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba5g() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5g.txt")?;

@@ -8,8 +8,8 @@ use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
 use crate::textbook_track::r61_ba4e::{expand, spectrum_list_to_counts};
 use crate::textbook_track::r62_ba4f::score_cyclic_peptide;
 use crate::textbook_track::r66_ba4j::get_linear_spectrum;
-use crate::utility;
-use crate::utility::io::Parseable;
+use utility;
+use utility::io::Parseable;
 
 /// Implement LeaderboardCyclopeptideSequencing
 ///

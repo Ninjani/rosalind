@@ -8,7 +8,7 @@ use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 
-use crate::utility;
+use utility;
 
 /// Find the Longest Path in a DAG
 ///

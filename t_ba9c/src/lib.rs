@@ -9,7 +9,7 @@ use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
 use petgraph::visit::IntoEdgeReferences;
 
-use crate::utility;
+use utility;
 
 /// Construct the Suffix Tree of a String
 ///

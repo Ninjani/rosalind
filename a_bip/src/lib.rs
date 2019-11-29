@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Testing Bipartiteness
 ///
@@ -67,7 +67,7 @@ impl utility::graph::IntegerGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

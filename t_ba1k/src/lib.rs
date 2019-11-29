@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 
 use crate::stronghold::r23_lexf::enumerate_lex;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba1k() -> Result<(), Error> {
     let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1k.txt")?;

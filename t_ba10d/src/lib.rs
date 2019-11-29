@@ -2,7 +2,7 @@ use failure::Error;
 use ndarray::Array2;
 
 use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
-use crate::utility;
+use utility;
 
 /// Compute the Probability of a String Emitted by an HMM
 ///

@@ -1,6 +1,6 @@
 use failure::{err_msg, Error};
 
-use crate::utility;
+use utility;
 
 /// Computing GC Content
 ///

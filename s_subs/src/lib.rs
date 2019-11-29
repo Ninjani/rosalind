@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Finding a motif in DNA
 ///
@@ -26,7 +26,7 @@ pub fn rosalind_subs(filename: &str) -> Result<Vec<usize>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

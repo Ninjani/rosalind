@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 
 use failure::Error;
 
-use crate::utility;
+use utility;
 
 /// Dijkstra's Algorithm
 ///
@@ -88,7 +88,7 @@ impl utility::graph::WeightedGraph {
 
 #[cfg(test)]
 mod tests {
-    use crate::utility::io::Parseable;
+    use utility::io::Parseable;
 
     use super::*;
 

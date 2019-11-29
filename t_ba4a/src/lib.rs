@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::stronghold::r8_prot::translate;
-use crate::utility;
+use utility;
 
 pub fn rosalind_ba4a() -> Result<(), Error> {
     let rna = utility::io::input_from_file("data/textbook_track/rosalind_ba4a.txt")?;
