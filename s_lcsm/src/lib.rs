@@ -1,4 +1,4 @@
-use bio::data_structures::suffix_array as SA;
+use bio::data_structures::suffix_array as SA; // TODO does not compile (version mismatch?)
 use failure::Error;
 
 use utility;

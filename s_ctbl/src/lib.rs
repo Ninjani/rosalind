@@ -7,7 +7,7 @@ use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::Graph;
 use petgraph::visit::EdgeRef;
 
-use crate::stronghold::r49_nwck::parse_newick;
+use s_nwck::parse_newick;
 use utility;
 
 /// Creating a Character Table

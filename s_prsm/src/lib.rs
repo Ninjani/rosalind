@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::stronghold::r55_conv::{get_max_multiplicity, get_minkowski_difference};
+use s_conv::{get_max_multiplicity, get_minkowski_difference};
 use utility;
 
 /// Matching a Spectrum to a Protein

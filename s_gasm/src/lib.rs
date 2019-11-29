@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use crate::stronghold::r3_revc::reverse_complement;
-use crate::textbook_track::r45_ba3b::reverse_kmerize;
-use crate::textbook_track::r47_ba3d::de_bruijn_graph;
+use s_revc::reverse_complement;
+use t_ba3b::reverse_kmerize;
+use t_ba3d::de_bruijn_graph;
 use utility;
 
 /// W.I.P

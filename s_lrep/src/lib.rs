@@ -6,7 +6,7 @@ use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
 use petgraph::visit::EdgeRef;
 
-use crate::stronghold::r56_ctbl::traverse;
+use s_ctbl::traverse;
 use utility;
 
 /// W.I.P

@@ -21,8 +21,11 @@ pub fn rosalind_ba3f() -> Result<(), Error> {
     Ok(())
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn get_eulerian_cycle(&self, start_node: Option<usize>) -> Option<Vec<usize>> {
+pub trait EulerianCycle {
+    fn get_eulerian_cycle(&self, start_node: Option<usize>) -> Option<Vec<usize>>;
+}
+impl EulerianCycle for utility::graph::IntegerGraph {
+    fn get_eulerian_cycle(&self, start_node: Option<usize>) -> Option<Vec<usize>> {
         let mut adjacency_list = self.adjacency_list.clone();
         let mut num_edges_per_node: Vec<_> = self
             .nodes

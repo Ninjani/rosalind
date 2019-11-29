@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::stronghold::r23_lexf::enumerate_lex;
+use s_lexf::enumerate_lex;
 use utility;
 
 /// k-Mer Composition

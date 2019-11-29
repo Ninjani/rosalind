@@ -2,7 +2,7 @@ use failure::Error;
 use itertools::Itertools;
 use petgraph::Undirected;
 
-use crate::stronghold::r49_nwck::{get_path_length, parse_newick};
+use s_nwck::{get_path_length, parse_newick};
 use utility;
 
 /// Newick Format with Edge Weights

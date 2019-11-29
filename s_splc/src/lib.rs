@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::stronghold::r2_rna::transcribe;
-use crate::stronghold::r8_prot::translate;
+use s_rna::transcribe;
+use s_prot::translate;
 use utility;
 
 /// RNA Splicing

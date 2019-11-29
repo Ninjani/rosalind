@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use failure::Error;
 use itertools::Itertools;
 
-use crate::stronghold::r19_perm::get_permutations;
+use s_perm::get_permutations;
 use utility;
 
 /// Enumerating Oriented Gene Orderings

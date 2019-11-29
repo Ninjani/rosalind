@@ -2,9 +2,9 @@ use std::collections::{HashMap, HashSet};
 
 use failure::Error;
 
-use crate::stronghold::r2_rna::transcribe;
-use crate::stronghold::r3_revc::reverse_complement;
-use crate::stronghold::r8_prot::translate;
+use s_rna::transcribe;
+use s_revc::reverse_complement;
+use s_prot::translate;
 use utility;
 
 /// Open Reading Frames

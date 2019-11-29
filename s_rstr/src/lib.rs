@@ -1,7 +1,7 @@
 use failure::Error;
 use itertools::Itertools;
 
-use crate::stronghold::r28_prob::nucleotide_probs_from_gc_content;
+use s_prob::nucleotide_probs_from_gc_content;
 use utility;
 use utility::io::Parseable;
 

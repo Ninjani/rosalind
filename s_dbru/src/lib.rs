@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use failure::Error;
 
-use crate::stronghold::r3_revc::reverse_complement;
+use s_revc::reverse_complement;
 use utility;
 
 /// Nodes of Bk

@@ -1,6 +1,7 @@
 use failure::Error;
 
-use crate::textbook_track::r47_ba3d::de_bruijn_graph;
+use t_ba3d::de_bruijn_graph;
+use t_ba3f::EulerianCycle;
 use utility;
 
 /// Genome Assembly with Perfect Coverage

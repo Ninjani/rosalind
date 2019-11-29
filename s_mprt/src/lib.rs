@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use failure::Error;
 use regex::Regex;
 use reqwest;
-
 use utility;
 
 const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
@@ -43,7 +42,8 @@ pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> 
     Ok(output)
 }
 
-fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
+async fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
+    // TODO this doesn't work anymore :/
     let url = format!("{}{}.fasta", UNIPROT_URL, uniprot_id);
     Ok(reqwest::get(&url)?.text()?)
 }
