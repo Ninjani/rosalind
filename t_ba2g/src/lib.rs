@@ -3,13 +3,13 @@ use ndarray::Array2;
 use rand::{Rng, thread_rng};
 use random_choice::random_choice;
 
-use crate::textbook_track::r38_ba2c::get_probability_kmer;
-use crate::textbook_track::r39_ba2d::{get_profile, score_motifs};
+use t_ba2c::get_probability_kmer;
+use t_ba2d::{get_profile, score_motifs};
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2g() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2g.txt")?;
+pub fn rosalind_ba2g(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t, n) = (numbers[0], numbers[1], numbers[2]);

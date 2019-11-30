@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 use ndarray::Array2;
 
-use crate::textbook_track::hidden_markov_models::{
+use hidden_markov_models::{
     get_chars_and_index, HMM, HMMError, read_probability_matrix,
 };
 use utility;
@@ -47,7 +47,11 @@ pub fn rosalind_ba10a(filename: &str) -> Result<f64, Error> {
     Ok(probability)
 }
 
-impl HMM {
+pub trait HiddenPathProbability {
+    fn get_probability_of_hidden_path(&self, hidden_path: &str) -> f64;
+}
+
+impl HiddenPathProbability for HMM {
     fn get_probability_of_hidden_path(&self, hidden_path: &str) -> f64 {
         let mut probability = 1. / (self.states.len() as f64);
         for (current_char, next_char) in hidden_path.chars().zip(hidden_path.chars().skip(1)) {

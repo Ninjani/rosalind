@@ -6,13 +6,13 @@ use ndarray::Array2;
 use petgraph::graph::NodeIndex;
 use petgraph::stable_graph::StableGraph;
 
-use crate::textbook_track::r96_ba7b::{get_limb_length, read_matrix};
+use t_ba7b::{get_limb_length, read_matrix};
 use utility;
 
 /// W.I.P
 
-pub fn rosalind_ba7c() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba7c.txt")?;
+pub fn rosalind_ba7c(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;
     let mut distance_matrix = read_matrix(&lines.collect::<Vec<_>>())?;

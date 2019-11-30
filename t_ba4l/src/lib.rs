@@ -2,8 +2,8 @@ use std::collections::{HashMap, HashSet};
 
 use failure::Error;
 
-use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::textbook_track::r63_ba4g::trim_leaderboard;
+use t_ba4c::get_aa_to_mass_usize;
+use t_ba4g::trim_leaderboard;
 use utility;
 use utility::io::Parseable;
 
@@ -12,8 +12,8 @@ use utility::io::Parseable;
 /// Given: A leaderboard of linear peptides Leaderboard, a linear spectrum Spectrum, and an integer N.
 ///
 /// Return: The top N peptides from Leaderboard scored against Spectrum. Remember to use LinearScore.
-pub fn rosalind_ba4l() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4l.txt")?;
+pub fn rosalind_ba4l(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let aa_to_mass = get_aa_to_mass_usize()?;
     let masses_to_peptide: HashMap<_, _> = lines[0]

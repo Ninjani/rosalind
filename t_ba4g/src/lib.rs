@@ -4,10 +4,9 @@ use std::iter::FromIterator;
 use failure::Error;
 use itertools::Itertools;
 
-use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::textbook_track::r61_ba4e::{expand, spectrum_list_to_counts};
-use crate::textbook_track::r62_ba4f::score_cyclic_peptide;
-use crate::textbook_track::r66_ba4j::get_linear_spectrum;
+use t_ba4c::get_aa_to_mass_usize;
+use t_ba4e::{get_linear_spectrum, expand, spectrum_list_to_counts};
+use t_ba4f::score_cyclic_peptide;
 use utility;
 use utility::io::Parseable;
 
@@ -16,8 +15,8 @@ use utility::io::Parseable;
 /// Given: An integer N and a collection of integers Spectrum.
 ///
 /// Return: LeaderPeptide after running LeaderboardCyclopeptideSequencing(Spectrum, N).
-pub fn rosalind_ba4g() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4g.txt")?;
+pub fn rosalind_ba4g(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (n, spectrum) = (lines[0].parse::<usize>()?, usize::parse_line(lines[1])?);
     let aa_to_mass = get_aa_to_mass_usize()?;
@@ -70,7 +69,7 @@ pub fn score_linear_peptide(peptide: &[usize], spectrum: &[usize]) -> usize {
 }
 
 pub fn get_top_with_ties<T: Clone, U: Eq + Ord>(item_scores: &[(T, U)], n: usize) -> Vec<T> {
-    let item_scores = item_scores.iter().sorted_by(|a, b| b.1.cmp(&a.1));
+    let item_scores: Vec<_> = item_scores.iter().sorted_by(|a, b| b.1.cmp(&a.1)).collect();
     for j in n..item_scores.len() {
         if item_scores[j].1 < item_scores[n - 1].1 {
             return (0..j).map(|x| item_scores[x].0.clone()).collect();

@@ -1,13 +1,13 @@
 use failure::Error;
 use itertools::Itertools;
 
-use crate::textbook_track::r45_ba3b::reverse_kmerize;
+use t_ba3b::reverse_kmerize;
 use utility;
 
 pub type PairedRead = (String, String);
 
-pub fn rosalind_ba3l() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3l.txt")?;
+pub fn rosalind_ba3l(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let (paired_reads, k, d) = read_paired_reads(&contents);
     println!(
         "{}",

@@ -1,7 +1,7 @@
 use failure::Error;
 use itertools::Itertools;
 
-use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
+use t_ba4e::spectrum_list_to_counts;
 use utility;
 use utility::io::Parseable;
 
@@ -11,9 +11,9 @@ use utility::io::Parseable;
 ///
 /// Return: The list of elements in the convolution of Spectrum in decreasing order of their
 /// multiplicities. If an element has multiplicity k, it should appear exactly k times.
-pub fn rosalind_ba4h() -> Result<(), Error> {
+pub fn rosalind_ba4h(filename: &str) -> Result<(), Error> {
     let spectrum = usize::parse_line(&utility::io::input_from_file(
-        "data/textbook_track/rosalind_ba4h.txt",
+        filename,
     )?)?;
     let convolution = get_spectral_convolution(&spectrum);
     let convolution_counts = spectrum_list_to_counts(&convolution);

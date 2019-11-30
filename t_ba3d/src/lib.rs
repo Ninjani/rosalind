@@ -4,8 +4,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba3d() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3d.txt")?;
+pub fn rosalind_ba3d(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let k = lines[0].parse::<usize>()?;
     let nodes = utility::string::kmerize(lines[1], k);

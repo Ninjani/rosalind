@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::stronghold::r2_rna::transcribe;
-use crate::stronghold::r3_revc::reverse_complement;
+use s_rna::transcribe;
+use s_revc::reverse_complement;
 use utility;
 
-pub fn rosalind_ba4b() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4b.txt")?;
+pub fn rosalind_ba4b(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let codons = utility::io::get_codon_to_aa()?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (dna, protein) = (lines[0], lines[1]);

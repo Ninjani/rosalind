@@ -6,8 +6,8 @@ use radix::RadixNum;
 
 use utility;
 
-pub fn rosalind_ba1l() -> Result<(), Error> {
-    let dna = utility::io::input_from_file("data/textbook_track/rosalind_ba1l.txt")?;
+pub fn rosalind_ba1l(filename: &str) -> Result<(), Error> {
+    let dna = utility::io::input_from_file(filename)?;
     println!(
         "{}",
         pattern_to_number(&dna, &"ACGT".chars().collect::<Vec<_>>())?

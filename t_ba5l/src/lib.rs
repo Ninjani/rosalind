@@ -1,19 +1,17 @@
 use failure::Error;
 
-use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix};
-use crate::textbook_track::r80_ba5k::LinearSpaceAlignment;
+use t_ba5e::{AlignmentParameters, read_scoring_matrix};
+use t_ba5k::LinearSpaceAlignment;
 use utility;
 
 /// W.I.P
 
-pub fn rosalind_ba5l() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5l.txt")?;
+pub fn rosalind_ba5l(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
     //    scoring_matrix.fill(-1);
-    //    scoring_matrix.diag_mut().assign(&Array::from_vec(
-    //        (0..amino_acids.len()).map(|_| 1).collect(),
-    //    ));
+    //    scoring_matrix.diag_mut().fill(1);
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
     let lsa = LinearSpaceAlignment {
         string_1: lines[0].chars().collect(),
@@ -42,6 +40,10 @@ pub fn rosalind_ba5l() -> Result<(), Error> {
     Ok(())
 }
 
+pub trait Align {
+    fn align(&self, top: usize, bottom: usize, left: usize, right: usize) -> Vec<usize>;
+}
+
 //LinearSpaceAlignment(top, bottom, left, right)
 //        if left = right
 //            return alignment formed by bottom − top vertical edges
@@ -58,8 +60,8 @@ pub fn rosalind_ba5l() -> Result<(), Error> {
 //            midNode ← midNode + 1
 //        LinearSpaceAlignment(midNode, bottom, middle, right)
 
-impl LinearSpaceAlignment {
-    pub fn align(&self, top: usize, bottom: usize, left: usize, right: usize) -> Vec<usize> {
+impl Align for LinearSpaceAlignment {
+    fn align(&self, top: usize, bottom: usize, left: usize, right: usize) -> Vec<usize> {
         if left == right {
             return (0..bottom - top).map(|_| 1).collect();
         }

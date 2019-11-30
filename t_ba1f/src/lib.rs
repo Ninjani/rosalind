@@ -2,8 +2,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba1f() -> Result<(), Error> {
-    let genome = utility::io::input_from_file("data/textbook_track/rosalind_ba1f.txt")?;
+pub fn rosalind_ba1f(filename: &str) -> Result<(), Error> {
+    let genome = utility::io::input_from_file(filename)?;
     println!("{}", utility::io::format_array(&minimize_skews(&genome)));
     Ok(())
 }

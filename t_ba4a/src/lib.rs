@@ -1,10 +1,10 @@
 use failure::Error;
 
-use crate::stronghold::r8_prot::translate;
+use s_prot::translate;
 use utility;
 
-pub fn rosalind_ba4a() -> Result<(), Error> {
-    let rna = utility::io::input_from_file("data/textbook_track/rosalind_ba4a.txt")?;
+pub fn rosalind_ba4a(filename: &str) -> Result<(), Error> {
+    let rna = utility::io::input_from_file(filename)?;
     let codons = utility::io::get_codon_to_aa()?;
     println!(
         "{}",

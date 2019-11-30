@@ -1,10 +1,10 @@
 use failure::Error;
 
-use crate::stronghold::r3_revc::reverse_complement;
+use s_revc::reverse_complement;
 use utility;
 
-pub fn rosalind_ba1c() -> Result<(), Error> {
-    let dna = utility::io::input_from_file("data/textbook_track/rosalind_ba1c.txt")?;
+pub fn rosalind_ba1c(filename: &str) -> Result<(), Error> {
+    let dna = utility::io::input_from_file(filename)?;
     println!("{}", reverse_complement(&dna));
     Ok(())
 }

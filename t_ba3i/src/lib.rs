@@ -1,11 +1,12 @@
 use failure::Error;
 
-use crate::stronghold::r23_lexf::enumerate_lex;
-use crate::textbook_track::r47_ba3d::de_bruijn_graph;
+use s_lexf::enumerate_lex;
+use t_ba3d::de_bruijn_graph;
+use t_ba3f::EulerianCycle;
 use utility;
 
-pub fn rosalind_ba3i() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3i.txt")?;
+pub fn rosalind_ba3i(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let length = contents.parse::<usize>()?;
     let patterns = enumerate_lex(&['0', '1'], length);
     let adjacency_list = de_bruijn_graph(&patterns);

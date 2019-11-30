@@ -1,7 +1,7 @@
 use failure::Error;
 
-use crate::textbook_track::r59_ba4c::{get_aa_to_mass_usize, get_cyclic_spectrum};
-use crate::textbook_track::r61_ba4e::spectrum_list_to_counts;
+use t_ba4c::{get_aa_to_mass_usize, get_cyclic_spectrum};
+use t_ba4e::spectrum_list_to_counts;
 use utility;
 use utility::io::Parseable;
 
@@ -10,8 +10,8 @@ use utility::io::Parseable;
 /// Given: An amino acid string Peptide and a collection of integers Spectrum.
 ///
 /// Return: The score of Peptide against Spectrum, Score(Peptide, Spectrum).
-pub fn rosalind_ba4f() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba4f.txt")?;
+pub fn rosalind_ba4f(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (peptide, spectrum) = (lines[0], usize::parse_line(lines[1])?);
     let aa_to_mass = get_aa_to_mass_usize()?;

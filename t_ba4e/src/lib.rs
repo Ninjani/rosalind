@@ -2,9 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use failure::Error;
 
-use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::textbook_track::r59_ba4c::get_cyclic_spectrum;
-use crate::textbook_track::r66_ba4j::get_linear_spectrum;
+use t_ba4c::{get_aa_to_mass_usize, get_prefix_masses, get_cyclic_spectrum};
 use utility;
 use utility::io::Parseable;
 
@@ -13,9 +11,9 @@ use utility::io::Parseable;
 /// Given: A collection of (possibly repeated) integers Spectrum corresponding to an ideal experimental spectrum.
 ///
 /// Return: Every amino acid string Peptide such that Cyclospectrum(Peptide) = Spectrum (if such a string exists).
-pub fn rosalind_ba4e() -> Result<(), Error> {
+pub fn rosalind_ba4e(filename: &str) -> Result<(), Error> {
     let spectrum = usize::parse_line(&utility::io::input_from_file(
-        "data/textbook_track/rosalind_ba4e.txt",
+        filename,
     )?)?;
     let aa_to_mass = get_aa_to_mass_usize()?;
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
@@ -32,6 +30,18 @@ pub fn rosalind_ba4e() -> Result<(), Error> {
             .collect();
     println!("{}", utility::io::format_array(&peptides));
     Ok(())
+}
+
+pub fn get_linear_spectrum(peptide: &[usize]) -> Vec<usize> {
+    let prefix_masses = get_prefix_masses(peptide);
+    let mut spectrum = vec![0];
+    for i in 0..peptide.len() {
+        for j in (i + 1)..=peptide.len() {
+            spectrum.push(prefix_masses[j] - prefix_masses[i]);
+        }
+    }
+    spectrum.sort();
+    spectrum
 }
 
 pub fn expand(peptides: &HashSet<Vec<usize>>, amino_acid_masses: &[usize]) -> HashSet<Vec<usize>> {

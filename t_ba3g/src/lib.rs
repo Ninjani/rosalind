@@ -1,12 +1,13 @@
 use std::collections::btree_map::BTreeMap;
 
 use failure::Error;
-
+use t_ba3f::EulerianCycle;
 use utility;
 
-pub fn rosalind_ba3g() -> Result<(), Error> {
+
+pub fn rosalind_ba3g(filename: &str) -> Result<(), Error> {
     let graph = utility::graph::IntegerGraph::from_adjacency_list(
-        &utility::io::input_from_file("data/textbook_track/rosalind_ba3g.txt")?,
+        &utility::io::input_from_file(filename)?,
         false,
     )?;
     println!(
@@ -37,8 +38,12 @@ pub fn reverse_adjacency_list(
     adjacency_list_reverse
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn get_eulerian_path(&self) -> Option<Vec<usize>> {
+pub trait EulerianPath {
+    fn get_eulerian_path(&self) -> Option<Vec<usize>>;
+}
+
+impl EulerianPath for utility::graph::IntegerGraph {
+    fn get_eulerian_path(&self) -> Option<Vec<usize>> {
         let adjacency_list_reverse = reverse_adjacency_list(&self.adjacency_list);
         let (mut unbalanced_incoming, mut unbalanced_outgoing) = (None, None);
         for node in 0..self.num_nodes {

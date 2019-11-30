@@ -1,11 +1,10 @@
 [package]
-name = "t_ba9c"
+name = "hidden_markov_models"
 version = "0.1.0"
 edition = "2018"
 authors = ["Ninjani"]
 
 [dependencies]
-petgraph = "0.4.13"
+ndarray = "0.13.0"
 failure ="0.1.3"
 utility = {path = "../utility"}
-t_ba3m = {path = "../t_ba3m"}

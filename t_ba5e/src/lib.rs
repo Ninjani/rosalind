@@ -12,8 +12,8 @@ use utility;
 /// Return: The maximum alignment score of these strings followed by an alignment achieving this
 /// maximum score. Use the BLOSUM62 scoring matrix and indel penalty σ = 5.
 /// (If multiple alignments achieving the maximum score exist, you may return any one.)
-pub fn rosalind_ba5e() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5e.txt")?;
+pub fn rosalind_ba5e(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
@@ -36,7 +36,7 @@ pub fn read_scoring_matrix(filename: &str) -> Result<(Array2<isize>, Vec<char>),
     let mut scoring_matrix = Array2::zeros((amino_acids.len(), amino_acids.len()));
     for (i, line) in lines.enumerate() {
         let parts: Vec<_> = line.split_whitespace().collect();
-        scoring_matrix.row_mut(i).assign(&Array::from_vec(
+        scoring_matrix.row_mut(i).assign(&Array::from(
             parts[1..]
                 .iter()
                 .map(|x| x.parse::<isize>().unwrap())

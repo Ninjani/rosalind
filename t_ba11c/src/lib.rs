@@ -1,7 +1,6 @@
 use failure::Error;
 
-use crate::textbook_track::r59_ba4c::get_aa_to_mass_usize;
-use crate::textbook_track::r66_ba4j::get_prefix_masses;
+use t_ba4c::{get_prefix_masses, get_aa_to_mass_usize};
 use utility;
 
 /// Convert a Peptide into a Peptide Vector
@@ -9,8 +8,8 @@ use utility;
 /// Given: A peptide P.
 ///
 /// Return: The peptide vector of P.
-pub fn rosalind_ba11c() -> Result<(), Error> {
-    let peptide = utility::io::input_from_file("data/textbook_track/rosalind_ba11c.txt")?;
+pub fn rosalind_ba11c(filename: &str) -> Result<(), Error> {
+    let peptide = utility::io::input_from_file(filename)?;
     let aa_to_mass = get_aa_to_mass_usize()?;
     let peptide_masses: Vec<_> = peptide.trim().chars().map(|c| aa_to_mass[&c]).collect();
     println!(

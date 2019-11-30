@@ -2,12 +2,12 @@ use std::collections::HashSet;
 
 use failure::Error;
 
-use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
+use t_ba1i::get_mismatch_sequences;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba1a() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2a.txt")?;
+pub fn rosalind_ba1a(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, mismatch) = (numbers[0], numbers[1]);

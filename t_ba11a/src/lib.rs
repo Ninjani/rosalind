@@ -5,7 +5,6 @@ use failure::Error;
 use utility;
 use utility::io::Parseable;
 
-const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 
 /// Construct the Graph of a Spectrum
 /// Given: A space-delimited list of integers Spectrum.
@@ -41,7 +40,7 @@ pub fn get_graph_spectrum(
 
 pub fn get_mass_to_aa() -> Result<HashMap<usize, char>, Error> {
     let mut mass_table = HashMap::new();
-    let mass_contents = utility::io::input_from_file(MASS_FILE)?;
+    let mass_contents = utility::io::input_from_file(utility::io::MASS_FILE)?;
     for line in mass_contents.split('\n') {
         let mut aa_mass = line.split_whitespace();
         if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {

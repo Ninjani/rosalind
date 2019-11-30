@@ -3,12 +3,10 @@ use std::collections::HashMap;
 
 use failure::Error;
 use petgraph::{Directed, Outgoing};
-use petgraph::stable_graph::{EdgeIndex, NodeIndex};
-use petgraph::stable_graph::EdgeReference;
-use petgraph::stable_graph::StableGraph;
-use petgraph::visit::EdgeRef;
-use petgraph::visit::IntoEdgeReferences;
+use petgraph::stable_graph::{EdgeIndex, NodeIndex, EdgeReference, StableGraph};
+use petgraph::visit::{EdgeRef, IntoEdgeReferences};
 
+use t_ba3m::MaximalNonbranching;
 use utility;
 
 /// Construct the Suffix Tree of a String

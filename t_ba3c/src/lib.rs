@@ -2,8 +2,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba3c() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3c.txt")?;
+pub fn rosalind_ba3c(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').collect();
     let overlap_graph = get_overlap_graph(&kmers, kmers[0].len() - 1);
     for (kmer_1, kmer_2) in overlap_graph {

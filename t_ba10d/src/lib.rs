@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array2;
 
-use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
+use hidden_markov_models::{HMM, HMMError};
 use utility;
 
 /// Compute the Probability of a String Emitted by an HMM
@@ -25,7 +25,11 @@ pub fn rosalind_ba10d(filename: &str) -> Result<f64, Error> {
     Ok(probability)
 }
 
-impl HMM {
+pub trait Px {
+    fn get_probability_of_sequence(&self, sequence: &str) -> Result<f64, Error>;
+}
+
+impl Px for HMM {
     fn get_probability_of_sequence(&self, sequence: &str) -> Result<f64, Error> {
         let mut f_sums = Array2::<f64>::zeros((self.states.len(), sequence.len()));
         let mut sequence_chars = sequence.chars();

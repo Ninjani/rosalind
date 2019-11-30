@@ -2,8 +2,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba2b() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2b.txt")?;
+pub fn rosalind_ba2b(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let k = lines.next().unwrap().parse::<usize>()?;
     let dna: Vec<_> = lines.map(|l| l.to_owned()).collect();

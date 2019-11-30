@@ -3,8 +3,9 @@ use std::collections::HashMap;
 use failure::Error;
 use itertools::Itertools;
 
-use crate::textbook_track::r110_ba9c::SuffixTree;
-use crate::textbook_track::r112_ba9e::NodeColor;
+use t_ba9c::SuffixTree;
+use t_ba9d::LongestRepeat;
+use t_ba9e::{TreeColor, NodeColor};
 use utility;
 
 /// Find the Shortest Non-Shared Substring of Two Strings
@@ -27,7 +28,11 @@ pub fn rosalind_ba9f(filename: &str) -> Result<String, Error> {
     Ok(shortest_nonshared_substring)
 }
 
-impl SuffixTree {
+pub trait ShortestNonsharedSubstring {
+    fn get_shortest_nonshared_substring(&self, text: &str, split_index: usize) -> String;
+}
+
+impl ShortestNonsharedSubstring for SuffixTree {
     fn get_shortest_nonshared_substring(&self, text: &str, split_index: usize) -> String {
         let node_colors: HashMap<_, _> = self
             .tree

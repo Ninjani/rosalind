@@ -1,9 +1,11 @@
+#[macro_use]
+extern crate ndarray;
 use std::collections::HashMap;
 
 use failure::Error;
 use ndarray::{Array1, Array2};
 
-use crate::textbook_track::hidden_markov_models::{
+use hidden_markov_models::{
     get_chars_and_index, HMM, HMMError, read_probability_matrix,
 };
 use utility;
@@ -38,7 +40,7 @@ pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
     )?;
-    let transition_matrix = HMM::transition_matrix_from_path(&hidden_path, &state_index);
+    let transition_matrix = transition_matrix_from_path(&hidden_path, &state_index);
     let emission_matrix = read_probability_matrix(
         sections
             .next()
@@ -59,24 +61,28 @@ pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
     Ok(probability)
 }
 
-impl HMM {
-    fn transition_matrix_from_path(
-        hidden_path: &str,
-        state_index: &HashMap<char, usize>,
-    ) -> Array2<f64> {
-        let mut transition_matrix = Array2::<f64>::zeros((state_index.len(), state_index.len()));
-        let mut start_counts = Array1::<f64>::zeros(state_index.len());
-        for (path_char, next_path_char) in hidden_path.chars().zip(hidden_path.chars().skip(1)) {
-            transition_matrix[[state_index[&path_char], state_index[&next_path_char]]] += 1.;
-            start_counts[state_index[&path_char]] += 1.;
-        }
-        for (i, count) in start_counts.iter().enumerate() {
-            let mut row = transition_matrix.slice_mut(s![i, ..]);
-            row /= *count;
-        }
-        transition_matrix
+pub fn transition_matrix_from_path(
+    hidden_path: &str,
+    state_index: &HashMap<char, usize>,
+) -> Array2<f64> {
+    let mut transition_matrix = Array2::<f64>::zeros((state_index.len(), state_index.len()));
+    let mut start_counts = Array1::<f64>::zeros(state_index.len());
+    for (path_char, next_path_char) in hidden_path.chars().zip(hidden_path.chars().skip(1)) {
+        transition_matrix[[state_index[&path_char], state_index[&next_path_char]]] += 1.;
+        start_counts[state_index[&path_char]] += 1.;
     }
+    for (i, count) in start_counts.iter().enumerate() {
+        let mut row = transition_matrix.slice_mut(s![i, ..]);
+        row /= *count;
+    }
+    transition_matrix
+}
 
+pub trait PxGivenPi {
+    fn get_probability_of_sequence_given_path(&self, sequence: &str, hidden_path: &str) -> f64;
+}
+
+impl PxGivenPi for HMM {
     fn get_probability_of_sequence_given_path(&self, sequence: &str, hidden_path: &str) -> f64 {
         let mut probability = 1.;
         for (path_char, sequence_char) in hidden_path.chars().zip(sequence.chars()) {

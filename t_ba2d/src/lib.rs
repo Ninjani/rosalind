@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use failure::Error;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
-
-use crate::textbook_track::r38_ba2c::get_profile_most_probable_kmer;
+use std::iter::FromIterator;
+use t_ba2c::get_profile_most_probable_kmer;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2d() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2d.txt")?;
+pub fn rosalind_ba2d(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);
@@ -61,12 +61,12 @@ fn get_consensus(count_matrix: &Array2<usize>) -> String {
     let mut consensus = String::with_capacity(count_matrix.shape()[1]);
     let alphabet_map: HashMap<_, _> = "ACGT".chars().enumerate().collect();
     for i in 0..count_matrix.shape()[1] {
-        let sorted_column = count_matrix
+        let mut sorted_column = count_matrix
             .column(i)
             .into_iter()
             .enumerate()
             .sorted_by(|a, b| a.1.cmp(b.1).reverse());
-        consensus.push(alphabet_map[&sorted_column[0].0]);
+        consensus.push(alphabet_map[&sorted_column.next().unwrap().0]);
     }
     consensus
 }

@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::textbook_track::hidden_markov_models::{
+use hidden_markov_models::{
     get_chars_and_index, ProfileHMM, ProfileHMMError,
 };
 use utility;

@@ -1,14 +1,13 @@
 use std::collections::HashMap;
-use std::fmt;
-use std::str::FromStr;
+
 
 use failure::Error;
 use itertools::Itertools;
 use petgraph::Incoming;
 use petgraph::stable_graph::StableGraph;
 
-use crate::textbook_track::r110_ba9c::SuffixTree;
-use crate::textbook_track::r112_ba9e::NodeColor;
+use t_ba9c::SuffixTree;
+use t_ba9e::{TreeColor, NodeColor};
 use utility;
 
 pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error> {
@@ -74,33 +73,4 @@ pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error>
         .collect())
 }
 
-impl fmt::Display for NodeColor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                NodeColor::Red => "red",
-                NodeColor::Blue => "blue",
-                NodeColor::Purple => "purple",
-                NodeColor::Gray => "gray",
-            }
-        )
-    }
-}
 
-impl FromStr for NodeColor {
-    type Err = utility::errors::RosalindParseError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "red" => Ok(NodeColor::Red),
-            "blue" => Ok(NodeColor::Blue),
-            "purple" => Ok(NodeColor::Purple),
-            "gray" => Ok(NodeColor::Gray),
-            _ => Err(utility::errors::RosalindParseError::ParseNodeColor(
-                s.to_owned(),
-            )),
-        }
-    }
-}

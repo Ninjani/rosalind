@@ -9,8 +9,8 @@ use utility::io::Parseable;
 ///
 /// Return: The sequence of permutations corresponding to applying GreedySorting to P,
 /// ending with the identity permutation.
-pub fn rosalind_ba6a() -> Result<(), Error> {
-    let line = utility::io::input_from_file("data/textbook_track/rosalind_ba6a.txt")?;
+pub fn rosalind_ba6a(filename: &str) -> Result<(), Error> {
+    let line = utility::io::input_from_file(filename)?;
     let mut permutation = isize::parse_line(&line[1..(line.len() - 1)])?;
     greedy_reversal_sorting(&mut permutation);
     Ok(())

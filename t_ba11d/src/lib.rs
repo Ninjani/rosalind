@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::textbook_track::r12_ba11a::get_mass_to_aa;
+use t_ba11a::get_mass_to_aa;
 use utility;
 use utility::io::Parseable;
 
@@ -11,9 +11,9 @@ use utility::io::Parseable;
 /// Given: A space-delimited binary vector P.
 ///
 /// Return: A peptide whose binary peptide vector matches P. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11d() -> Result<(), Error> {
+pub fn rosalind_ba11d(filename: &str) -> Result<(), Error> {
     let peptide_vector = u8::parse_line(&utility::io::input_from_file(
-        "data/textbook_track/rosalind_ba11d.txt",
+        filename,
     )?)?;
     println!(
         "{}",

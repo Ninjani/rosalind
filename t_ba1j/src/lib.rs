@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::stronghold::r3_revc::reverse_complement;
-use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
-use crate::textbook_track::r30_ba1i::get_mismatch_sequences;
+use s_revc::reverse_complement;
+use t_ba1b::get_most_frequent_kmers;
+use t_ba1i::get_mismatch_sequences;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba1j() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1j.txt")?;
+pub fn rosalind_ba1j(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let numbers = usize::parse_line(lines[1])?;
     let (k, mismatch) = (numbers[0], numbers[1]);

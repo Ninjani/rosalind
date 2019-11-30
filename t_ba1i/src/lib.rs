@@ -2,12 +2,12 @@ use std::collections::{HashMap, HashSet};
 
 use failure::Error;
 
-use crate::textbook_track::r23_ba1b::get_most_frequent_kmers;
+use t_ba1b::get_most_frequent_kmers;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba1i() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1i.txt")?;
+pub fn rosalind_ba1i(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let numbers = usize::parse_line(lines[1])?;
     let (k, mismatch) = (numbers[0], numbers[1]);

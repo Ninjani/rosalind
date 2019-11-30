@@ -4,9 +4,9 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba3f() -> Result<(), Error> {
+pub fn rosalind_ba3f(filename: &str) -> Result<(), Error> {
     let graph = utility::graph::IntegerGraph::from_adjacency_list(
-        &utility::io::input_from_file("data/textbook_track/rosalind_ba3f.txt")?,
+        &utility::io::input_from_file(filename)?,
         false,
     )?;
     let cycle = graph.get_eulerian_cycle(None).unwrap();

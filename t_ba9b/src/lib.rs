@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use failure::Error;
 
-use crate::stronghold::r54_trie::Trie;
+use s_trie::Trie;
 use utility;
 
 /// Implement TrieMatching
@@ -23,7 +23,11 @@ pub fn rosalind_ba9b(filename: &str) -> Result<Vec<usize>, Error> {
     Ok(positions)
 }
 
-impl<T: Eq + Clone, U: Eq + Hash + Clone> Trie<T, U> {
+pub trait PrefixMatching<T: Eq + Clone, U: Eq + Hash + Clone> {
+    fn prefix_matching(&self, text: &[U]) -> Option<Vec<U>>;
+    fn matching(&self, text: &[U]) -> Vec<usize>;
+}
+impl<T: Eq + Clone, U: Eq + Hash + Clone> PrefixMatching<T,U> for Trie<T, U> {
     fn prefix_matching(&self, text: &[U]) -> Option<Vec<U>> {
         let mut text = text.iter();
         let mut symbol = text.next().unwrap();

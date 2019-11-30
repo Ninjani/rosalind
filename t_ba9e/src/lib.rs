@@ -4,8 +4,11 @@ use failure::Error;
 use itertools::Itertools;
 use petgraph::stable_graph::NodeIndex;
 use petgraph::visit::EdgeRef;
+use std::fmt;
+use std::str::FromStr;
 
-use crate::textbook_track::r110_ba9c::SuffixTree;
+use t_ba9c::SuffixTree;
+use t_ba9d::LongestRepeat;
 use utility;
 
 /// Find the Longest Substring Shared by Two Strings
@@ -36,7 +39,51 @@ pub enum NodeColor {
     Gray,
 }
 
-impl SuffixTree {
+impl FromStr for NodeColor {
+    type Err = utility::errors::RosalindParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "red" => Ok(NodeColor::Red),
+            "blue" => Ok(NodeColor::Blue),
+            "purple" => Ok(NodeColor::Purple),
+            "gray" => Ok(NodeColor::Gray),
+            _ => Err(utility::errors::RosalindParseError::ParseNodeColor(
+                s.to_owned(),
+            )),
+        }
+    }
+}
+
+impl fmt::Display for NodeColor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                NodeColor::Red => "red",
+                NodeColor::Blue => "blue",
+                NodeColor::Purple => "purple",
+                NodeColor::Gray => "gray",
+            }
+        )
+    }
+}
+
+pub trait TreeColor {
+    fn _get_children(&self, node: NodeIndex<u32>, children: &mut Vec<NodeIndex<u32>>);
+    fn get_children(&self, node: NodeIndex<u32>) -> Vec<NodeIndex<u32>>;
+    fn tree_color(
+        &self,
+        initial_node_colors: HashMap<NodeIndex<u32>, NodeColor>,
+    ) -> HashMap<NodeIndex<u32>, NodeColor>;
+}
+
+pub trait LongestSharedSubstring {
+    fn get_longest_shared_substring(&self, text: &str, split_index: usize) -> String;
+}
+
+impl TreeColor for SuffixTree {
     fn _get_children(&self, node: NodeIndex<u32>, children: &mut Vec<NodeIndex<u32>>) {
         children.push(node);
         for edge in self.tree.edges(node) {
@@ -53,7 +100,7 @@ impl SuffixTree {
         children
     }
 
-    pub fn tree_color(
+    fn tree_color(
         &self,
         initial_node_colors: HashMap<NodeIndex<u32>, NodeColor>,
     ) -> HashMap<NodeIndex<u32>, NodeColor> {
@@ -83,7 +130,9 @@ impl SuffixTree {
         }
         node_colors
     }
+}
 
+impl LongestSharedSubstring for SuffixTree {
     fn get_longest_shared_substring(&self, text: &str, split_index: usize) -> String {
         let node_colors: HashMap<_, _> = self
             .tree

@@ -1,7 +1,7 @@
 use failure::Error;
 use itertools::Itertools;
 
-use crate::textbook_track::r102_ba8a::euclidean_distance;
+use t_ba8a::euclidean_distance;
 use utility;
 use utility::io::Parseable;
 

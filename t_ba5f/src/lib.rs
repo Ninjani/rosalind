@@ -3,7 +3,7 @@ use std::isize;
 use failure::Error;
 use ndarray::Array2;
 
-use crate::textbook_track::r74_ba5e::{align, AlignmentParameters, read_scoring_matrix};
+use t_ba5e::{align, AlignmentParameters, read_scoring_matrix};
 use utility;
 
 /// Find a Highest-Scoring Local Alignment of Two Strings
@@ -13,8 +13,8 @@ use utility;
 /// Return: The maximum score of a local alignment of the strings, followed by a local alignment of
 /// these strings achieving the maximum score. Use the PAM250 scoring matrix and indel penalty σ = 5.
 /// (If multiple local alignments achieving the maximum score exist, you may return any one.)
-pub fn rosalind_ba5f() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5f.txt")?;
+pub fn rosalind_ba5f(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (scoring_matrix, amino_acids) = read_scoring_matrix("data/pam250.txt")?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);

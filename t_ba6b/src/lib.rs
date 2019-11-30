@@ -8,8 +8,8 @@ use utility::io::Parseable;
 /// Given: A signed permutation P.
 ///
 /// Return: The number of breakpoints in P.
-pub fn rosalind_ba6b() -> Result<(), Error> {
-    let line = utility::io::input_from_file("data/textbook_track/rosalind_ba6b.txt")?;
+pub fn rosalind_ba6b(filename: &str) -> Result<(), Error> {
+    let line = utility::io::input_from_file(filename)?;
     let mut permutation = vec![0];
     permutation.extend(isize::parse_line(&line[1..(line.len() - 1)])?);
     permutation.push(permutation.len() as isize);

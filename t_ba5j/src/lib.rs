@@ -1,9 +1,11 @@
+#[macro_use]
+extern crate ndarray;
 use std::collections::HashMap;
 
 use failure::Error;
 use ndarray::{Array2, Array3};
 
-use crate::textbook_track::r74_ba5e::read_scoring_matrix;
+use t_ba5e::read_scoring_matrix;
 use utility;
 
 /// Align Two Strings Using Affine Gap Penalties
@@ -13,10 +15,10 @@ use utility;
 /// Return: The maximum alignment score between v and w, followed by an alignment of v and w
 /// achieving this maximum score. Use the BLOSUM62 scoring matrix, a gap opening penalty of 11,
 /// and a gap extension penalty of 1.
-pub fn rosalind_ba5j() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5j.txt")?;
+pub fn rosalind_ba5j(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 11, 1);
     let (score, aln_string_1, aln_string_2) =
         affine_gap_penalties_align(lines[0], lines[1], &parameters);

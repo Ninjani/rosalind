@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::textbook_track::r114_ba9g::SuffixArray;
+use t_ba9g::SuffixArray;
 use utility;
 
 /// Pattern Matching with the Suffix Array
@@ -23,7 +23,11 @@ pub fn rosalind_ba9h(filename: &str) -> Result<Vec<usize>, Error> {
     Ok(positions)
 }
 
-impl SuffixArray {
+pub trait PatternMatch {
+    fn pattern_match(&self, pattern: &str) -> Option<(usize, usize)>;
+}
+
+impl PatternMatch for SuffixArray {
     fn pattern_match(&self, pattern: &str) -> Option<(usize, usize)> {
         let mut min_index = 0;
         let mut max_index = self.text.len();

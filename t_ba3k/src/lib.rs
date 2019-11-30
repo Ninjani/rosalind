@@ -1,11 +1,12 @@
 use failure::Error;
 
-use crate::textbook_track::r45_ba3b::reverse_kmerize;
-use crate::textbook_track::r47_ba3d::de_bruijn_graph;
+use t_ba3b::reverse_kmerize;
+use t_ba3d::de_bruijn_graph;
+use t_ba3m::MaximalNonbranching;
 use utility;
 
-pub fn rosalind_ba3k() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3k.txt")?;
+pub fn rosalind_ba3k(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').map(|s| s.to_owned()).collect();
     let adjacency_list = de_bruijn_graph(&kmers);
     let (index_to_node, indexed_adjacency_list) = utility::graph::convert_graph(&adjacency_list);

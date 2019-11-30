@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::{Array1, Array2};
 
-use crate::textbook_track::r74_ba5e::{AlignmentParameters, read_scoring_matrix};
+use t_ba5e::{AlignmentParameters, read_scoring_matrix};
 use utility;
 
 /// Find a Middle Edge in an Alignment Graph in Linear Space
@@ -13,10 +13,10 @@ use utility;
 /// and a linear indel penalty equal to 5.
 /// Return the middle edge in the form “(i, j) (k, l)”,
 /// where (i, j) connects to (k, l).
-pub fn rosalind_ba5k() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5k.txt")?;
+pub fn rosalind_ba5k(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
     let lsa = LinearSpaceAlignment {
         string_1: lines[0].chars().collect(),

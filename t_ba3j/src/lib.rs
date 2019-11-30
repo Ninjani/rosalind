@@ -3,8 +3,10 @@ use std::collections::btree_map::BTreeMap;
 
 use failure::Error;
 
-use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
-use crate::textbook_track::r55_ba3l::{
+use t_ba3g::reverse_adjacency_list;
+use t_ba3g::EulerianPath;
+use t_ba3f::EulerianCycle;
+use t_ba3l::{
     get_string_spelled_by_gapped_patterns, PairedRead, read_paired_reads,
 };
 use utility;
@@ -15,8 +17,8 @@ use utility;
 ///
 /// Return: A string Text with (k, d)-mer composition equal to PairedReads.
 /// (If multiple answers exist, you may return any one.)
-pub fn rosalind_ba3j() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3j.txt")?;
+pub fn rosalind_ba3j(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let (paired_reads, k, d) = read_paired_reads(&contents);
     let adjacency_list = paired_de_bruijn_graph(&paired_reads);
     let (index_to_node, indexed_adjacency_list) = utility::graph::convert_graph(&adjacency_list);
@@ -42,6 +44,7 @@ pub fn rosalind_ba3j() -> Result<(), Error> {
     Ok(())
 }
 
+
 pub fn paired_de_bruijn_graph(nodes: &[PairedRead]) -> HashMap<PairedRead, Vec<PairedRead>> {
     fn prefix(pr: &PairedRead) -> PairedRead {
         (
@@ -65,7 +68,14 @@ pub fn paired_de_bruijn_graph(nodes: &[PairedRead]) -> HashMap<PairedRead, Vec<P
     adjacency_list
 }
 
-impl utility::graph::IntegerGraph {
+pub trait AllEulerian: Sized {
+    fn get_bypass_graph(&self, incoming_u: usize, node_v: usize, outgoing_w: usize) -> Self;
+    fn get_all_bypass_graphs(&self) -> HashSet<(Self, Option<usize>)>;
+    fn get_all_eulerian_paths(&self) -> Vec<Vec<usize>>;
+    fn get_all_eulerian_cycles(&self) -> Vec<Vec<usize>>;
+}
+
+impl AllEulerian for utility::graph::IntegerGraph {
     fn get_bypass_graph(&self, incoming_u: usize, node_v: usize, outgoing_w: usize) -> Self {
         let mut new_adj_list = BTreeMap::new();
         let new_node = self.num_nodes;
@@ -125,7 +135,7 @@ impl utility::graph::IntegerGraph {
         graphs
     }
 
-    pub fn get_all_eulerian_paths(&self) -> Vec<Vec<usize>> {
+    fn get_all_eulerian_paths(&self) -> Vec<Vec<usize>> {
         self.get_all_bypass_graphs()
             .into_iter()
             .filter_map(|(graph, node_v)| {
@@ -145,7 +155,7 @@ impl utility::graph::IntegerGraph {
             .collect()
     }
 
-    pub fn get_all_eulerian_cycles(&self) -> Vec<Vec<usize>> {
+    fn get_all_eulerian_cycles(&self) -> Vec<Vec<usize>> {
         self.get_all_bypass_graphs()
             .into_iter()
             .filter_map(|(graph, node_v)| {

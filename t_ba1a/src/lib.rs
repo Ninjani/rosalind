@@ -2,8 +2,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba1a() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba1a.txt")?;
+pub fn rosalind_ba1a(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (text, pattern) = (lines[0], lines[1]);
     println!("{}", pattern_count(text, pattern));

@@ -1,11 +1,11 @@
 use failure::Error;
 
-use crate::textbook_track::r39_ba2d::greedy_motif_search;
+use t_ba2d::greedy_motif_search;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2e() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2e.txt")?;
+pub fn rosalind_ba2e(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
     let (k, t) = (numbers[0], numbers[1]);

@@ -2,8 +2,8 @@ use failure::Error;
 
 use utility;
 
-pub fn rosalind_ba3b() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3b.txt")?;
+pub fn rosalind_ba3b(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').collect();
     println!("{}", reverse_kmerize(&kmers));
     Ok(())

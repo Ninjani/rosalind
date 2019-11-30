@@ -1,9 +1,9 @@
 use std::isize;
 
 use failure::Error;
-use ndarray::{Array, Array2};
+use ndarray::Array2;
 
-use crate::textbook_track::r74_ba5e::{align, AlignmentParameters, read_scoring_matrix};
+use t_ba5e::{align, AlignmentParameters, read_scoring_matrix};
 use utility;
 
 /// Find a Highest-Scoring Overlap Alignment of Two Strings
@@ -14,15 +14,13 @@ use utility;
 /// suffix v’ of v and a prefix w’ of w achieving this maximum score. Use an alignment score in
 /// which matches count +1 and both the mismatch and indel penalties are 2. (If multiple overlap
 /// alignments achieving the maximum score exist, you may return any one.)
-pub fn rosalind_ba5i() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5i.txt")?;
+pub fn rosalind_ba5i(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (_, amino_acids) = read_scoring_matrix("data/pam250.txt")?;
+    let (_, amino_acids) = read_scoring_matrix(utility::io::PAM_FILE)?;
     let mut scoring_matrix = Array2::zeros((amino_acids.len(), amino_acids.len()));
     scoring_matrix.fill(-2);
-    scoring_matrix.diag_mut().assign(&Array::from_vec(
-        (0..amino_acids.len()).map(|_| 1).collect(),
-    ));
+    scoring_matrix.diag_mut().fill(1);
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 2);
     let (score, aln_string_1, aln_string_2) = overlap_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);

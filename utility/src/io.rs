@@ -11,7 +11,9 @@ use crate::errors;
 use crate::graph::{IntegerGraph, WeightedGraph};
 
 const CODON_FILE: &str = "data/codons.txt";
-const MASS_FILE: &str = "data/monoisotopic_mass.txt";
+pub const PAM_FILE: &str = "data/pam250.txt";
+pub const BLOSUM_FILE: &str = "data/blosum62.txt";
+pub const MASS_FILE: &str = "data/monoisotopic_mass.txt";
 pub const STOP_CODON_AA: &str = "Stop";
 pub const START_CODON: &str = "AUG";
 

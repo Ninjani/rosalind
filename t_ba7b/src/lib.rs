@@ -10,8 +10,8 @@ use utility;
 ///
 /// Return: The limb length of the leaf in Tree(D) corresponding to row j of this
 /// distance matrix (use 0-based indexing).
-pub fn rosalind_ba7b() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba7b.txt")?;
+pub fn rosalind_ba7b(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;
     let leaf_number = lines.next().unwrap().parse::<usize>()?;
@@ -48,10 +48,10 @@ pub fn get_limb_length(
 pub fn read_matrix(lines: &[&str]) -> Result<Array2<usize>, Error> {
     let mut distance_matrix = Array2::zeros((lines.len(), lines.len()));
     for (i, line) in lines.iter().enumerate() {
-        distance_matrix.row_mut(i).assign(&Array::from_vec(
+        distance_matrix.row_mut(i).assign(&Array::from(
             line.split_whitespace()
                 .map(str::parse)
-                .collect::<Result<_, _>>()?,
+                .collect::<Result<Vec<usize>, _>>()?,
         ));
     }
     Ok(distance_matrix)

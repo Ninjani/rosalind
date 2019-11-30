@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array2;
 
-use crate::textbook_track::hidden_markov_models::{HMM, HMMError};
+use hidden_markov_models::{HMM, HMMError};
 use utility;
 use utility::math::Comparable;
 
@@ -26,7 +26,11 @@ pub fn rosalind_ba10c(filename: &str) -> Result<String, Error> {
     Ok(path)
 }
 
-impl HMM {
+pub trait Viterbi {
+    fn run_viterbi(&self, sequence: &str) -> Result<String, Error>;
+}
+
+impl Viterbi for HMM {
     /// Runs the viterbi algorithm on a sequence
     fn run_viterbi(&self, sequence: &str) -> Result<String, Error> {
         let mut v_maxes = Array2::<f64>::zeros((self.states.len(), sequence.len()));

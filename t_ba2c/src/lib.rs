@@ -6,8 +6,8 @@ use ndarray::Array2;
 use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2c() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba2c.txt")?;
+pub fn rosalind_ba2c(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let (text, k) = (
         lines.next().unwrap(),

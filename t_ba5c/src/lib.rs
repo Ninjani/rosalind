@@ -8,8 +8,8 @@ use utility;
 /// Given: Two strings.
 ///
 /// Return: A longest common subsequence of these strings.
-pub fn rosalind_ba5c() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba5c.txt")?;
+pub fn rosalind_ba5c(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     println!("{}", get_longest_common_subsequence(lines[0], lines[1]));
     Ok(())

@@ -3,7 +3,7 @@ use std::hash::Hash;
 
 use failure::Error;
 
-use crate::textbook_track::r118_ba9k::get_last_to_first_mapping;
+use t_ba9k::get_last_to_first_mapping;
 use utility;
 
 /// Implement BWMatching

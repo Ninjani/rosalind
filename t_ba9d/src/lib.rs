@@ -2,11 +2,10 @@ use std::collections::HashMap;
 
 use failure::Error;
 use petgraph::Outgoing;
-use petgraph::stable_graph::{EdgeIndex, NodeIndex};
-use petgraph::stable_graph::EdgeReference;
+use petgraph::stable_graph::{EdgeIndex, NodeIndex, EdgeReference};
 use petgraph::visit::EdgeRef;
 
-use crate::textbook_track::r110_ba9c::SuffixTree;
+use t_ba9c::SuffixTree;
 use utility;
 
 /// Find the longest repeat in a string.
@@ -24,7 +23,26 @@ pub fn rosalind_ba9d(filename: &str) -> Result<String, Error> {
     Ok(longest_repeat)
 }
 
-impl SuffixTree {
+pub trait LongestRepeat {
+    fn _get_node_depths_edges(
+        &self,
+        edge: EdgeReference<(usize, usize), u32>,
+        depth: usize,
+        node_depths: &mut HashMap<NodeIndex<u32>, usize>,
+        node_paths: &mut HashMap<NodeIndex<u32>, Vec<EdgeIndex<u32>>>,
+    );
+
+    fn get_node_depths_edges(
+        &self,
+    ) -> (
+        HashMap<NodeIndex<u32>, usize>,
+        HashMap<NodeIndex<u32>, Vec<EdgeIndex<u32>>>,
+    );
+
+    fn get_longest_repeat(&self, text: &str) -> String;
+}
+
+impl LongestRepeat for SuffixTree {
     fn _get_node_depths_edges(
         &self,
         edge: EdgeReference<(usize, usize), u32>,
@@ -46,7 +64,7 @@ impl SuffixTree {
         }
     }
 
-    pub fn get_node_depths_edges(
+    fn get_node_depths_edges(
         &self,
     ) -> (
         HashMap<NodeIndex<u32>, usize>,

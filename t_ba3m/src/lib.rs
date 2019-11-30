@@ -3,11 +3,11 @@ use std::collections::HashSet;
 
 use failure::Error;
 
-use crate::textbook_track::r50_ba3g::reverse_adjacency_list;
+use t_ba3g::reverse_adjacency_list;
 use utility;
 
-pub fn rosalind_ba3m() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba3m.txt")?;
+pub fn rosalind_ba3m(filename: &str) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let graph = utility::graph::IntegerGraph::from_adjacency_list(&contents, true)?;
     for path in graph.get_maximal_nonbranching_paths() {
         println!(
@@ -21,8 +21,12 @@ pub fn rosalind_ba3m() -> Result<(), Error> {
     Ok(())
 }
 
-impl utility::graph::IntegerGraph {
-    pub fn get_maximal_nonbranching_paths(&self) -> Vec<Vec<usize>> {
+pub trait MaximalNonbranching {
+    fn get_maximal_nonbranching_paths(&self) -> Vec<Vec<usize>>;
+}
+
+impl MaximalNonbranching for utility::graph::IntegerGraph {
+    fn get_maximal_nonbranching_paths(&self) -> Vec<Vec<usize>> {
         assert!(self.ran_dfs);
         let mut paths = Vec::new();
         let adjacency_list_reverse = reverse_adjacency_list(&self.adjacency_list);

@@ -1,6 +1,6 @@
 use failure::Error;
 
-use crate::stronghold::r54_trie::Trie;
+use s_trie::Trie;
 use utility;
 
 /// Construct a Trie from a Collection of Patterns

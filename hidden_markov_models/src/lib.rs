@@ -1,3 +1,9 @@
+#[macro_use]
+extern crate failure;
+
+#[macro_use]
+extern crate ndarray;
+
 use std::collections::HashMap;
 
 use failure::Error;
