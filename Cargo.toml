@@ -1,3 +1,20 @@
 
 [workspace]
-members = ["a_scc", "a_dij", "a_bins", "a_par3", "a_mer", "a_inv", "a_2sum", "a_deg", "a_qs", "a_sq", "a_bf", "a_hs", "a_gs", "a_hdag", "a_par", "a_ps", "a_maj", "a_ms", "a_fibo", "a_sc", "a_bip", "a_3sum", "a_nwc", "a_bfs", "a_sdag", "a_hea", "a_ddeg", "a_ts", "a_ins", "a_dag", "a_cte", "a_cc", "a_2sat", "a_med", "s_lcsq", "s_tran", "s_iprb", "s_gc", "s_tree", "s_mprt", "s_rstr", "s_rna", "s_trie", "s_revp", "s_edta", "s_cons", "s_spec", "s_pmch", "s_sset", "s_conv", "s_prsm", "s_lrep", "s_dbru", "s_lcsm", "s_long", "s_prob", "s_pdst", "s_scsp", "s_lexv", "s_eval", "s_lgis", "s_hamm", "s_dna", "s_cat", "s_kmp", "s_pper", "s_mrna", "s_fib", "s_nwck", "s_gasm", "s_cstr", "s_ctbl", "s_lexf", "s_splc", "s_sign", "s_fibd", "s_corr", "s_pcov", "s_orf", "s_perm", "s_sseq", "s_pdpl", "s_iev", "s_grph", "s_kmer", "s_edit", "s_revc", "s_lia", "s_prot", "s_aspc", "s_prtm", "s_inod", "s_subs", "s_nkew", "s_seto", "s_indc", "t_ba5g", "t_ba2h", "t_ba4h", "t_ba3i", "t_ba5j", "t_ba4i", "t_ba1i", "t_ba4b", "t_ba4c", "t_ba5d", "t_ba3f", "t_ba9j", "t_ba1n", "t_ba9p", "t_ba9c", "t_ba8d", "t_markov", "t_ba5l", "t_ba1h", "t_ba2f", "t_ba9b", "t_ba3a", "t_ba1b", "t_ba11c", "t_ba1e", "t_ba10a", "t_ba2a", "t_ba3g", "t_ba8e", "t_ba3d", "t_ba4e", "t_ba8b", "t_ba4a", "t_ba11e", "t_ba7a", "t_ba9l", "t_ba5h", "t_ba2g", "t_ba9f", "t_ba1d", "t_ba10c", "t_ba1l", "t_ba1g", "t_ba5f", "t_ba2c", "t_ba3h", "t_ba5a", "t_ba10b", "t_ba11b", "t_ba9a", "t_ba3k", "t_ba6a", "t_ba3c", "t_ba9e", "t_ba11a", "t_ba9k", "t_ba8a", "t_ba5n", "t_ba1c", "t_ba10g", "t_ba1k", "t_ba6b", "t_ba2d", "t_ba10f", "t_ba2i", "t_ba9h", "t_ba3l", "t_ba5e", "t_ba4j", "t_ba4k", "t_ba5b", "t_ba1j", "t_ba9i", "t_ba3e", "t_ba10d", "t_ba1m", "t_ba11d", "t_ba3m", "t_ba5c", "t_ba5i", "t_ba3j", "t_ba2e", "t_ba9d", "t_ba3b", "t_ba1a", "t_ba8c", "t_ba2b", "t_ba5k", "t_ba1f", "t_ba4l", "t_ba4f", "t_ba4g", "t_ba7b", "t_ba7c", "t_ba9g", "t_ba10e"]
+members = ["a_scc", "a_dij", "a_bins", "a_par3", "a_mer", "a_inv", "a_2sum", "a_deg", "a_qs", "a_sq", "a_bf", "a_hs", "a_gs",
+"a_hdag", "a_par", "a_ps", "a_maj", "a_ms", "a_fibo", "a_sc", "a_bip", "a_3sum", "a_nwc", "a_bfs", "a_sdag", "a_hea", "a_ddeg",
+"a_ts", "a_ins", "a_dag", "a_cte", "a_cc", "a_2sat", "a_med",
+"s_lcsq", "s_tran", "s_iprb", "s_gc", "s_tree", "s_mprt", "s_rstr", "s_rna", "s_trie", "s_revp", "s_edta", "s_cons", "s_spec",
+"s_pmch", "s_sset", "s_conv", "s_prsm", "s_lrep", "s_dbru", "s_lcsm", "s_long", "s_prob", "s_pdst", "s_scsp", "s_lexv", "s_eval",
+"s_lgis", "s_hamm", "s_dna", "s_cat", "s_kmp", "s_pper", "s_mrna", "s_fib", "s_nwck", "s_gasm", "s_cstr", "s_ctbl", "s_lexf",
+"s_splc", "s_sign", "s_fibd", "s_corr", "s_pcov", "s_orf", "s_perm", "s_sseq", "s_pdpl", "s_iev", "s_grph", "s_kmer", "s_edit",
+"s_revc", "s_lia", "s_prot", "s_aspc", "s_prtm", "s_inod", "s_subs", "s_nkew", "s_seto", "s_indc",
+"t_ba5g", "t_ba2h", "t_ba4h", "t_ba3i", "t_ba5j", "t_ba4i", "t_ba1i", "t_ba4b", "t_ba4c", "t_ba5d", "t_ba3f", "t_ba9j", "t_ba1n",
+"t_ba9p", "t_ba9c", "t_ba8d", "t_ba5l", "t_ba1h", "t_ba2f", "t_ba9b", "t_ba3a", "t_ba1b", "t_ba11c", "t_ba1e", "t_ba10a", "t_ba2a",
+"t_ba3g", "t_ba8e", "t_ba3d", "t_ba4e", "t_ba8b", "t_ba4a", "t_ba11e", "t_ba7a", "t_ba9l", "t_ba5h", "t_ba2g", "t_ba9f", "t_ba1d",
+"t_ba10c", "t_ba1l", "t_ba1g", "t_ba5f", "t_ba2c", "t_ba3h", "t_ba5a", "t_ba10b", "t_ba11b", "t_ba9a", "t_ba3k", "t_ba6a", "t_ba3c",
+"t_ba9e", "t_ba11a", "t_ba9k", "t_ba8a", "t_ba5n", "t_ba1c", "t_ba10g", "t_ba1k", "t_ba6b", "t_ba2d", "t_ba10f", "t_ba2i", "t_ba9h",
+"t_ba3l", "t_ba5e", "t_ba4j", "t_ba4k", "t_ba5b", "t_ba1j", "t_ba9i", "t_ba3e", "t_ba10d", "t_ba1m", "t_ba11d", "t_ba3m", "t_ba5c",
+"t_ba5i", "t_ba3j", "t_ba2e", "t_ba9d", "t_ba3b", "t_ba1a", "t_ba8c", "t_ba2b", "t_ba5k", "t_ba1f", "t_ba4l", "t_ba4f", "t_ba4g",
+"t_ba7b", "t_ba7c", "t_ba9g", "t_ba10e",
+"hidden_markov_models"
+]
