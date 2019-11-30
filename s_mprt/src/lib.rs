@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use failure::Error;
 use regex::Regex;
 use reqwest;
+
 use utility;
 
 const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
@@ -16,10 +17,10 @@ const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
 pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> {
     let motif = Regex::new("N[^P][ST][^P]")?;
     let uniprot_ids = input.split('\n').collect::<Vec<&str>>();
-    let sequences: Vec<_> = uniprot_ids
-        .iter()
-        .map(|key| (*key, parse_sequence(&get_fasta_from_uniprot(key).unwrap())))
-        .collect();
+    let mut sequences = Vec::with_capacity(uniprot_ids.len());
+    for key in uniprot_ids {
+        sequences.push((key.to_owned(), get_sequence_from_uniprot(key)?));
+    }
     let output = sequences
         .into_iter()
         .filter_map(|(uniprot_id, sequence)| {
@@ -42,15 +43,13 @@ pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> 
     Ok(output)
 }
 
-async fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
-    // TODO this doesn't work anymore :/
+fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
     let url = format!("{}{}.fasta", UNIPROT_URL, uniprot_id);
     Ok(reqwest::get(&url)?.text()?)
 }
 
-/// Strip key from fasta sequence
-fn parse_sequence(sequence: &str) -> String {
-    sequence.split('\n').skip(1).collect::<Vec<&str>>().join("")
+fn get_sequence_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
+    Ok(get_fasta_from_uniprot(uniprot_id)?.split('\n').skip(1).collect::<Vec<&str>>().join(""))
 }
 
 /// Overlapping regex matcher. Returns all (1-indexed) positions where regex is found.

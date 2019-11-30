@@ -1,6 +1,9 @@
+#![feature(proc_macro_hygiene)]
+#[macro_use]
+extern crate inline_python;
+
 use failure::Error;
 use inline_python::{Context, pyo3, python};
-use itertools::Itertools;
 
 use utility;
 use utility::io::Parseable;
@@ -33,7 +36,7 @@ fn factorize_polynomial(polynomial: Polynomial) -> Vec<Polynomial> {
         if factors.is_polynomial():
             coefficients = factors.as_coefficients_dict()
             factored_polynomials.append(polynomial_to_list(factors))
-        elif poly.is_factored_polynomials += [polynomial_to_list(base) for _ in range(exp)]Pow:
+        elif poly.is_Pow:
             base, exp = poly.as_base_exp()
             if base[0] != x:
                 factored_polynomials.append([()])
@@ -42,15 +45,16 @@ fn factorize_polynomial(polynomial: Polynomial) -> Vec<Polynomial> {
             assert factors.is_Mul
             for poly in factors.args:
                 if poly.is_Pow and poly.as_base_exp()[0] != x:
-
-                coefficients = poly.as_coefficients_dict()
-                factored_polynomials.append([(key.as_base_exp()[1], coefficients[key]) if key.as_base_exp()[0] == x else (0, coefficients[key]) for key in coefficients])
+                    coefficients = poly.as_coefficients_dict()
+                    factored_polynomials.append([(key.as_base_exp()[1], coefficients[key]) if key.as_base_exp()[0] == x else (0, coefficients[key]) for key in coefficients])
     }
     let gil = pyo3::Python::acquire_gil();
     let py = gil.python();
-    let factored_polynomials: Vec<Vec<(i32, i32)>> = context.get_global(py, "factored_polynomials").unwrap().unwrap_or(Vec::new());
-    factored_polynomials
+//    let factored_polynomials: Vec<Vec<(i32, i32)>> = context.get_global(py, "factored_polynomials").unwrap().unwrap_or(Vec::new());
+//    factored_polynomials
+    Vec::new()
 }
+
 
 fn points_from_polynomial(polynomial: &Polynomial) -> Vec<i32> {
     let mut points: Vec<_> = polynomial.iter().flat_map(|(power, coef)| (0..*coef).map(move |_| *power)).collect();

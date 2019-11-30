@@ -18,6 +18,10 @@ pub fn rosalind_edit(filename: &str) -> Result<usize, Error> {
 }
 
 pub fn get_edit_distance(string_1: &str, string_2: &str) -> usize {
+    get_edit_distances(string_1, string_2)[(string_1.len(), string_2.len())]
+}
+
+pub fn get_edit_distances(string_1: &str, string_2: &str) -> Array2<usize> {
     let (string_1, string_2): (Vec<_>, Vec<_>) =
         (string_1.chars().collect(), string_2.chars().collect());
     let (m, n) = (string_1.len(), string_2.len());
@@ -39,7 +43,7 @@ pub fn get_edit_distance(string_1: &str, string_2: &str) -> usize {
             };
         }
     }
-    distances[(string_1.len(), string_2.len())]
+    distances
 }
 
 #[cfg(test)]

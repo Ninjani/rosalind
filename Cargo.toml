@@ -1,3 +1,8 @@
+[package]
+name = "rosalind"
+version = "0.1.0"
+edition = "2018"
+authors = ["Ninjani"]
 
 [workspace]
 members = ["a_scc", "a_dij", "a_bins", "a_par3", "a_mer", "a_inv", "a_2sum", "a_deg", "a_qs", "a_sq", "a_bf", "a_hs", "a_gs",
@@ -18,3 +23,8 @@ members = ["a_scc", "a_dij", "a_bins", "a_par3", "a_mer", "a_inv", "a_2sum", "a_
 "t_ba7b", "t_ba7c", "t_ba9g", "t_ba10e",
 "hidden_markov_models"
 ]
+
+[dependencies]
+failure = "0.1.6"
+utility = {path = "utility"}
+

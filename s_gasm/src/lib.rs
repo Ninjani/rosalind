@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use s_revc::reverse_complement;
 use t_ba3b::reverse_kmerize;
 use t_ba3d::de_bruijn_graph;
+use t_ba3j::AllEulerian;
 use utility;
 
 /// W.I.P

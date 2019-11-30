@@ -1,7 +1,7 @@
 use failure::Error;
 use ndarray::Array2;
-use s_edit::get_edit_distance;
 
+use s_edit::get_edit_distances;
 use utility;
 
 /// WIP
@@ -15,7 +15,7 @@ pub fn rosalind_edta(filename: &str) -> Result<(usize, String, String), Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let (string_1, string_2) = (&sequences[0], &sequences[1]);
-    let distances = get_edit_distance(string_1, string_2);
+    let distances = get_edit_distances(string_1, string_2);
     let (aln_1, aln_2) = backtrack(string_1, string_2, &distances);
     let edit_distance = distances[(string_1.len(), string_2.len())];
     println!(

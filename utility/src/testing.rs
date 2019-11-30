@@ -1,3 +1,6 @@
+use std::env;
+use std::ffi::OsStr;
+use std::path::PathBuf;
 use std::thread;
 use std::time::Duration;
 
@@ -11,17 +14,18 @@ pub const ROSALIND_FLOAT_ERROR_F32: f32 = 0.001;
 pub const ROSALIND_FLOAT_ERROR_F64: f64 = 0.001;
 
 const ROSALIND_URL: &'static str = "http://rosalind.info/problems";
-const TEST_DATA_DIR: &'static str = "test_data/small";
 
 pub fn get_input_output_file(question_name: &str) -> Result<(String, String), Error> {
-    let input_file = path_abs::PathFile::new(format!("{}/{}.txt", TEST_DATA_DIR, question_name))?;
+    let test_data_dir = get_test_data_dir();
+    let input_file = path_abs::PathFile::new(format!("{}/{}.txt", test_data_dir, question_name))?;
     let output_file =
-        path_abs::PathFile::new(format!("{}/{}_output.txt", TEST_DATA_DIR, question_name))?;
+        path_abs::PathFile::new(format!("{}/{}_output.txt", test_data_dir, question_name))?;
     Ok((input_file.to_string(), output_file.to_string()))
 }
 
 pub fn get_input_file(question_name: &str) -> Result<String, Error> {
-    let input_file = path_abs::PathFile::new(format!("{}/{}.txt", TEST_DATA_DIR, question_name))?;
+    let test_data_dir = get_test_data_dir();
+    let input_file = path_abs::PathFile::new(format!("{}/{}.txt", test_data_dir, question_name))?;
     Ok(input_file.to_string())
 }
 
@@ -57,41 +61,41 @@ pub fn get_sample_data_for_question(question_name: &str, folder_name: &str) -> R
 
 fn get_question_names_from_folder(folder_name: &str) -> Result<Vec<String>, Error> {
     let mut question_names = Vec::new();
-    for filename in glob(&format!("{}/*.rs", folder_name))? {
-        if let Ok(filename) = filename {
-            let stem = filename.as_path().file_stem();
-            if let Some(stem) = stem {
-                let stem = stem.to_str();
-                if let Some(stem) = stem {
-                    if &stem[0..1] == "r" && stem.split("_").count() == 2 {
-                        let question_name = stem.split('_').nth(1);
-                        if let Some(question_name) = question_name {
-                            question_names.push(question_name.to_owned());
-                        }
-                    }
-                }
+    for folder in glob(&format!("{}/*", folder_name))? {
+        let folder = folder?;
+        let stem = folder.as_path().file_stem().unwrap().to_str().unwrap();
+        if stem.chars().nth(1).unwrap() == '_' {
+            let question_name = stem.split('_').nth(1);
+            if let Some(question_name) = question_name {
+                question_names.push(question_name.to_owned());
             }
         }
     }
     Ok(question_names)
 }
 
-pub fn get_all_sample_data(folder_name: &str) -> Result<(), Error> {
-    let src_folder_names = vec![
-        "src/algorithmic_heights",
-        "src/stronghold",
-        "src/textbook_track",
-    ];
-    let mut question_names = Vec::new();
-    for dir in src_folder_names {
-        question_names.extend_from_slice(&get_question_names_from_folder(dir)?);
+fn get_top_dir() -> PathBuf {
+    let bin = env::current_exe().expect("exe path");
+    let mut target_dir = PathBuf::from(bin.parent().expect("bin parent"));
+    while target_dir.file_name() != Some(OsStr::new("target")) {
+        target_dir.pop();
     }
+    target_dir.parent().expect("target parent").to_owned()
+}
+
+fn get_test_data_dir() -> String {
+    format!("{}/test_data/small", get_top_dir().display())
+}
+
+pub fn get_all_sample_data() -> Result<(), Error> {
+    let test_data_dir = get_test_data_dir();
+    let question_names = get_question_names_from_folder(".")?;
     for question_name in question_names {
         let path =
-            path_abs::PathAbs::new(&format!("{}/rosalind_{}.txt", folder_name, question_name))?;
+            path_abs::PathAbs::new(&format!("{}/rosalind_{}.txt", test_data_dir, question_name))?;
         if !path.is_file() {
             println!("Retrieving data for {}", question_name);
-            get_sample_data_for_question(&question_name, folder_name)?;
+            get_sample_data_for_question(&question_name, &test_data_dir)?;
             thread::sleep(Duration::from_secs(2));
         }
     }
