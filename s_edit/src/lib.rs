@@ -1,14 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
-
-use utility;
+use std::path::Path;
 
 /// Edit Distance
 ///
 /// Given: Two protein strings s and t in FASTA format (each of length at most 1000 aa).
 ///
 /// Return: The edit distance dE(s,t).
-pub fn rosalind_edit(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_edit(filename: &Path) -> Result<usize, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let (string_1, string_2) = (&sequences[0], &sequences[1]);

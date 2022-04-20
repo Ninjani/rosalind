@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Construct the suffix array of a string.
 ///
 /// Given: A string Text.
 ///
 /// Return: SuffixArray(Text).
-pub fn rosalind_ba9g(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ba9g(filename: &Path) -> Result<Vec<usize>, Error> {
     let text = utility::io::input_from_file(filename)?;
     let suffix_array = SuffixArray::construct(&text);
     println!(

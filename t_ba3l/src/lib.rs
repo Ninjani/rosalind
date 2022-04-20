@@ -1,12 +1,12 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba3b::reverse_kmerize;
-use utility;
 
 pub type PairedRead = (String, String);
 
-pub fn rosalind_ba3l(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3l(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let (paired_reads, k, d) = read_paired_reads(&contents);
     println!(

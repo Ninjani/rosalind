@@ -1,11 +1,11 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_lexf::enumerate_lex;
+use std::path::Path;
 use t_ba3d::de_bruijn_graph;
 use t_ba3f::EulerianCycle;
-use utility;
 
-pub fn rosalind_ba3i(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3i(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let length = contents.parse::<usize>()?;
     let patterns = enumerate_lex(&['0', '1'], length);

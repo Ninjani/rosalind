@@ -1,13 +1,12 @@
-use failure::Error;
-
-use utility;
+use anyhow::Error;
+use std::path::Path;
 
 /// Transcribing DNA into RNA
 ///
 /// Given: A DNA string t having length at most 1000 nt.
 ///
 /// Return: The transcribed RNA string of t.
-pub fn rosalind_rna(filename: &str) -> Result<String, Error> {
+pub fn rosalind_rna(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let output = transcribe(&input);
     println!("{}", output);
@@ -16,7 +15,7 @@ pub fn rosalind_rna(filename: &str) -> Result<String, Error> {
 
 /// Transcribe DNA string into RNA
 pub fn transcribe(dna: &str) -> String {
-    dna.to_ascii_uppercase().replace("T", "U")
+    dna.to_ascii_uppercase().replace('T', "U")
 }
 
 #[cfg(test)]

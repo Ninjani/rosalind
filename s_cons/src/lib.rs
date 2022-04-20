@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Consensus and Profile
 ///
@@ -10,7 +10,7 @@ use utility;
 ///
 /// Return: A consensus string and profile matrix for the collection.
 /// (If several possible consensus strings exist, then you may return any one of them.)
-pub fn rosalind_cons(filename: &str) -> Result<(String, Vec<HashMap<char, usize>>), Error> {
+pub fn rosalind_cons(filename: &Path) -> Result<(String, Vec<HashMap<char, usize>>), Error> {
     let contents = utility::io::read_fasta_file(filename)?;
     let sequences = contents.values().map(|s| s.as_ref()).collect::<Vec<&str>>();
     let profile = get_profile(&sequences);
@@ -70,7 +70,7 @@ mod tests {
     use super::*;
 
     fn read_profile(
-        lines: &mut Iterator<Item=&str>,
+        lines: &mut dyn Iterator<Item = &str>,
         length: usize,
     ) -> Result<Vec<HashMap<char, usize>>, Error> {
         let mut profile: Vec<_> = (0..length).map(|_| HashMap::with_capacity(4)).collect();

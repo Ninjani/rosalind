@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// nth fibonacci number given that a number is active only for m months
@@ -27,7 +27,7 @@ fn mortal_fibonacci(n: u64, m: u64) -> u64 {
 /// Given: Positive integers n≤100 and m≤20.
 ///
 /// Return: The total number of pairs of rabbits that will remain after the nth month if all rabbits live for m months.
-pub fn rosalind_fibd(filename: &str) -> Result<u64, Error> {
+pub fn rosalind_fibd(filename: &Path) -> Result<u64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let contents = u64::parse_line(&input)?;
     let (n, m) = (contents[0], contents[1]);

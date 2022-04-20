@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use hidden_markov_models::{HMM, HMMError};
-use utility;
+use hidden_markov_models::{HMMError, HMM};
+use std::path::Path;
 
 /// Compute the Probability of a String Emitted by an HMM
 ///
@@ -11,7 +11,7 @@ use utility;
 /// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The probability Pr(x) that the HMM emits x.
-pub fn rosalind_ba10d(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_ba10d(filename: &Path) -> Result<f64, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections

@@ -1,17 +1,16 @@
 use std::char;
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 use radix::RadixNum;
-
-use utility;
 
 /// Enumerating k-mers Lexicographically
 ///
 /// Given: A collection of at most 10 symbols defining an ordered alphabet, and a positive integer n (n≤10).
 ///
 /// Return: All strings of length n that can be formed from the alphabet, ordered lexicographically (use the standard order of symbols in the English alphabet).
-pub fn rosalind_lexf(filename: &str) -> Result<Vec<String>, Error> {
+pub fn rosalind_lexf(filename: &Path) -> Result<Vec<String>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let parts: Vec<_> = input.split('\n').collect();
     let alphabets: Vec<_> = parts[0]
@@ -27,7 +26,7 @@ pub fn rosalind_lexf(filename: &str) -> Result<Vec<String>, Error> {
 }
 
 /// Definitely a hack: uses base-10 conversion to convert between decimal and alphabet length
-pub fn enumerate_lex_2(alphabets: Vec<char>, length: usize) -> impl Iterator<Item=String> {
+pub fn enumerate_lex_2(alphabets: Vec<char>, length: usize) -> impl Iterator<Item = String> {
     let num_alphabets = alphabets.len();
     let alphabet_map: HashMap<char, char> = alphabets
         .into_iter()
@@ -52,9 +51,9 @@ pub fn enumerate_lex_2(alphabets: Vec<char>, length: usize) -> impl Iterator<Ite
             .map(|_| alphabet_map[&'0'])
             .collect::<String>()
             + &i_digits
-            .into_iter()
-            .map(|n| alphabet_map[&n])
-            .collect::<String>()
+                .into_iter()
+                .map(|n| alphabet_map[&n])
+                .collect::<String>()
     })
 }
 

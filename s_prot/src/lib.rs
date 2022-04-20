@@ -1,21 +1,17 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
-
-use utility;
+use anyhow::Error;
 
 /// Translating RNA into Protein
 ///
 /// Given: An RNA string s corresponding to a strand of mRNA (of length at most 10 kbp).
 ///
 /// Return: The protein string encoded by s.
-pub fn rosalind_prot(filename: &str) -> Result<String, Error> {
+pub fn rosalind_prot(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let codons = utility::io::get_codon_to_aa()?;
-    Ok(
-        translate(&input, &codons)
-            .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?,
-    )
+    Ok(translate(&input, &codons).ok_or(utility::errors::RosalindOutputError::NoneError)?)
 }
 
 /// Get protein from RNA string (decodes till Stop codon reached)

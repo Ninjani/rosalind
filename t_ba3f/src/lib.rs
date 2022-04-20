@@ -1,10 +1,9 @@
 use std::collections::HashSet;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
-
-pub fn rosalind_ba3f(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3f(filename: &Path) -> Result<(), Error> {
     let graph = utility::graph::IntegerGraph::from_adjacency_list(
         &utility::io::input_from_file(filename)?,
         false,
@@ -34,10 +33,7 @@ impl EulerianCycle for utility::graph::IntegerGraph {
             .collect();
         let mut current_cycle = Vec::new();
         let mut final_cycle = Vec::new();
-        let mut current_node_index = match start_node {
-            Some(start_node) => start_node,
-            None => 0,
-        };
+        let mut current_node_index = start_node.unwrap_or(0);
         let mut next_node_index;
         current_cycle.push(current_node_index);
         let mut final_nodes = HashSet::with_capacity(self.num_nodes);

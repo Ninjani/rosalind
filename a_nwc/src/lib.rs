@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
 use a_bf::BellmanFord;
-use utility;
+use std::path::Path;
 
 /// Given: A positive integer k≤20 and k simple directed graphs
 /// with integer edge weights from −103 to 103 and n≤103 vertices in the edge list format.
 ///
 /// Return: For each graph, output "1" if it contains a negative weight cycle and "-1" otherwise.
-pub fn rosalind_nwc(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_nwc(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

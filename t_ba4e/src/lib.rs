@@ -1,9 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
-use t_ba4c::{get_aa_to_mass_usize, get_prefix_masses, get_cyclic_spectrum};
-use utility;
+use std::path::Path;
+use t_ba4c::{get_aa_to_mass_usize, get_cyclic_spectrum, get_prefix_masses};
 use utility::io::Parseable;
 
 /// Find a Cyclic Peptide with Theoretical Spectrum Matching an Ideal Spectrum
@@ -11,10 +11,8 @@ use utility::io::Parseable;
 /// Given: A collection of (possibly repeated) integers Spectrum corresponding to an ideal experimental spectrum.
 ///
 /// Return: Every amino acid string Peptide such that Cyclospectrum(Peptide) = Spectrum (if such a string exists).
-pub fn rosalind_ba4e(filename: &str) -> Result<(), Error> {
-    let spectrum = usize::parse_line(&utility::io::input_from_file(
-        filename,
-    )?)?;
+pub fn rosalind_ba4e(filename: &Path) -> Result<(), Error> {
+    let spectrum = usize::parse_line(&utility::io::input_from_file(filename)?)?;
     let aa_to_mass = get_aa_to_mass_usize()?;
     let masses: HashSet<_> = aa_to_mass.values().cloned().collect();
     let peptides: Vec<_> =
@@ -40,7 +38,7 @@ pub fn get_linear_spectrum(peptide: &[usize]) -> Vec<usize> {
             spectrum.push(prefix_masses[j] - prefix_masses[i]);
         }
     }
-    spectrum.sort();
+    spectrum.sort_unstable();
     spectrum
 }
 

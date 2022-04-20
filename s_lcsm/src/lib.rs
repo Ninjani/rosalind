@@ -1,7 +1,7 @@
+use anyhow::Error;
 use bio::data_structures::suffix_array as SA; // TODO does not compile (version mismatch?)
-use failure::Error;
 
-use utility;
+use std::path::Path;
 
 const SENTINEL: &str = "$";
 
@@ -11,7 +11,7 @@ const SENTINEL: &str = "$";
 ///
 /// Return: A longest common substring of the collection.
 /// (If multiple solutions exist, you may return any single solution.)
-pub fn rosalind_lcsm(filename: &str) -> Result<String, Error> {
+pub fn rosalind_lcsm(filename: &Path) -> Result<String, Error> {
     let sequences = utility::io::read_fasta_file(filename)?
         .values()
         .map(|s| s.to_owned())
@@ -22,6 +22,7 @@ pub fn rosalind_lcsm(filename: &str) -> Result<String, Error> {
 
 /// Computing Longest Common Substrings Using Suffix Arrays (Maxim A. Babenko, Tatiana A. Starikovskaya, 2008)
 pub struct LongestCommonMotif {
+    #[allow(dead_code)]
     sequences: Vec<String>,
     n_sequences: usize,
     combined_sequence: String,

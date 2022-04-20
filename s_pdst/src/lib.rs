@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use utility;
+use std::path::Path;
 
 /// Creating a Distance Matrix
 ///
@@ -10,7 +10,7 @@ use utility;
 ///
 /// Return: The matrix D corresponding to the p-distance dp on the given strings.
 /// As always, note that your answer is allowed an absolute error of 0.001.
-pub fn rosalind_pdst(filename: &str) -> Result<Array2<f64>, Error> {
+pub fn rosalind_pdst(filename: &Path) -> Result<Array2<f64>, Error> {
     let (headers, sequences) = utility::io::read_fasta_file_and_headers(filename)?;
     let mut distance_matrix = Array2::<f64>::zeros((headers.len(), headers.len()));
     for i in 0..headers.len() {
@@ -21,7 +21,7 @@ pub fn rosalind_pdst(filename: &str) -> Result<Array2<f64>, Error> {
             }
         }
     }
-    for row in distance_matrix.genrows() {
+    for row in distance_matrix.rows() {
         println!("{}", utility::io::format_array(&row.to_vec()));
     }
     Ok(distance_matrix)

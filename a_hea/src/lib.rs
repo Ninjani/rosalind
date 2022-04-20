@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Building a Heap
 ///
 /// Given: A positive integer n≤10^5 and array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A permuted array A satisfying the binary max heap property: for any 2≤i≤n, A[⌊i/2⌋]≥A[i].
-pub fn rosalind_hea(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_hea(filename: &Path) -> Result<Vec<isize>, Error> {
     let (length, mut array) = utility::io::read_isize_array(filename)?;
     build_max_heap(&mut array, length);
     println!("{}", utility::io::format_array(&array));

@@ -1,9 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
 use s_revc::reverse_complement;
-use utility;
+use std::path::Path;
 
 /// Error Correction in Reads
 ///
@@ -17,12 +17,11 @@ use utility;
 ///
 /// Return: A list of all corrections in the form "[old read]->[new read]".
 /// (Each correction must be a single symbol substitution, and you may return the corrections in any order.)
-pub fn rosalind_corr(filename: &str) -> Result<HashSet<(String, String)>, Error> {
+pub fn rosalind_corr(filename: &Path) -> Result<HashSet<(String, String)>, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
-    let reads: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let mut counter = HashMap::new();
     let mut correct_reads = Vec::new();
-    for read in reads.into_iter() {
+    for read in fasta.values().map(|x| x.to_owned()) {
         if let Some(value) = counter.get_mut(&read) {
             *value += 1;
             correct_reads.push(read);

@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// 2SUM
@@ -10,7 +10,7 @@ use utility::io::Parseable;
 ///
 /// Return: For each array A[1..n], output two different indices 1≤p<q≤n such that A[p]=−A[q]
 /// if exist, and "-1" otherwise.
-pub fn rosalind_2sum(filename: &str) -> Result<Vec<Option<(usize, usize)>>, Error> {
+pub fn rosalind_2sum(filename: &Path) -> Result<Vec<Option<(usize, usize)>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input.split('\n');
     let length_input = usize::parse_line(lines.next().unwrap())?;
@@ -27,7 +27,7 @@ pub fn rosalind_2sum(filename: &str) -> Result<Vec<Option<(usize, usize)>>, Erro
         match two_sum(length, &array, 0) {
             Some((index_1, index_2)) => {
                 let mut real_indices = vec![indices[index_1] + 1, indices[index_2] + 1];
-                real_indices.sort();
+                real_indices.sort_unstable();
                 println!("{}", utility::io::format_array(&real_indices));
                 output.push(Some((real_indices[0], real_indices[1])));
             }

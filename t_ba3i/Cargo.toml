@@ -5,7 +5,7 @@ edition = "2018"
 authors = ["Ninjani"]
 
 [dependencies]
-failure ="0.1.3"
+anyhow = "1.0"
 utility = {path = "../utility"}
 s_lexf = {path = "../s_lexf"}
 t_ba3d = {path = "../t_ba3d"}

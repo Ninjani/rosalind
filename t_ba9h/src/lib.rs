@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba9g::SuffixArray;
-use utility;
 
 /// Pattern Matching with the Suffix Array
 ///
 /// Given: A string Text and a collection of strings Patterns.
 ///
 /// Return: All starting positions in Text where a string from Patterns appears as a substring.
-pub fn rosalind_ba9h(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ba9h(filename: &Path) -> Result<Vec<usize>, Error> {
     let content = utility::io::input_from_file(filename)?;
     let mut lines = content.split('\n');
     let text = lines.next().unwrap().to_owned();

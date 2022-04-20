@@ -1,10 +1,10 @@
 use std::isize;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use t_ba5e::{align, AlignmentParameters, read_scoring_matrix};
-use utility;
+use std::path::{Path, PathBuf};
+use t_ba5e::{align, read_scoring_matrix, AlignmentParameters};
 
 /// Find a Highest-Scoring Fitting Alignment of Two Strings
 ///
@@ -14,10 +14,13 @@ use utility;
 /// achieving this maximum score. Use the simple scoring method in which matches count +1 and both
 /// the mismatch and indel penalties are equal to 1. (If multiple fitting alignments achieving
 /// the maximum score exist, you may return any one.)
-pub fn rosalind_ba5h(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5h(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (_, amino_acids) = read_scoring_matrix(utility::io::PAM_FILE)?;
+    let pam_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), utility::io::PAM_FILE]
+        .iter()
+        .collect();
+    let (_, amino_acids) = read_scoring_matrix(&pam_file)?;
     let mut scoring_matrix = Array2::<isize>::zeros((amino_acids.len(), amino_acids.len()));
     scoring_matrix.fill(-1);
     scoring_matrix.diag_mut().fill(1);
@@ -47,9 +50,9 @@ pub fn fitting_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                    parameters.amino_acid_order[&chars_1[i - 1]],
-                    parameters.amino_acid_order[&chars_2[j - 1]],
-                )]),
+                        parameters.amino_acid_order[&chars_1[i - 1]],
+                        parameters.amino_acid_order[&chars_2[j - 1]],
+                    )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()

@@ -1,11 +1,11 @@
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba3b::reverse_kmerize;
 use t_ba3d::de_bruijn_graph;
 use t_ba3m::MaximalNonbranching;
-use utility;
 
-pub fn rosalind_ba3k(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3k(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').map(|s| s.to_owned()).collect();
     let adjacency_list = de_bruijn_graph(&kmers);

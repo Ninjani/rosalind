@@ -1,12 +1,12 @@
 use std::char;
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use radix::RadixNum;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba1m(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1m(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (number, k) = (lines[0].parse::<usize>()?, lines[1].parse::<usize>()?);

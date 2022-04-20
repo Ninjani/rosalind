@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba9c::SuffixTree;
 use t_ba9d::LongestRepeat;
-use t_ba9e::{TreeColor, NodeColor};
-use utility;
+use t_ba9e::{NodeColor, TreeColor};
 
 /// Find the Shortest Non-Shared Substring of Two Strings
 ///
@@ -14,7 +14,7 @@ use utility;
 ///
 /// Return: The shortest substring of Text1 that does not appear in Text2.
 /// (Multiple solutions may exist, in which case you may return any one.)
-pub fn rosalind_ba9f(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba9f(filename: &Path) -> Result<String, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let (text_1, text_2) = contents.trim().split('\n').collect_tuple().unwrap();
     let mut text: String = text_1.to_owned();
@@ -62,6 +62,5 @@ impl ShortestNonsharedSubstring for SuffixTree {
             .map(|e| &text[self.tree[*e].0..self.tree[*e].0 + self.tree[*e].1])
             .collect::<Vec<_>>()
             .join("")
-            .to_owned()
     }
 }

@@ -1,15 +1,15 @@
 use std::usize;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Find the Minimum Number of Coins Needed to Make Change
 ///
 /// Given: An integer money and an array Coins of positive integers.
 ///
 /// Return: The minimum number of coins with denominations Coins that changes money.
-pub fn rosalind_ba5a(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5a(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let money = lines[0].parse::<usize>()?;

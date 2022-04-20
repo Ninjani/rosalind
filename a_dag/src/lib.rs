@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Testing Acyclicity
 ///
 /// Given: A positive integer k≤20 and k simple directed graphs in the edge list format with at most 10^3 vertices and 3⋅10^3 edges each.
 ///
 /// Return: For each graph, output "1" if the graph is acyclic and "-1" otherwise.
-pub fn rosalind_dag(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_dag(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -39,7 +39,7 @@ impl AcyclicCheck for utility::graph::IntegerGraph {
                     if self.previsit[self.node_to_index[next_node]] < self.previsit[node_index]
                         && self.previsit[node_index] < self.postvisit[node_index]
                         && self.postvisit[node_index]
-                        < self.postvisit[self.node_to_index[next_node]]
+                            < self.postvisit[self.node_to_index[next_node]]
                     {
                         return false;
                     }

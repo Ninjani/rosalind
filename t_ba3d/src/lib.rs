@@ -1,10 +1,9 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
-
-pub fn rosalind_ba3d(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3d(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let k = lines[0].parse::<usize>()?;

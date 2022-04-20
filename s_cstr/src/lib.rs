@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Creating a Character Table from Genetic Strings
 ///
@@ -9,7 +9,7 @@ use utility;
 /// Return: A character table for which each nontrivial character encodes the symbol choice at a
 /// single position of the strings. (Note: the choice of assigning '1' and '0' to the two states
 /// of each SNP in the strings is arbitrary.)
-pub fn rosalind_cstr(filename: &str) -> Result<(), Error> {
+pub fn rosalind_cstr(filename: &Path) -> Result<(), Error> {
     let input = utility::io::input_from_file(filename)?;
     let strings: Vec<Vec<_>> = input.split('\n').map(|s| s.chars().collect()).collect();
     let num_strings = strings.len();

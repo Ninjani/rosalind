@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Counting Subsets
 ///
 /// Given: A positive integer n (n≤1000).
 ///
 /// Return: The total number of subsets of {1,2,…,n} modulo 1,000,000.
-pub fn rosalind_sset(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_sset(filename: &Path) -> Result<usize, Error> {
     let n = utility::io::input_from_file(filename)?.parse::<usize>()?;
     let num_subsets = pow_mod(2, n, 10usize.pow(6));
     println!("{}", num_subsets);

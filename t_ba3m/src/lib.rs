@@ -1,12 +1,12 @@
 use std::collections::btree_map::BTreeMap;
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba3g::reverse_adjacency_list;
-use utility;
 
-pub fn rosalind_ba3m(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3m(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let graph = utility::graph::IntegerGraph::from_adjacency_list(&contents, true)?;
     for path in graph.get_maximal_nonbranching_paths() {
@@ -53,11 +53,11 @@ impl MaximalNonbranching for utility::graph::IntegerGraph {
                         let mut w = *w;
                         let mut path = vec![self.nodes[v], w];
                         while let Some((_, u)) =
-                        get_one_in_one_out(w, &self.adjacency_list, &adjacency_list_reverse)
-                            {
-                                path.push(u);
-                                w = u;
-                            }
+                            get_one_in_one_out(w, &self.adjacency_list, &adjacency_list_reverse)
+                        {
+                            path.push(u);
+                            w = u;
+                        }
                         paths.push(path);
                     }
                 }

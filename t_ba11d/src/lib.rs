@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba11a::get_mass_to_aa;
-use utility;
 use utility::io::Parseable;
 
 /// Convert a Peptide Vector into a Peptide
@@ -11,10 +11,8 @@ use utility::io::Parseable;
 /// Given: A space-delimited binary vector P.
 ///
 /// Return: A peptide whose binary peptide vector matches P. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11d(filename: &str) -> Result<(), Error> {
-    let peptide_vector = u8::parse_line(&utility::io::input_from_file(
-        filename,
-    )?)?;
+pub fn rosalind_ba11d(filename: &Path) -> Result<(), Error> {
+    let peptide_vector = u8::parse_line(&utility::io::input_from_file(filename)?)?;
     println!(
         "{}",
         get_peptide_from_peptide_vector(&peptide_vector, &get_mass_to_aa()?)

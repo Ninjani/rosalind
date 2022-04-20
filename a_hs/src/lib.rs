@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Heap Sort
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array A.
-pub fn rosalind_hs(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_hs(filename: &Path) -> Result<Vec<isize>, Error> {
     let (length, mut array) = utility::io::read_isize_array(filename)?;
     heap_sort(&mut array, length);
     println!("{}", utility::io::format_array(&array));

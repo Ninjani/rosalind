@@ -1,6 +1,6 @@
-use failure::{err_msg, Error};
+use anyhow::{anyhow, Error};
 
-use utility;
+use std::path::Path;
 
 /// Computing GC Content
 ///
@@ -10,14 +10,14 @@ use utility;
 /// followed by the GC-content of that string.
 /// Rosalind allows for a default error of 0.001 in all decimal answers unless otherwise stated;
 /// please see the note on absolute error below.
-pub fn rosalind_gc(filename: &str) -> Result<(String, f32), Error> {
+pub fn rosalind_gc(filename: &Path) -> Result<(String, f32), Error> {
     let sequences = utility::io::read_fasta_file(filename)?;
     let gc_contents = sequences
         .iter()
         .map(|(key, dna)| (key, get_gc_content(dna)));
     let (max_key, max_value) = gc_contents
         .max_by(|x, y| x.1.partial_cmp(&y.1).unwrap())
-        .ok_or_else(|| err_msg("NoneError"))?;
+        .ok_or_else(|| anyhow!("NoneError"))?;
     println!("{}\n{}", max_key, max_value * 100.);
     Ok((max_key.to_owned(), max_value * 100.))
 }

@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 
 use a_mer::merge;
-use utility;
+use std::path::Path;
 
 /// Merge Sort
 ///
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array A[1..n].
-pub fn rosalind_ms(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_ms(filename: &Path) -> Result<Vec<isize>, Error> {
     let (_, array) = utility::io::read_isize_array(filename)?;
     let sorted_array = merge_sort(&array);
     println!("{}", utility::io::format_array(&sorted_array));

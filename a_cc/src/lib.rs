@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Connected Components
 ///
 /// Given: A simple graph with n≤10^3 vertices in the edge list format.
 ///
 /// Return: The number of connected components in the graph.
-pub fn rosalind_cc(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_cc(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Implement GreedySorting to Sort a Permutation by Reversals
@@ -9,7 +9,7 @@ use utility::io::Parseable;
 ///
 /// Return: The sequence of permutations corresponding to applying GreedySorting to P,
 /// ending with the identity permutation.
-pub fn rosalind_ba6a(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba6a(filename: &Path) -> Result<(), Error> {
     let line = utility::io::input_from_file(filename)?;
     let mut permutation = isize::parse_line(&line[1..(line.len() - 1)])?;
     greedy_reversal_sorting(&mut permutation);
@@ -47,15 +47,15 @@ fn greedy_reversal_sorting(permutation: &mut [isize]) -> usize {
                         .collect::<Vec<_>>()[..],
                     &permutation[(k_position + 1)..],
                 ]
-                    .concat()
-                    .to_vec(),
+                .concat()
+                .to_vec(),
             );
-            print_permutation(&permutation);
+            print_permutation(permutation);
             distance += 1;
         }
         if permutation[k_index] == -(k + 1) {
             permutation[k_index] *= -1;
-            print_permutation(&permutation);
+            print_permutation(permutation);
             distance += 1;
         }
     }

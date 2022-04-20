@@ -1,9 +1,9 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 use petgraph::Undirected;
 
 use s_nwck::{get_path_length, parse_newick};
-use utility;
+use std::path::Path;
 
 /// Newick Format with Edge Weights
 ///
@@ -11,7 +11,7 @@ use utility;
 /// at most 200 nodes; each tree Tk is followed by a pair of nodes xk and yk in Tk.
 ///
 /// Return: A collection of n numbers, for which the kth number represents the distance between xk and yk in Tk.
-pub fn rosalind_nkew(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_nkew(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let trees = input.split("\n\n");
     let mut path_lengths = Vec::new();
@@ -21,7 +21,7 @@ pub fn rosalind_nkew(filename: &str) -> Result<Vec<usize>, Error> {
         let (start, end) = tree_data[1]
             .split(' ')
             .collect_tuple()
-            .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
+            .ok_or(utility::errors::RosalindOutputError::NoneError)?;
         match get_path_length(&tree, start, end) {
             Some(path_length) => path_lengths.push(path_length as usize),
             None => panic!("Start/end not found"),

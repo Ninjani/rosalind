@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba1h(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1h(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (pattern, text, mismatch) = (lines[0], lines[1], lines[2].parse::<usize>()?);

@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Counting DNA Nucleotides
 ///
@@ -8,7 +8,7 @@ use utility;
 ///
 /// Return: Four integers (separated by spaces) counting the respective number of times
 /// that the symbols 'A', 'C', 'G', and 'T' occur in s.
-pub fn rosalind_dna(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_dna(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let counter = utility::string::char_counter(&input);
     let counts = "ACGT"

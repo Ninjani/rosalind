@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use failure::Error;
-use petgraph::Outgoing;
-use petgraph::stable_graph::{EdgeIndex, NodeIndex, EdgeReference};
+use anyhow::Error;
+use petgraph::stable_graph::{EdgeIndex, EdgeReference, NodeIndex};
 use petgraph::visit::EdgeRef;
+use petgraph::Outgoing;
 
+use std::path::Path;
 use t_ba9c::SuffixTree;
-use utility;
 
 /// Find the longest repeat in a string.
 ///
@@ -14,7 +14,7 @@ use utility;
 ///
 /// Return: A longest substring of Text that appears in Text more than once.
 /// (Multiple solutions may exist, in which case you may return any one.)
-pub fn rosalind_ba9d(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba9d(filename: &Path) -> Result<String, Error> {
     let mut text = utility::io::input_from_file(filename)?;
     text.push('$');
     let suffix_tree = SuffixTree::construct(&text);
@@ -93,6 +93,5 @@ impl LongestRepeat for SuffixTree {
             .map(|e| &text[self.tree[*e].0..self.tree[*e].0 + self.tree[*e].1])
             .collect::<Vec<_>>()
             .join("")
-            .to_owned()
     }
 }

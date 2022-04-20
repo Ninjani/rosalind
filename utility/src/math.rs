@@ -32,15 +32,15 @@ pub trait Comparable: Sized {
 
 impl Comparable for f64 {
     fn max(array: &[Self]) -> Self {
-        array.to_vec().into_iter().fold(::std::f64::NAN, f64::max)
+        array.iter().copied().fold(::std::f64::NAN, f64::max)
     }
     fn min(array: &[Self]) -> Self {
-        array.to_vec().into_iter().fold(0., f64::min)
+        array.iter().copied().fold(0., f64::min)
     }
     fn argmax_max(array: &[Self]) -> (usize, Self) {
         let mut max_index = 0;
         let mut max_value = ::std::f64::MIN;
-        for (i, a) in array.to_vec().into_iter().enumerate() {
+        for (i, a) in array.iter().copied().enumerate() {
             if a > max_value {
                 max_index = i;
                 max_value = a;
@@ -50,8 +50,8 @@ impl Comparable for f64 {
     }
     fn argmin_min(array: &[Self]) -> (usize, Self) {
         let mut min_index = 0;
-        let mut min_value = ::std::f64::MAX;
-        for (i, a) in array.to_vec().into_iter().enumerate() {
+        let mut min_value = f64::MAX;
+        for (i, a) in array.iter().copied().enumerate() {
             if a < min_value {
                 min_index = i;
                 min_value = a;
@@ -63,15 +63,15 @@ impl Comparable for f64 {
 
 impl Comparable for f32 {
     fn max(array: &[Self]) -> Self {
-        array.to_vec().into_iter().fold(::std::f32::NAN, f32::max)
+        array.iter().copied().fold(::std::f32::NAN, f32::max)
     }
     fn min(array: &[Self]) -> Self {
-        array.to_vec().into_iter().fold(0., f32::min)
+        array.iter().copied().fold(0., f32::min)
     }
     fn argmax_max(array: &[Self]) -> (usize, Self) {
         let mut max_index = 0;
         let mut max_value = ::std::f32::MIN;
-        for (i, a) in array.to_vec().into_iter().enumerate() {
+        for (i, a) in array.iter().copied().enumerate() {
             if a > max_value {
                 max_index = i;
                 max_value = a;
@@ -81,8 +81,8 @@ impl Comparable for f32 {
     }
     fn argmin_min(array: &[Self]) -> (usize, Self) {
         let mut min_index = 0;
-        let mut min_value = ::std::f32::MAX;
-        for (i, a) in array.to_vec().into_iter().enumerate() {
+        let mut min_value = f32::MAX;
+        for (i, a) in array.iter().copied().enumerate() {
             if a < min_value {
                 min_index = i;
                 min_value = a;

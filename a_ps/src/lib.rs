@@ -1,8 +1,8 @@
 use std::collections::BinaryHeap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Partial Sort
@@ -10,7 +10,7 @@ use utility::io::Parseable;
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −105 to 105, a positive integer k≤1000.
 ///
 /// Return: The k smallest elements of a sorted array A.
-pub fn rosalind_ps(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_ps(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let array = isize::parse_line(lines[1])?;

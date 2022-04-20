@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Calculating Protein Mass
 ///
 /// Given: A protein string P of length at most 1000 aa.
 ///
 /// Return: The total weight of P. Consult the monoisotopic mass table.
-pub fn rosalind_prtm(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_prtm(filename: &Path) -> Result<f64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mass_table = utility::io::get_aa_to_mass()?;
     let output = input.chars().map(|c| &mass_table[&c]).sum::<f64>();

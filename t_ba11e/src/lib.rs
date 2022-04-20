@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 use std::isize;
 
-use failure::Error;
-use petgraph::Directed;
-use petgraph::Direction::Incoming;
+use anyhow::Error;
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
+use petgraph::Directed;
+use petgraph::Direction::Incoming;
 
+use std::path::Path;
 use t_ba11a::get_mass_to_aa;
 use t_ba5d::get_topological_ordering;
-use utility;
 use utility::io::Parseable;
 
 /// Sequence a Peptide
@@ -18,10 +18,10 @@ use utility::io::Parseable;
 /// Given: A space-delimited spectral vector S.
 ///
 /// Return: A peptide with maximum score against S. For masses with more than one amino acid, any choice may be used.
-pub fn rosalind_ba11e() -> Result<(), Error> {
+pub fn rosalind_ba11e(filename: &Path) -> Result<(), Error> {
     let mut spectrum = vec![0];
     spectrum.extend(isize::parse_line(
-        &utility::io::input_from_file("data/textbook_track/rosalind_ba11e.txt")?
+        &utility::io::input_from_file(filename)?
             .split('\n')
             .collect::<Vec<_>>()
             .join(" "),
@@ -44,7 +44,7 @@ pub fn rosalind_ba11e() -> Result<(), Error> {
         node_to_index[&0],
         node_to_index[&(spectrum.len() - 1)],
     )
-        .unwrap();
+    .unwrap();
     println!(
         "{}",
         (0..(max_path.len() - 1))

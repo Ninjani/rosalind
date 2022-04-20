@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use utility;
+use std::path::Path;
 
 /// Finding a Shared Spliced Motif
 ///
 /// Given: Two DNA strings s and t (each having length at most 1 kbp) in FASTA format.
 ///
 /// Return: A longest common subsequence of s and t. (If more than one solution exists, you may return any one.)
-pub fn rosalind_lcsq(filename: &str) -> Result<String, Error> {
+pub fn rosalind_lcsq(filename: &Path) -> Result<String, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let subsequence = longest_common_subsequence(&sequences[0], &sequences[1]);

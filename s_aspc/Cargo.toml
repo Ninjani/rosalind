@@ -5,6 +5,6 @@ edition = "2018"
 authors = ["Ninjani"]
 
 [dependencies]
-num = "0.2.0"
-failure = "0.1.3"
+num = "0.4.0"
+anyhow = "1.0"
 utility = {path = "../utility"}

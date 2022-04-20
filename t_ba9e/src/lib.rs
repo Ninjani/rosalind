@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 use petgraph::stable_graph::NodeIndex;
 use petgraph::visit::EdgeRef;
 use std::fmt;
 use std::str::FromStr;
 
+use std::path::Path;
 use t_ba9c::SuffixTree;
 use t_ba9d::LongestRepeat;
-use utility;
 
 /// Find the Longest Substring Shared by Two Strings
 ///
@@ -17,7 +17,7 @@ use utility;
 ///
 /// Return: The longest substring that occurs in both Text1 and Text2.
 /// (Multiple solutions may exist, in which case you may return any one.)
-pub fn rosalind_ba9e(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba9e(filename: &Path) -> Result<String, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let (text_1, text_2) = contents.trim().split('\n').collect_tuple().unwrap();
     let mut text: String = text_1.to_owned();
@@ -162,6 +162,5 @@ impl LongestSharedSubstring for SuffixTree {
             .map(|e| &text[self.tree[*e].0..self.tree[*e].0 + self.tree[*e].1])
             .collect::<Vec<_>>()
             .join("")
-            .to_owned()
     }
 }

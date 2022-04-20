@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use s_rna::transcribe;
 use s_prot::translate;
-use utility;
+use s_rna::transcribe;
+use std::path::Path;
 
 /// RNA Splicing
 ///
@@ -11,13 +11,13 @@ use utility;
 ///
 /// Return: A protein string resulting from transcribing and translating the exons of s.
 /// (Note: Only one solution will exist for the dataset provided.)
-pub fn rosalind_splc(filename: &str) -> Result<String, Error> {
+pub fn rosalind_splc(filename: &Path) -> Result<String, Error> {
     let sequences = utility::io::read_fasta_file(filename)?;
     let dna_key = sequences
         .keys()
         .map(|key| (key, sequences[key].len()))
         .max_by(|a, b| a.1.cmp(&b.1))
-        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?
+        .ok_or(utility::errors::RosalindOutputError::NoneError)?
         .0;
     let intron_keys = sequences
         .keys()
@@ -41,7 +41,7 @@ pub fn rosalind_splc(filename: &str) -> Result<String, Error> {
     let codons = utility::io::get_codon_to_aa()?;
     Ok(
         translate(&transcribe(&exons.iter().collect::<String>()), &codons)
-            .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?,
+            .ok_or(utility::errors::RosalindOutputError::NoneError)?,
     )
 }
 

@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_trie::Trie;
-use utility;
+use std::path::Path;
 
 /// Construct a Trie from a Collection of Patterns
 ///
@@ -13,7 +13,7 @@ use utility;
 /// Trie(Patterns) will be encoded by a triple: the first two members of the triple must be the
 /// integers labeling the initial and terminal nodes of the edge, respectively; the third member
 /// of the triple must be the symbol labeling the edge.
-pub fn rosalind_ba9a(filename: &str) -> Result<Vec<(usize, usize, char)>, Error> {
+pub fn rosalind_ba9a(filename: &Path) -> Result<Vec<(usize, usize, char)>, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut trie = Trie::<usize, char>::new();
     for (i, line) in contents.split('\n').enumerate() {

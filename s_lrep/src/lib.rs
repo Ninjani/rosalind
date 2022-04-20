@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
+use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::Graph;
-use petgraph::visit::EdgeRef;
 
 use s_ctbl::traverse;
-use utility;
+use std::path::Path;
 
 /// W.I.P
 fn make_suffix_tree(
@@ -35,8 +35,8 @@ fn make_suffix_tree(
     Ok(tree)
 }
 
-pub fn rosalind_lrep() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/stronghold/rosalind_lrep.txt")?;
+pub fn rosalind_lrep(filename: &Path) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (dna, k) = (lines[0], lines[1].parse::<usize>()?);
     let dna: Vec<_> = dna.chars().collect();

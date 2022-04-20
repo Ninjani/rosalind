@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Finding a Spliced Motif
 ///
@@ -8,7 +8,7 @@ use utility;
 ///
 /// Return: One collection of indices of s in which the symbols of t appear as a subsequence of s.
 /// If multiple solutions exist, you may return any one.
-pub fn rosalind_sseq(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_sseq(filename: &Path) -> Result<Vec<usize>, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let (_, sequence) = fasta
         .iter()

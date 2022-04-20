@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_prob::nucleotide_probs_from_gc_content;
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Expected Number of Restriction Sites
@@ -12,7 +12,7 @@ use utility::io::Parseable;
 /// Return: An array B having the same length as A in which B[i] represents the expected number of
 /// times that s will appear as a substring of a random DNA string t of length n,
 /// where t is formed with GC-content A[i].
-pub fn rosalind_eval(filename: &str) -> Result<Vec<f64>, Error> {
+pub fn rosalind_eval(filename: &Path) -> Result<Vec<f64>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let length = lines[0].parse::<usize>()?;

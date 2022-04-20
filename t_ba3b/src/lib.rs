@@ -1,8 +1,7 @@
-use failure::Error;
+use anyhow::Error;
+use std::path::Path;
 
-use utility;
-
-pub fn rosalind_ba3b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').collect();
     println!("{}", reverse_kmerize(&kmers));

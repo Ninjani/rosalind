@@ -1,8 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
 use s_prob::nucleotide_probs_from_gc_content;
-use utility;
 use utility::io::Parseable;
 
 /// Matching Random Motifs
@@ -17,13 +16,13 @@ pub fn rosalind_rstr(input: &str) -> Result<f64, Error> {
     let (num, gc_content) = f64::parse_line(lines[0])?
         .into_iter()
         .collect_tuple()
-        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
+        .ok_or(utility::errors::RosalindOutputError::NoneError)?;
     let sequence = lines[1];
     let nucleotide_probs = nucleotide_probs_from_gc_content(gc_content);
     let a_complement = 1.
         - sequence
-        .chars()
-        .map(|c| nucleotide_probs[&c])
-        .product::<f64>();
+            .chars()
+            .map(|c| nucleotide_probs[&c])
+            .product::<f64>();
     Ok(1. - a_complement.powf(num))
 }

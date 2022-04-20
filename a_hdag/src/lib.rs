@@ -1,15 +1,15 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
 use a_dag::AcyclicCheck;
 use a_ts::TopologicalSort;
+use std::path::Path;
 
 /// Given: A positive integer k≤20 and k simple directed acyclic graphs
 /// in the edge list format with at most 103 vertices each.
 ///
 /// Return: For each graph, if it contains a Hamiltonian path output "1"
 /// followed by a Hamiltonian path (i.e., a list of vertices), otherwise output "-1".
-pub fn rosalind_hdag(filename: &str) -> Result<Vec<Option<Vec<usize>>>, Error> {
+pub fn rosalind_hdag(filename: &Path) -> Result<Vec<Option<Vec<usize>>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -77,23 +77,23 @@ mod tests {
         for (input_indices, output_line) in result
             .into_iter()
             .zip(utility::io::input_from_file(&output_file)?.split('\n'))
-            {
-                if output_line == "-1" {
-                    assert!(input_indices.is_none());
-                } else {
-                    assert!(input_indices.is_some());
-                    assert_eq!(
-                        input_indices.unwrap(),
-                        usize::parse_line(
-                            &output_line
-                                .split_whitespace()
-                                .skip(1)
-                                .collect::<Vec<_>>()
-                                .join(" "),
-                        )?
-                    );
-                }
+        {
+            if output_line == "-1" {
+                assert!(input_indices.is_none());
+            } else {
+                assert!(input_indices.is_some());
+                assert_eq!(
+                    input_indices.unwrap(),
+                    usize::parse_line(
+                        &output_line
+                            .split_whitespace()
+                            .skip(1)
+                            .collect::<Vec<_>>()
+                            .join(" "),
+                    )?
+                );
             }
+        }
         Ok(())
     }
 }

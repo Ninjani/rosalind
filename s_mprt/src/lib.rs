@@ -1,10 +1,8 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 use regex::Regex;
-use reqwest;
-
-use utility;
 
 const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
 
@@ -14,19 +12,20 @@ const UNIPROT_URL: &str = "http://www.uniprot.org/uniprot/";
 ///
 /// Return: For each protein possessing the N-glycosylation motif, output its given access ID
 /// followed by a list of locations in the protein string where the motif can be found.
-pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> {
+pub async fn rosalind_mprt(filename: &Path) -> Result<HashMap<String, Vec<usize>>, Error> {
     let motif = Regex::new("N[^P][ST][^P]")?;
+    let input = utility::io::input_from_file(filename)?;
     let uniprot_ids = input.split('\n').collect::<Vec<&str>>();
     let mut sequences = Vec::with_capacity(uniprot_ids.len());
     for key in uniprot_ids {
-        sequences.push((key.to_owned(), get_sequence_from_uniprot(key)?));
+        sequences.push((key.to_owned(), get_sequence_from_uniprot(key).await?));
     }
     let output = sequences
         .into_iter()
         .filter_map(|(uniprot_id, sequence)| {
             let indices = find_all(&motif, &sequence);
             if !indices.is_empty() {
-                Some((uniprot_id.to_owned(), indices))
+                Some((uniprot_id, indices))
             } else {
                 None
             }
@@ -43,13 +42,18 @@ pub fn rosalind_mprt(input: &str) -> Result<HashMap<String, Vec<usize>>, Error> 
     Ok(output)
 }
 
-fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
+async fn get_fasta_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
     let url = format!("{}{}.fasta", UNIPROT_URL, uniprot_id);
-    Ok(reqwest::get(&url)?.text()?)
+    Ok(reqwest::get(&url).await?.text().await?)
 }
 
-fn get_sequence_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
-    Ok(get_fasta_from_uniprot(uniprot_id)?.split('\n').skip(1).collect::<Vec<&str>>().join(""))
+async fn get_sequence_from_uniprot(uniprot_id: &str) -> Result<String, Error> {
+    Ok(get_fasta_from_uniprot(uniprot_id)
+        .await?
+        .split('\n')
+        .skip(1)
+        .collect::<Vec<&str>>()
+        .join(""))
 }
 
 /// Overlapping regex matcher. Returns all (1-indexed) positions where regex is found.
@@ -77,17 +81,17 @@ mod tests {
 
     use super::*;
 
-    #[test]
-    fn mprt() -> Result<(), Error> {
+    #[tokio::test]
+    async fn mprt() -> Result<(), Error> {
         let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_mprt")?;
         let mut output = HashMap::new();
         for (key, positions) in utility::io::input_from_file(&output_file)?
             .split('\n')
             .tuple_windows()
-            {
-                output.insert(key.to_owned(), usize::parse_line(positions)?);
-            }
-        assert_eq!(rosalind_mprt(&input_file)?, output);
+        {
+            output.insert(key.to_owned(), usize::parse_line(positions)?);
+        }
+        assert_eq!(rosalind_mprt(&input_file).await?, output);
         Ok(())
     }
 }

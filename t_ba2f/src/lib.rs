@@ -1,12 +1,12 @@
-use failure::Error;
-use rand::{Rng, thread_rng};
+use anyhow::Error;
+use rand::{thread_rng, Rng};
 
+use std::path::Path;
 use t_ba2c::get_profile_most_probable_kmer;
 use t_ba2d::{get_profile, score_motifs};
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2f(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba2f(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
@@ -39,7 +39,7 @@ pub fn rosalind_ba2f(filename: &str) -> Result<(), Error> {
 //                return BestMotifs
 fn randomized_motif_search(dna: &[String], k: usize, t: usize, pseudocounts: bool) -> Vec<String> {
     let mut motifs: Vec<_> = (0..t)
-        .map(|i| utility::string::kmerize(&dna[i], k)[thread_rng().gen_range(0, t)].clone())
+        .map(|i| utility::string::kmerize(&dna[i], k)[thread_rng().gen_range(0..t)].clone())
         .collect();
     let mut best_motifs = motifs.clone();
     let mut profile;

@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba8a::euclidean_distance;
-use utility;
 use utility::io::Parseable;
 
 /// Implement the Lloyd Algorithm for k-Means Clustering
@@ -11,9 +11,9 @@ use utility::io::Parseable;
 ///
 /// Return: A set Centers consisting of k points (centers) resulting from applying the Lloyd
 /// algorithm to Data and Centers, where the first k points from Data are selected as the first k centers.
-pub fn rosalind_ba8c(filename: &str) -> Result<Vec<Vec<f64>>, Error> {
+pub fn rosalind_ba8c(filename: &Path) -> Result<Vec<Vec<f64>>, Error> {
     let contents = utility::io::input_from_file(filename)?;
-    let mut lines = contents.split("\n");
+    let mut lines = contents.split('\n');
     let (k, _m) = lines
         .next()
         .unwrap()

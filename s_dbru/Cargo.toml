@@ -5,6 +5,9 @@ edition = "2018"
 authors = ["Ninjani"]
 
 [dependencies]
-failure ="0.1.3"
+anyhow = "1.0"
 utility = {path = "../utility"}
 s_revc = {path = "../s_revc"}
+
+[dev-dependencies]
+itertools = "0.10.3"

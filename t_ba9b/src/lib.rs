@@ -1,16 +1,16 @@
 use std::hash::Hash;
 
-use failure::Error;
+use anyhow::Error;
 
 use s_trie::Trie;
-use utility;
+use std::path::Path;
 
 /// Implement TrieMatching
 ///
 /// Given: A string Text and a collection of strings Patterns.
 ///
 /// Return: All starting positions in Text where a string from Patterns appears as a substring.
-pub fn rosalind_ba9b(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ba9b(filename: &Path) -> Result<Vec<usize>, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut trie = Trie::<usize, char>::new();
     let mut lines = contents.split('\n');
@@ -27,7 +27,7 @@ pub trait PrefixMatching<T: Eq + Clone, U: Eq + Hash + Clone> {
     fn prefix_matching(&self, text: &[U]) -> Option<Vec<U>>;
     fn matching(&self, text: &[U]) -> Vec<usize>;
 }
-impl<T: Eq + Clone, U: Eq + Hash + Clone> PrefixMatching<T,U> for Trie<T, U> {
+impl<T: Eq + Clone, U: Eq + Hash + Clone> PrefixMatching<T, U> for Trie<T, U> {
     fn prefix_matching(&self, text: &[U]) -> Option<Vec<U>> {
         let mut text = text.iter();
         let mut symbol = text.next().unwrap();
@@ -36,9 +36,9 @@ impl<T: Eq + Clone, U: Eq + Hash + Clone> PrefixMatching<T,U> for Trie<T, U> {
         loop {
             if v.children.is_empty() {
                 return Some(pattern);
-            } else if v.children.contains_key(&symbol) {
+            } else if v.children.contains_key(symbol) {
                 pattern.push(symbol.clone());
-                v = &v.children[&symbol];
+                v = &v.children[symbol];
                 match text.next() {
                     Some(c) => symbol = c,
                     None => {

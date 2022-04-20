@@ -1,9 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 
-use hidden_markov_models::{
-    get_chars_and_index, ProfileHMM, ProfileHMMError,
-};
-use utility;
+use hidden_markov_models::{get_chars_and_index, ProfileHMM, ProfileHMMError};
+use std::path::Path;
 
 /// Construct a Profile HMM
 ///
@@ -11,8 +9,8 @@ use utility;
 /// followed by a multiple alignment Alignment whose strings are formed from Σ.
 ///
 /// Return: The transition and emission probabilities of the profile HMM HMM(Alignment, θ).
-pub fn rosalind_ba10e() -> Result<(), Error> {
-    let contents = utility::io::input_from_file("data/textbook_track/rosalind_ba10e.txt")?;
+pub fn rosalind_ba10e(filename: &Path) -> Result<(), Error> {
+    let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let threshold = sections
         .next()

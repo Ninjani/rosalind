@@ -1,15 +1,14 @@
 use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
 use utility::io::Parseable;
-
 
 /// Construct the Graph of a Spectrum
 /// Given: A space-delimited list of integers Spectrum.
 /// Return: Graph(Spectrum).
-pub fn rosalind_ba11a(filename: &str) -> Result<Vec<(usize, usize, char)>, Error> {
+pub fn rosalind_ba11a(filename: &Path) -> Result<Vec<(usize, usize, char)>, Error> {
     let mut spectrum = vec![0];
     spectrum.append(&mut usize::parse_line(&utility::io::input_from_file(
         filename,
@@ -40,7 +39,10 @@ pub fn get_graph_spectrum(
 
 pub fn get_mass_to_aa() -> Result<HashMap<usize, char>, Error> {
     let mut mass_table = HashMap::new();
-    let mass_contents = utility::io::input_from_file(utility::io::MASS_FILE)?;
+    let mass_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), utility::io::MASS_FILE]
+        .iter()
+        .collect();
+    let mass_contents = utility::io::input_from_file(&mass_file)?;
     for line in mass_contents.split('\n') {
         let mut aa_mass = line.split_whitespace();
         if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {

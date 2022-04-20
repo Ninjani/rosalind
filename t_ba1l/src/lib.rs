@@ -1,12 +1,12 @@
 use std::char;
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use radix::RadixNum;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba1l(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1l(filename: &Path) -> Result<(), Error> {
     let dna = utility::io::input_from_file(filename)?;
     println!(
         "{}",
@@ -36,5 +36,5 @@ fn pattern_to_number(pattern: &str, alphabet: &[char]) -> Result<usize, Error> {
             .collect::<String>(),
         num_alphabets,
     )?
-        .as_decimal()?)
+    .as_decimal()?)
 }

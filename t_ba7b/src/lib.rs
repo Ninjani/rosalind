@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array, Array2};
 
-use utility;
+use std::path::Path;
 
 /// Compute Limb Lengths in a Tree
 ///
@@ -10,7 +10,7 @@ use utility;
 ///
 /// Return: The limb length of the leaf in Tree(D) corresponding to row j of this
 /// distance matrix (use 0-based indexing).
-pub fn rosalind_ba7b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba7b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;

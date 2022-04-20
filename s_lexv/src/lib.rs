@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
-use utility;
+use std::path::Path;
 
 /// Ordering Strings of Varying Length Lexicographically
 ///
@@ -13,7 +13,7 @@ use utility;
 /// Return: All strings of length at most n formed from 𝒜, ordered lexicographically.
 /// (Note: As in “Enumerating k-mers Lexicographically”, alphabet order is based on the order
 /// in which the symbols are given.)
-pub fn rosalind_lexv(filename: &str) -> Result<Vec<String>, Error> {
+pub fn rosalind_lexv(filename: &Path) -> Result<Vec<String>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let parts: Vec<_> = input.split('\n').collect();
     let alphabet = parts[0]

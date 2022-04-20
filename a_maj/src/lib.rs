@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Majority Element
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: A positive integer k≤20, a positive integer n≤10^4, and k arrays of size n containing positive integers not exceeding 10^5.
 ///
 /// Return: For each array, output an element of this array occurring strictly more than n/2 times if such element exists, and "-1" otherwise.
-pub fn rosalind_maj(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_maj(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut parts = input.split('\n');
     let length_input = usize::parse_line(parts.next().unwrap())?;

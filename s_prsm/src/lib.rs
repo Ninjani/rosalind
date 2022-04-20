@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
 use s_conv::{get_max_multiplicity, get_minkowski_difference};
-use utility;
+use std::path::Path;
 
 /// Matching a Spectrum to a Protein
 ///
@@ -12,7 +12,7 @@ use utility;
 ///
 /// Return: The maximum multiplicity of R⊖S[sk] taken over all strings sk, followed by the string sk
 /// for which this maximum multiplicity occurs (you may output any such value if multiple solutions exist).
-pub fn rosalind_prsm(filename: &str) -> Result<(), Error> {
+pub fn rosalind_prsm(filename: &Path) -> Result<(), Error> {
     let input = utility::io::input_from_file(filename)?;
     let aa_to_mass = utility::io::get_aa_to_mass()?;
     let lines: Vec<_> = input.split('\n').collect();
@@ -32,13 +32,13 @@ pub fn rosalind_prsm(filename: &str) -> Result<(), Error> {
                     &spectrum,
                     &get_complete_spectrum(protein, &aa_to_mass),
                 ))
-                    .unwrap()
-                    .0,
+                .unwrap()
+                .0,
                 i,
             )
         })
         .max()
-        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?;
+        .ok_or(utility::errors::RosalindOutputError::NoneError)?;
     println!("{}\n{}", max_multiplicity, proteins[max_index]);
     Ok(())
 }
@@ -47,8 +47,8 @@ fn get_complete_spectrum(protein: &str, aa_to_mass: &HashMap<char, f64>) -> Vec<
     let protein: Vec<_> = protein.chars().collect();
     let mut spectrum = Vec::new();
     for i in 0..protein.len() {
-        spectrum.push(protein[i..].iter().map(|c| aa_to_mass[&c]).sum::<f64>());
-        spectrum.push(protein[..i].iter().map(|c| aa_to_mass[&c]).sum::<f64>());
+        spectrum.push(protein[i..].iter().map(|c| aa_to_mass[c]).sum::<f64>());
+        spectrum.push(protein[..i].iter().map(|c| aa_to_mass[c]).sum::<f64>());
     }
     spectrum
 }

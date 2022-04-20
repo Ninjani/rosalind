@@ -1,27 +1,35 @@
 use std::io;
 use std::num::{ParseFloatError, ParseIntError};
+use std::path::PathBuf;
+use thiserror::Error;
 
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum RosalindParseError {
-    #[fail(display = "Couldn't read file: {}", _1)]
-    FileReadError(#[fail(cause)] io::Error, String),
-    #[fail(display = "Badly formatted fasta file: {}", _0)]
-    BadFastaError(String),
-    #[fail(display = "Badly formatted codon file (in data/codons.txt)")]
+    #[error("Couldn't download sample data for question: {0}")]
+    SampleDataError(String),
+    #[error("Couldn't read file: {file:?}")]
+    FileReadError {
+        #[source]
+        source: io::Error,
+        file: PathBuf,
+    },
+    #[error("Badly formatted fasta file: {0:?}")]
+    BadFastaError(PathBuf),
+    #[error("Badly formatted codon file (in data/codons.txt)")]
     BadCodonFileError,
-    #[fail(display = "Input format error: {}", _0)]
+    #[error("Input format error: {0}")]
     InputFormatError(String),
-    #[fail(display = "Number parsing error")]
+    #[error("Number parsing error")]
     ParseNumberError,
-    #[fail(display = "Failed to parse NodeColor: {}", _0)]
+    #[error("Failed to parse NodeColor: {0}")]
     ParseNodeColor(String),
 }
 
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum RosalindOutputError {
-    #[fail(display = "No output")]
+    #[error("No output")]
     NoneError,
-    #[fail(display = "Number parsing error")]
+    #[error("Number parsing error")]
     ParseNumberError,
 }
 

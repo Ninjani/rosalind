@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba2b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba2b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let k = lines.next().unwrap().parse::<usize>()?;

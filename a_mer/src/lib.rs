@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Merge Two Sorted Arrays
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: A positive integer n≤10^5 and a sorted array A[1..n] of integers from −10^5 to 10^5, a positive integer m≤105 and a sorted array B[1..m] of integers from −10^5 to 10^5.
 ///
 /// Return: A sorted array C[1..n+m] containing all the elements of A and B.
-pub fn rosalind_mer(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_mer(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let sublist_1 = isize::parse_line(lines[1])?;

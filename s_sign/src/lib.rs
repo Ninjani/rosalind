@@ -1,10 +1,10 @@
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
 use s_perm::get_permutations;
-use utility;
+use std::path::Path;
 
 /// Enumerating Oriented Gene Orderings
 ///
@@ -12,7 +12,7 @@ use utility;
 ///
 /// Return: The total number of signed permutations of length n,
 /// followed by a list of all such permutations (you may list the signed permutations in any order).
-pub fn rosalind_sign(filename: &str) -> Result<HashSet<Vec<i64>>, Error> {
+pub fn rosalind_sign(filename: &Path) -> Result<HashSet<Vec<i64>>, Error> {
     let length = utility::io::input_from_file(filename)?.parse::<usize>()?;
     let mut array = (1i64..=length as i64).collect::<Vec<_>>();
     let permutations = get_permutations(&mut array);

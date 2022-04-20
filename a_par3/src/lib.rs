@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// 3-Way Partition
 ///
@@ -8,7 +8,7 @@ use utility;
 ///
 /// Return: An array B[1..n] such that it is a permutation of A and there are indices 1≤q≤r≤n
 /// such that B[i]<A[1] for all 1≤i≤q−1, B[i]=A[1] for all q≤i≤r, and B[i]>A[1] for all r+1≤i≤n.
-pub fn rosalind_par3(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_par3(filename: &Path) -> Result<Vec<isize>, Error> {
     let (length, mut array) = utility::io::read_isize_array(filename)?;
     let pivot = array[0];
     partition(&mut array, length, pivot);
@@ -40,7 +40,7 @@ mod tests {
     use super::*;
 
     /// Return: An array B[1..n] such that it is a permutation of A and there are indices 1≤q≤r≤n
-        /// such that B[i]<A[1] for all 1≤i≤q−1, B[i]=A[1] for all q≤i≤r, and B[i]>A[1] for all r+1≤i≤n.
+    /// such that B[i]<A[1] for all 1≤i≤q−1, B[i]=A[1] for all q≤i≤r, and B[i]>A[1] for all r+1≤i≤n.
     #[ignore]
     #[test]
     fn par3() -> Result<(), Error> {

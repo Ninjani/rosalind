@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array1, Array2};
 
-use t_ba5e::{AlignmentParameters, read_scoring_matrix};
-use utility;
+use std::path::{Path, PathBuf};
+use t_ba5e::{read_scoring_matrix, AlignmentParameters};
 
 /// Find a Middle Edge in an Alignment Graph in Linear Space
 ///
@@ -13,10 +13,13 @@ use utility;
 /// and a linear indel penalty equal to 5.
 /// Return the middle edge in the form “(i, j) (k, l)”,
 /// where (i, j) connects to (k, l).
-pub fn rosalind_ba5k(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5k(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
+    let blosum_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), utility::io::BLOSUM_FILE]
+        .iter()
+        .collect();
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(&blosum_file)?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
     let lsa = LinearSpaceAlignment {
         string_1: lines[0].chars().collect(),
@@ -70,16 +73,16 @@ impl LinearSpaceAlignment {
                     (scores[(i_index, j - 1)] - self.parameters.gap_penalty),
                     (scores[(i_1_index, j - 1)]
                         + if reverse {
-                        self.parameters.scoring_matrix[(
-                            self.parameters.amino_acid_order[&self.string_1[bottom - j]],
-                            self.parameters.amino_acid_order[&self.string_2[right - i]],
-                        )]
-                    } else {
-                        self.parameters.scoring_matrix[(
-                            self.parameters.amino_acid_order[&self.string_1[top + j - 1]],
-                            self.parameters.amino_acid_order[&self.string_2[left + i - 1]],
-                        )]
-                    }),
+                            self.parameters.scoring_matrix[(
+                                self.parameters.amino_acid_order[&self.string_1[bottom - j]],
+                                self.parameters.amino_acid_order[&self.string_2[right - i]],
+                            )]
+                        } else {
+                            self.parameters.scoring_matrix[(
+                                self.parameters.amino_acid_order[&self.string_1[top + j - 1]],
+                                self.parameters.amino_acid_order[&self.string_2[left + i - 1]],
+                            )]
+                        }),
                 ];
                 let (max_index, max_value) = values
                     .into_iter()

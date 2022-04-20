@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use num::BigUint;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Introduction to Alternative Splicing
@@ -9,7 +9,7 @@ use utility::io::Parseable;
 /// Given: Positive integers n and m with 0≤m≤n≤2000.
 ///
 /// Return: The sum of combinations C(n,k) for all k satisfying m≤k≤n, modulo 1,000,000.
-pub fn rosalind_aspc(filename: &str) -> Result<BigUint, Error> {
+pub fn rosalind_aspc(filename: &Path) -> Result<BigUint, Error> {
     let nm = u64::parse_line(&utility::io::input_from_file(filename)?)?;
     let (n, m) = (nm[0], nm[1]);
     let result = (m..=n)

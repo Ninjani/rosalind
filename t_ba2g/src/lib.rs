@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
-use rand::{Rng, thread_rng};
+use rand::{thread_rng, Rng};
 use random_choice::random_choice;
 
+use std::path::Path;
 use t_ba2c::get_probability_kmer;
 use t_ba2d::{get_profile, score_motifs};
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2g(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba2g(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;
@@ -51,13 +51,13 @@ fn get_profile_random_kmer(text: &str, k: usize, profile_matrix: &Array2<f64>) -
 //        return BestMotifs
 fn gibbs_sampler(dna: &[String], k: usize, t: usize, n: usize, pseudocounts: bool) -> Vec<String> {
     let mut motifs: Vec<_> = (0..t)
-        .map(|i| utility::string::kmerize(&dna[i], k)[thread_rng().gen_range(0, t)].clone())
+        .map(|i| utility::string::kmerize(&dna[i], k)[thread_rng().gen_range(0..t)].clone())
         .collect();
     let mut best_motifs = motifs.clone();
     let mut profile;
     let mut i;
     for _ in 0..n {
-        i = thread_rng().gen_range(0, t);
+        i = thread_rng().gen_range(0..t);
         profile = get_profile(&[&motifs[..i], &motifs[(i + 1)..]].concat(), pseudocounts);
         motifs[i] = get_profile_random_kmer(&dna[i], k, &profile);
         if score_motifs(&motifs, pseudocounts) < score_motifs(&best_motifs, pseudocounts) {

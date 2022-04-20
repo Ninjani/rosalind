@@ -1,7 +1,6 @@
-use failure::Error;
-use rand::{Rng, thread_rng};
-
-use utility;
+use anyhow::Error;
+use rand::{thread_rng, Rng};
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Median
@@ -10,7 +9,7 @@ use utility::io::Parseable;
 /// from −10^5 to 10^5, a positive number k≤n.
 ///
 /// Return: The k-th smallest element of A.
-pub fn rosalind_med(filename: &str) -> Result<isize, Error> {
+pub fn rosalind_med(filename: &Path) -> Result<isize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let length = lines[0].parse::<usize>()?;
@@ -42,14 +41,12 @@ fn select(array: &mut [isize], left: usize, right: usize, k: usize) -> isize {
         if left == right {
             return array[left];
         }
-        pivot_index = thread_rng().gen_range(left, right);
+        pivot_index = thread_rng().gen_range(left..right);
         pivot_index = partition(array, left, right, pivot_index);
-        if pivot_index == k {
-            return array[k];
-        } else if pivot_index < k {
-            left = pivot_index + 1;
-        } else {
-            right = pivot_index - 1;
+        match pivot_index.cmp(&k) {
+            std::cmp::Ordering::Less => left = pivot_index + 1,
+            std::cmp::Ordering::Greater => right = pivot_index - 1,
+            std::cmp::Ordering::Equal => return array[pivot_index],
         }
     }
 }

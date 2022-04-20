@@ -1,15 +1,13 @@
-use std::collections::{HashMap, HashSet};
 use std::collections::btree_map::BTreeMap;
+use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
+use t_ba3f::EulerianCycle;
 use t_ba3g::reverse_adjacency_list;
 use t_ba3g::EulerianPath;
-use t_ba3f::EulerianCycle;
-use t_ba3l::{
-    get_string_spelled_by_gapped_patterns, PairedRead, read_paired_reads,
-};
-use utility;
+use t_ba3l::{get_string_spelled_by_gapped_patterns, read_paired_reads, PairedRead};
 
 /// Reconstruct a String from its Paired Composition
 ///
@@ -17,7 +15,7 @@ use utility;
 ///
 /// Return: A string Text with (k, d)-mer composition equal to PairedReads.
 /// (If multiple answers exist, you may return any one.)
-pub fn rosalind_ba3j(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3j(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let (paired_reads, k, d) = read_paired_reads(&contents);
     let adjacency_list = paired_de_bruijn_graph(&paired_reads);
@@ -38,12 +36,11 @@ pub fn rosalind_ba3j(filename: &str) -> Result<(), Error> {
                 k,
                 d,
             )
-                .unwrap()
+            .unwrap()
         );
     }
     Ok(())
 }
-
 
 pub fn paired_de_bruijn_graph(nodes: &[PairedRead]) -> HashMap<PairedRead, Vec<PairedRead>> {
     fn prefix(pr: &PairedRead) -> PairedRead {

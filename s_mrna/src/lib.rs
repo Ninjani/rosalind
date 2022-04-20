@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Inferring mRNA from Protein
 ///
@@ -9,7 +9,7 @@ use utility;
 /// Return: The total number of different RNA strings from which the
 /// protein could have been translated, modulo 1,000,000. (Don't neglect the
 /// importance of the stop codon in protein translation.)
-pub fn rosalind_mrna(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_mrna(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let aa_to_codon = utility::io::get_aa_to_codon()?;
     let mut count = 1usize;

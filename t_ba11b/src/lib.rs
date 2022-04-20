@@ -1,21 +1,21 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
+use petgraph::graph::{IndexType, NodeIndex};
+use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
-use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::Graph;
-use petgraph::visit::EdgeRef;
 
+use std::path::Path;
 use t_ba11a::{get_graph_spectrum, get_mass_to_aa};
-use t_ba4c::{get_prefix_masses, get_aa_to_mass_usize};
-use utility;
+use t_ba4c::{get_aa_to_mass_usize, get_prefix_masses};
 use utility::io::Parseable;
 
 /// Given: A space-delimited list of integers, Spectrum.
 ///
 /// Return: An amino acid string with an ideal spectrum that matches Spectrum.
-pub fn rosalind_ba11b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba11b(filename: &Path) -> Result<(), Error> {
     let mut spectrum = vec![0];
     spectrum.append(&mut usize::parse_line(&utility::io::input_from_file(
         filename,
@@ -56,7 +56,7 @@ pub fn get_ideal_spectrum(peptide: &[usize]) -> Vec<usize> {
         spectrum.push(prefix_masses[peptide.len()] - prefix_masses[i]);
         spectrum.push(prefix_masses[i]);
     }
-    spectrum.sort();
+    spectrum.sort_unstable();
     spectrum
 }
 

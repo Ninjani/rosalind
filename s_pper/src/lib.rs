@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use num::bigint::BigUint;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Partial Permutations
@@ -9,7 +9,7 @@ use utility::io::Parseable;
 /// Given: Positive integers n and k such that 100≥n>0 and 10≥k>0.
 ///
 /// Return: The total number of partial permutations P(n,k), modulo 1,000,000.
-pub fn rosalind_pper(filename: &str) -> Result<BigUint, Error> {
+pub fn rosalind_pper(filename: &Path) -> Result<BigUint, Error> {
     let contents = u64::parse_line(&utility::io::input_from_file(filename)?)?;
     let (n, k) = (contents[0], contents[1]);
     let result = (utility::math::ncr(n, k) * utility::math::factorial(k as usize))

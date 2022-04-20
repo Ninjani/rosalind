@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
+use std::path::Path;
 
-use utility;
 use utility::io::Parseable;
 
 /// Implement FarthestFirstTraversal
@@ -12,9 +12,9 @@ use utility::io::Parseable;
 /// FarthestFirstTraversal(Data, k), where the first point from Data is chosen as the
 /// first center to initialize the algorithm.
 
-pub fn rosalind_ba8a(filename: &str) -> Result<Vec<Vec<f64>>, Error> {
+pub fn rosalind_ba8a(filename: &Path) -> Result<Vec<Vec<f64>>, Error> {
     let contents = utility::io::input_from_file(filename)?;
-    let mut lines = contents.split("\n");
+    let mut lines = contents.split('\n');
     let (k, _m) = lines
         .next()
         .unwrap()
@@ -59,8 +59,8 @@ pub fn center_distance(point: &[f64], centers: &[Vec<f64>]) -> f64 {
 
 pub fn euclidean_distance(vector_1: &[f64], vector_2: &[f64]) -> f64 {
     vector_1
-        .into_iter()
-        .zip(vector_2.into_iter())
+        .iter()
+        .zip(vector_2.iter())
         .map(|(v1, v2)| (*v1 - *v2).powf(2.))
         .sum::<f64>()
         .sqrt()

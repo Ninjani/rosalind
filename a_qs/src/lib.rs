@@ -1,8 +1,8 @@
-use failure::Error;
-use rand::{Rng, thread_rng};
+use anyhow::Error;
+use rand::{thread_rng, Rng};
 
 use a_med::partition;
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Quick Sort
@@ -10,7 +10,7 @@ use utility::io::Parseable;
 /// Given: A positive integer n≤105 and an array A[1..n] of integers from −105 to 105
 ///
 /// Return: A sorted array A[1..n].
-pub fn rosalind_qs(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_qs(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let mut array = isize::parse_line(lines[1])?;
@@ -20,17 +20,17 @@ pub fn rosalind_qs(filename: &str) -> Result<Vec<isize>, Error> {
 }
 
 fn quicksort(array: &mut [isize]) {
-    let mut pivot_index = thread_rng().gen_range(0, array.len());
+    let mut pivot_index = thread_rng().gen_range(0..array.len());
     pivot_index = partition(array, 0, array.len() - 1, pivot_index);
     if pivot_index == 0 {
         pivot_index += 1;
     }
-    let (mut left_array, mut right_array) = array.split_at_mut(pivot_index);
+    let (left_array, right_array) = array.split_at_mut(pivot_index);
     if left_array.len() > 1 {
-        quicksort(&mut left_array);
+        quicksort(left_array);
     }
     if right_array.len() > 1 {
-        quicksort(&mut right_array);
+        quicksort(right_array);
     }
 }
 

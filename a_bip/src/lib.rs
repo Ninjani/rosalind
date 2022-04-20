@@ -1,15 +1,15 @@
 use std::collections::VecDeque;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Testing Bipartiteness
 ///
 /// Given: A positive integer k≤20 and k simple graphs in the edge list format with at most 10^3 vertices each.
 ///
 /// Return: For each graph, output "1" if it is bipartite and "-1" otherwise.
-pub fn rosalind_bip(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_bip(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

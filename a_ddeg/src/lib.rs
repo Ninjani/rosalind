@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Double-Degree Array
 ///
 /// Given: A simple graph with n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the sum of the degrees of i's neighbors.
-pub fn rosalind_ddeg(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ddeg(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

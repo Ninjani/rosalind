@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Binary Search
@@ -9,7 +9,7 @@ use utility::io::Parseable;
 /// from −10^5 to 10^5 and a list of m integers −10^5≤k_1,k_2,…,k_m≤10^5.
 ///
 /// Return: For each k_i, output an index 1≤j≤n s.t. A[j]=k_i or "-1" if there is no such index.
-pub fn rosalind_bins(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_bins(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let parts: Vec<_> = input.split('\n').collect();
     let array = isize::parse_line(parts[2])?;

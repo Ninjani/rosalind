@@ -1,15 +1,14 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
-
-use utility;
+use anyhow::Error;
 
 /// Complementing a Strand of DNA
 ///
 /// Given: A DNA string s of length at most 1000 bp.
 ///
 /// Return: The reverse complement s^c of s
-pub fn rosalind_revc(filename: &str) -> Result<String, Error> {
+pub fn rosalind_revc(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let output = reverse_complement(&input);
     println!("{}", output);

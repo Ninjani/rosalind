@@ -1,20 +1,17 @@
 #[macro_use]
-extern crate failure;
-
-#[macro_use]
 extern crate ndarray;
+use thiserror::Error;
 
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array2, Array3, Axis};
 
-use utility;
 use utility::io::Parseable;
 
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum HMMError {
-    #[fail(display = "Wrong input format: {}", _0)]
+    #[error("Wrong input format: {0}")]
     InputFormatError(String),
 }
 
@@ -79,7 +76,7 @@ pub fn read_probability_matrix(
 
 impl HMM {
     /// Read HMM in format:
-    /// ```
+    /// ```text
     /// alphabet_1 alphabet_2 ...
     /// --------
     /// state_1 state_2 ...
@@ -88,7 +85,7 @@ impl HMM {
     /// --------
     /// emission_matrix
     /// ```
-    pub fn read_hmm(sections: &mut dyn Iterator<Item=&str>) -> Result<Self, Error> {
+    pub fn read_hmm(sections: &mut dyn Iterator<Item = &str>) -> Result<Self, Error> {
         let alphabet = char::parse_line(
             sections
                 .next()
@@ -136,7 +133,7 @@ pub enum State {
 }
 
 impl State {
-    fn to_emission_index(&self) -> Option<usize> {
+    fn to_emission_index(self) -> Option<usize> {
         match self {
             State::Start => None,
             State::Match(_) => Some(0),
@@ -146,7 +143,7 @@ impl State {
         }
     }
 
-    fn to_transition_matrix_row_index(&self) -> Option<usize> {
+    fn to_transition_matrix_row_index(self) -> Option<usize> {
         match self {
             State::Start => Some(1),
             State::End => None,
@@ -156,7 +153,7 @@ impl State {
         }
     }
 
-    fn to_transition_matrix_col_index(&self) -> Option<usize> {
+    fn to_transition_matrix_col_index(self) -> Option<usize> {
         match self {
             State::Start => None,
             State::End => Some(1),
@@ -173,13 +170,13 @@ enum SeedColumn {
     Inactive,
 }
 
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum ProfileHMMError {
-    #[fail(display = "Wrong input format: {}", _0)]
+    #[error("Wrong input format: {0}")]
     InputFormatError(String),
-    #[fail(display = "Invalid State: {:?}", _0)]
+    #[error("Invalid State: {0:?}")]
     InvalidStateError(State),
-    #[fail(display = "Forbidden transition: {:?} -> {:?}", _0, _1)]
+    #[error("Forbidden transition: {0:?} -> {1:?}")]
     ForbiddenTransitionError(State, State),
 }
 
@@ -207,8 +204,10 @@ fn normalize_matrix(matrix: &Array3<f32>) -> Array3<f32> {
 
 #[derive(Debug)]
 pub struct ProfileHMM {
+    #[allow(dead_code)]
     threshold: f32,
     alphabet: Vec<char>,
+    #[allow(dead_code)]
     alphabet_index: HashMap<char, usize>,
     gap_number: usize,
     msa: Vec<Vec<usize>>,
@@ -429,14 +428,14 @@ impl ProfileHMM {
             for (state_name, state) in "MDI"
                 .chars()
                 .zip(vec![State::Match(i), State::Delete(i), State::Insert(i)].into_iter())
-                {
-                    println!(
-                        "{}{}\t{}",
-                        state_name,
-                        i,
-                        utility::io::format_line(self.get_transition_line(state).into_iter(), "\t")
-                    );
-                }
+            {
+                println!(
+                    "{}{}\t{}",
+                    state_name,
+                    i,
+                    utility::io::format_line(self.get_transition_line(state).into_iter(), "\t")
+                );
+            }
         }
         println!(
             "E\t{}",

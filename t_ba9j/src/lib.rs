@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba9j(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba9j(filename: &Path) -> Result<String, Error> {
     let bwt_string = utility::io::input_from_file(filename)?;
     let input_string = inverse_bwt(&bwt_string)?;
     println!("{}", input_string);
@@ -26,7 +26,7 @@ fn inverse_bwt(text: &str) -> Result<String, Error> {
     }
 
     let mut first_column: Vec<_> = text.chars().collect();
-    first_column.sort();
+    first_column.sort_unstable();
     let last_column: Vec<_> = text.chars().collect();
     let mut mapping_last = HashMap::new();
     for (i, c) in last_column.iter().enumerate() {

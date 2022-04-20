@@ -1,11 +1,10 @@
 use std::collections::btree_map::BTreeMap;
 
-use failure::Error;
+use anyhow::Error;
+use std::path::Path;
 use t_ba3f::EulerianCycle;
-use utility;
 
-
-pub fn rosalind_ba3g(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3g(filename: &Path) -> Result<(), Error> {
     let graph = utility::graph::IntegerGraph::from_adjacency_list(
         &utility::io::input_from_file(filename)?,
         false,
@@ -57,10 +56,14 @@ impl EulerianPath for utility::graph::IntegerGraph {
                     .unwrap_or(&Vec::new())
                     .len(),
             );
-            if incoming_count > outgoing_count {
-                unbalanced_incoming = Some(node);
-            } else if outgoing_count > incoming_count {
-                unbalanced_outgoing = Some(node);
+            match incoming_count.cmp(&outgoing_count) {
+                std::cmp::Ordering::Less => {
+                    unbalanced_outgoing = Some(node);
+                }
+                std::cmp::Ordering::Greater => {
+                    unbalanced_incoming = Some(node);
+                }
+                std::cmp::Ordering::Equal => {}
             }
         }
         let mut new_graph = self.clone();

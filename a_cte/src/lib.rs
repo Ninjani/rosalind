@@ -1,9 +1,9 @@
 use std::collections::BinaryHeap;
 
-use failure::Error;
+use anyhow::Error;
 
 use a_dij::State;
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Shortest Cycle Through a Given Edge
@@ -11,7 +11,7 @@ use utility::io::Parseable;
 /// Given: A positive integer k≤20 and k simple directed graphs with positive integer edge weights and at most 10^3 vertices in the edge list format.
 ///
 /// Return: For each graph, output the length of a shortest cycle going through the first specified edge if there is a cycle and "-1" otherwise.
-pub fn rosalind_cte(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_cte(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut sections = input.split('\n').filter(|line| !line.trim().is_empty());
     let num_graphs = sections.next().unwrap().parse::<usize>()?;

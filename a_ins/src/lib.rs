@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Insertion Sort
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: A positive integer n≤10^3 and an array A[1..n] of integers.
 ///
 /// Return: The number of swaps performed by insertion sort algorithm on A[1..n].
-pub fn rosalind_ins(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_ins(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let length = lines[0].parse::<usize>()?;

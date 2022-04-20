@@ -1,11 +1,11 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
-use s_rna::transcribe;
-use s_revc::reverse_complement;
 use s_prot::translate;
-use utility;
+use s_revc::reverse_complement;
+use s_rna::transcribe;
+use std::path::Path;
 
 /// Open Reading Frames
 ///
@@ -13,11 +13,11 @@ use utility;
 ///
 /// Return: Every distinct candidate protein string that can be translated from ORFs of s.
 /// Strings can be returned in any order.
-pub fn rosalind_orf(filename: &str) -> Result<HashSet<String>, Error> {
+pub fn rosalind_orf(filename: &Path) -> Result<HashSet<String>, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let dna = fasta.values().collect::<Vec<_>>()[0];
     let revc_dna = reverse_complement(dna);
-    let (rna, revc_rna) = (transcribe(&dna), transcribe(&revc_dna));
+    let (rna, revc_rna) = (transcribe(dna), transcribe(&revc_dna));
     let codons = utility::io::get_codon_to_aa()?;
     let output: HashSet<_> = find_proteins(&rna, &codons)
         .union(&find_proteins(&revc_rna, &codons))

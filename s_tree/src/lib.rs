@@ -1,8 +1,8 @@
 use std::collections::btree_map::BTreeMap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Completing a Tree
 ///
@@ -10,7 +10,7 @@ use utility;
 /// that contains no cycles.
 ///
 /// Return: The minimum number of edges that can be added to the graph to produce a tree.
-pub fn rosalind_tree(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_tree(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let graph = graph_from_weird_edge_list(&input, false, true)?;
     let number = graph.num_connected_components - 1;
@@ -19,13 +19,17 @@ pub fn rosalind_tree(filename: &str) -> Result<usize, Error> {
 }
 
 /// Reads in an adjacency_list of the form:
-/// ```
+/// ```text
 /// num_nodes
 /// node_1 node_2
 /// node_3 node_4
 /// ...
 /// ```
-fn graph_from_weird_edge_list(contents: &str, directed: bool, run_dfs: bool) -> Result<utility::graph::IntegerGraph, Error> {
+fn graph_from_weird_edge_list(
+    contents: &str,
+    directed: bool,
+    run_dfs: bool,
+) -> Result<utility::graph::IntegerGraph, Error> {
     let mut lines = contents.split('\n').filter(|line| !line.trim().is_empty());
     let num_nodes = lines
         .next()
@@ -70,9 +74,12 @@ fn graph_from_weird_edge_list(contents: &str, directed: bool, run_dfs: bool) -> 
         }
     }
     let nodes: Vec<_> = (min_node..min_node + num_nodes).collect();
-    Ok(utility::graph::IntegerGraph::new(adjacency_list, nodes, run_dfs))
+    Ok(utility::graph::IntegerGraph::new(
+        adjacency_list,
+        nodes,
+        run_dfs,
+    ))
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array1;
 
-use utility;
+use std::path::Path;
 
 /// Independent Segregation of Chromosomes
 ///
@@ -10,7 +10,7 @@ use utility;
 /// Return: An array A of length 2n in which A[k] represents the common logarithm of the
 /// probability that two diploid siblings share at least k of their 2n chromosomes
 /// (we do not consider recombination for now).
-pub fn rosalind_indc(filename: &str) -> Result<Vec<f64>, Error> {
+pub fn rosalind_indc(filename: &Path) -> Result<Vec<f64>, Error> {
     let n = utility::io::input_from_file(filename)?.parse::<usize>()? * 2;
     let mut log_sums = Array1::<f64>::zeros(n + 1);
     for i in 2..=n {

@@ -1,9 +1,8 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
-
-use utility;
 use utility::io::Parseable;
 
 /// Comparing Spectra with the Spectral Convolution
@@ -12,7 +11,7 @@ use utility::io::Parseable;
 ///
 /// Return: The largest multiplicity of S1⊖S2, as well as the absolute value of the number x
 /// maximizing (S1⊖S2)(x) (you may return any such value if multiple solutions exist).
-pub fn rosalind_conv(filename: &str) -> Result<(usize, Vec<f64>), Error> {
+pub fn rosalind_conv(filename: &Path) -> Result<(usize, Vec<f64>), Error> {
     let input = utility::io::input_from_file(filename)?;
     let (line_1, line_2) = input.split('\n').collect_tuple().unwrap();
     let multiset_a = f64::parse_line(line_1)?;

@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
 use std::collections::VecDeque;
+use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Breadth-First Search
 ///
@@ -11,7 +11,7 @@ use utility;
 ///
 /// Return: An array D[1..n] where D[i] is the length of a shortest path from the vertex 1 to the vertex i (D[1]=0).
 /// If i is not reachable from 1 set D[i] to −1.
-pub fn rosalind_bfs(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_bfs(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
 use s_edit::get_edit_distances;
-use utility;
+use std::path::Path;
 
 /// WIP
 /// Edit Distance Alignment
@@ -11,19 +11,14 @@ use utility;
 ///
 /// Return: The edit distance dE(s,t) followed by two augmented strings s′ and t′
 /// representing an optimal alignment of s and t.
-pub fn rosalind_edta(filename: &str) -> Result<(usize, String, String), Error> {
+pub fn rosalind_edta(filename: &Path) -> Result<(usize, String, String), Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let sequences: Vec<String> = fasta.values().map(|x| x.to_owned()).collect();
     let (string_1, string_2) = (&sequences[0], &sequences[1]);
     let distances = get_edit_distances(string_1, string_2);
     let (aln_1, aln_2) = backtrack(string_1, string_2, &distances);
     let edit_distance = distances[(string_1.len(), string_2.len())];
-    println!(
-        "{}\n{}\n{}",
-        edit_distance,
-        aln_1,
-        aln_2
-    );
+    println!("{}\n{}\n{}", edit_distance, aln_1, aln_2);
     Ok((edit_distance, aln_1, aln_2))
 }
 
@@ -39,14 +34,14 @@ fn backtrack(string_1: &str, string_2: &str, distances: &Array2<usize>) -> (Stri
             m -= 1;
             aln_1.push(string_1[m]);
             aln_2.push('-')
-        } else if n == 0 {
+        } else if m == 0 {
             n -= 1;
             aln_1.push('-');
             aln_2.push(string_2[n]);
         } else {
             let indices = [(m - 1, n - 1), (m - 1, n), (m, n - 1)];
             let (min_index, min_distance) = indices
-                .into_iter()
+                .iter()
                 .enumerate()
                 .map(|(i, x)| (i, distances[*x]))
                 .min_by(|a, b| a.1.cmp(&b.1))
@@ -84,15 +79,19 @@ fn backtrack(string_1: &str, string_2: &str, distances: &Array2<usize>) -> (Stri
 mod tests {
     use super::*;
 
+    #[ignore]
     #[test]
     fn edta() -> Result<(), Error> {
         let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_edta")?;
         let (edit_distance, aln_1, aln_2) = rosalind_edta(&input_file)?;
         let output = utility::io::input_from_file(&output_file)?;
         let mut output_lines = output.split('\n');
-        assert_eq!(edit_distance, output_lines.next().unwrap().parse::<usize>()?);
-        assert_eq!(aln_1, output_lines.next());
-        assert_eq!(aln_2, output_lines.next());
+        assert_eq!(
+            edit_distance,
+            output_lines.next().unwrap().parse::<usize>()?
+        );
+        assert_eq!(&aln_1, output_lines.next().unwrap());
+        assert_eq!(&aln_2, output_lines.next().unwrap());
         Ok(())
     }
 }

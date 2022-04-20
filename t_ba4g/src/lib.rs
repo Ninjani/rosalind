@@ -1,13 +1,13 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba4c::get_aa_to_mass_usize;
-use t_ba4e::{get_linear_spectrum, expand, spectrum_list_to_counts};
+use t_ba4e::{expand, get_linear_spectrum, spectrum_list_to_counts};
 use t_ba4f::score_cyclic_peptide;
-use utility;
 use utility::io::Parseable;
 
 /// Implement LeaderboardCyclopeptideSequencing
@@ -15,7 +15,7 @@ use utility::io::Parseable;
 /// Given: An integer N and a collection of integers Spectrum.
 ///
 /// Return: LeaderPeptide after running LeaderboardCyclopeptideSequencing(Spectrum, N).
-pub fn rosalind_ba4g(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba4g(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (n, spectrum) = (lines[0].parse::<usize>()?, usize::parse_line(lines[1])?);
@@ -46,7 +46,7 @@ pub fn leaderboard_cyclo_peptide_sequencing(
             let mass = peptide.iter().sum::<usize>();
             if mass == parent_mass
                 && score_cyclic_peptide(peptide, spectrum)
-                > score_cyclic_peptide(&leaderpeptide, spectrum)
+                    > score_cyclic_peptide(&leaderpeptide, spectrum)
             {
                 leaderpeptide = peptide.clone();
             } else if mass > parent_mass {

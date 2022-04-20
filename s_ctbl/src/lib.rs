@@ -1,14 +1,14 @@
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
+use petgraph::graph::{IndexType, NodeIndex};
+use petgraph::visit::EdgeRef;
 use petgraph::Directed;
 use petgraph::Direction::Outgoing;
-use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::Graph;
-use petgraph::visit::EdgeRef;
 
 use s_nwck::parse_newick;
-use utility;
+use std::path::Path;
 
 /// Creating a Character Table
 ///
@@ -18,7 +18,7 @@ use utility;
 /// The columns of the character table should encode the taxa ordered lexicographically;
 /// the rows of the character table may be given in any order. Also, for any given character,
 /// the particular subset of taxa to which 1s are assigned is arbitrary.
-pub fn rosalind_ctbl(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ctbl(filename: &Path) -> Result<(), Error> {
     let input = utility::io::input_from_file(filename)?;
     let tree = parse_newick(&input)?;
     let mut nodes = tree

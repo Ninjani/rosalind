@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
 use a_ts::TopologicalSort;
-use utility;
+use std::path::Path;
 
 /// Semi-Connected Graph
 ///
@@ -10,7 +10,7 @@ use utility;
 /// 103 vertices each in the edge list format.
 ///
 /// Return: For each graph, output "1" if the graph is semi-connected and "-1" otherwise.
-pub fn rosalind_sc(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_sc(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

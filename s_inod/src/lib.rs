@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Counting Phylogenetic Ancestors
 ///
 /// Given: A positive integer n (3≤n≤10000).
 ///
 /// Return: The number of internal nodes of any unrooted binary tree having n leaves.
-pub fn rosalind_inod(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_inod(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let number = input.parse::<usize>()? - 2;
     println!("{}", number);

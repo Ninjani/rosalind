@@ -1,12 +1,12 @@
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba1i::get_mismatch_sequences;
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba1a(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1a(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;

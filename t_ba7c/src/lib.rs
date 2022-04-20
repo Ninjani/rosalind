@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 use ndarray::Array2;
 use petgraph::graph::NodeIndex;
 use petgraph::stable_graph::StableGraph;
 
+use std::path::Path;
 use t_ba7b::{get_limb_length, read_matrix};
-use utility;
 
 /// W.I.P
 
-pub fn rosalind_ba7c(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba7c(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let num_leaves = lines.next().unwrap().parse::<usize>()?;
@@ -78,7 +78,7 @@ fn additive_phylogeny(tree: &mut Tree, distance_matrix: &mut Array2<usize>, leaf
         tree.tree.add_edge(n1, n2, distance_matrix[(0, 1)]);
     } else {
         //    limbLength ← Limb(D, n)
-        let limb_length = get_limb_length(&distance_matrix, leaf_n, leaf_n + 1);
+        let limb_length = get_limb_length(distance_matrix, leaf_n, leaf_n + 1);
         //    for j ← 1 to n - 1
         //        Dj,n ← Dj,n - limbLength
         //        Dn,j ← Dj,n
@@ -89,11 +89,10 @@ fn additive_phylogeny(tree: &mut Tree, distance_matrix: &mut Array2<usize>, leaf
         //    (i,n,k) ← three leaves such that Di,k = Di,n + Dn,k
         let (leaf_i, leaf_k) = (0..leaf_n)
             .cartesian_product(0..leaf_n)
-            .skip_while(|(i, k)| {
+            .find(|(i, k)| {
                 distance_matrix[(*i, leaf_n)] + distance_matrix[(leaf_n, *k)]
-                    != distance_matrix[(*i, *k)]
+                    == distance_matrix[(*i, *k)]
             })
-            .next()
             .unwrap();
         let (node_i, node_k) = (tree.add_node(leaf_i), tree.add_node(leaf_k));
         //    x ← Di,n

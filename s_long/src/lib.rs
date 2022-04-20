@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Genome Assembly as Shortest Superstring
 ///
@@ -13,7 +13,7 @@ use utility;
 ///
 /// Return: A shortest superstring containing all the given strings
 /// (thus corresponding to a reconstructed chromosome).
-pub fn rosalind_long(filename: &str) -> Result<String, Error> {
+pub fn rosalind_long(filename: &Path) -> Result<String, Error> {
     let mut sequences = utility::io::read_fasta_file(filename)?
         .values()
         .map(|s| s.to_owned())

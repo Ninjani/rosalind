@@ -1,16 +1,15 @@
 use std::collections::HashMap;
 
-
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
-use petgraph::Incoming;
 use petgraph::stable_graph::StableGraph;
+use petgraph::Incoming;
 
+use std::path::Path;
 use t_ba9c::SuffixTree;
-use t_ba9e::{TreeColor, NodeColor};
-use utility;
+use t_ba9e::{NodeColor, TreeColor};
 
-pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error> {
+pub fn rosalind_ba9p(filename: &Path) -> Result<HashMap<usize, NodeColor>, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let (adjacency_list, initial_node_colors_string) =
         contents.split("\n-\n").collect_tuple().unwrap();
@@ -47,8 +46,7 @@ pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error>
     }
     let root = tree
         .node_indices()
-        .filter(|n| tree.edges_directed(*n, Incoming).next().is_none())
-        .next()
+        .find(|n| tree.edges_directed(*n, Incoming).next().is_none())
         .unwrap();
     let suffix_tree = SuffixTree { root, tree };
     let mut initial_node_colors = HashMap::new();
@@ -59,9 +57,7 @@ pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error>
         initial_node_colors.insert(index_to_node[&Some(node)], color);
     }
     for node in suffix_tree.tree.node_indices() {
-        if !initial_node_colors.contains_key(&node) {
-            initial_node_colors.insert(node, NodeColor::Gray);
-        }
+        initial_node_colors.entry(node).or_insert(NodeColor::Gray);
     }
     let node_colors = suffix_tree.tree_color(initial_node_colors);
     for (n, c) in &node_colors {
@@ -72,5 +68,3 @@ pub fn rosalind_ba9p(filename: &str) -> Result<HashMap<usize, NodeColor>, Error>
         .map(|(n, c)| (suffix_tree.tree[n].unwrap(), c))
         .collect())
 }
-
-

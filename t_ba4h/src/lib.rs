@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba4e::spectrum_list_to_counts;
-use utility;
 use utility::io::Parseable;
 
 /// Generate the Convolution of a Spectrum
@@ -11,10 +11,8 @@ use utility::io::Parseable;
 ///
 /// Return: The list of elements in the convolution of Spectrum in decreasing order of their
 /// multiplicities. If an element has multiplicity k, it should appear exactly k times.
-pub fn rosalind_ba4h(filename: &str) -> Result<(), Error> {
-    let spectrum = usize::parse_line(&utility::io::input_from_file(
-        filename,
-    )?)?;
+pub fn rosalind_ba4h(filename: &Path) -> Result<(), Error> {
+    let spectrum = usize::parse_line(&utility::io::input_from_file(filename)?)?;
     let convolution = get_spectral_convolution(&spectrum);
     let convolution_counts = spectrum_list_to_counts(&convolution);
     let order: Vec<_> = convolution_counts
@@ -29,7 +27,7 @@ pub fn rosalind_ba4h(filename: &str) -> Result<(), Error> {
 
 pub fn get_spectral_convolution(spectrum: &[usize]) -> Vec<usize> {
     let mut spectrum = spectrum.to_vec();
-    spectrum.sort();
+    spectrum.sort_unstable();
     let mut convolution = Vec::new();
     for i in 0..(spectrum.len() - 1) {
         for j in i..spectrum.len() {

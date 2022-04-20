@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use num::BigUint;
 
-use utility;
+use std::path::Path;
 
 /// Perfect Matchings and RNA Secondary Structures
 ///
@@ -9,7 +9,7 @@ use utility;
 /// as 'U' and the same number of occurrences of 'C' as 'G'.
 ///
 /// Return: The total possible number of perfect matchings of basepair edges in the bonding graph of s.
-pub fn rosalind_pmch(filename: &str) -> Result<BigUint, Error> {
+pub fn rosalind_pmch(filename: &Path) -> Result<BigUint, Error> {
     let sequences = utility::io::read_fasta_file(filename)?;
     let (_, sequence) = sequences.iter().collect::<Vec<_>>()[0];
     let nucleotide_counts = utility::string::char_counter(sequence);

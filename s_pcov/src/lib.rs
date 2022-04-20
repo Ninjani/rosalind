@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba3d::de_bruijn_graph;
 use t_ba3f::EulerianCycle;
-use utility;
 
 /// Genome Assembly with Perfect Coverage
 ///
@@ -12,7 +12,7 @@ use utility;
 ///
 /// Return: A cyclic superstring of minimal length containing the reads
 /// (thus corresponding to a candidate cyclic chromosome).
-pub fn rosalind_pcov(filename: &str) -> Result<String, Error> {
+pub fn rosalind_pcov(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let reads: Vec<_> = input.split('\n').map(|s| s.to_owned()).collect();
     let adjacency_list = de_bruijn_graph(&reads);

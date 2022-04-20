@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
 use s_lexf::enumerate_lex;
-use utility;
+use std::path::Path;
 
 /// k-Mer Composition
 ///
 /// Given: A DNA string s in FASTA format (having length at most 100 kbp).
 ///
 /// Return: The 4-mer composition of s.
-pub fn rosalind_kmer(filename: &str) -> Result<Vec<Vec<usize>>, Error> {
+pub fn rosalind_kmer(filename: &Path) -> Result<Vec<Vec<usize>>, Error> {
     let alphabets = vec!['A', 'C', 'G', 'T'];
     let dna = utility::io::read_fasta_file(filename)?;
     let kmer_indices: HashMap<String, usize> = enumerate_lex(&alphabets, 4)

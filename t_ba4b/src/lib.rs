@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
-use s_rna::transcribe;
 use s_revc::reverse_complement;
-use utility;
+use s_rna::transcribe;
+use std::path::Path;
 
-pub fn rosalind_ba4b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba4b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let codons = utility::io::get_codon_to_aa()?;
     let lines: Vec<_> = contents.split('\n').collect();
@@ -15,7 +15,7 @@ pub fn rosalind_ba4b(filename: &str) -> Result<(), Error> {
     for i in 0..(dna.len() - num_nucleotides) {
         let current_dna = &dna[i..(i + num_nucleotides)];
         let revc_dna = reverse_complement(current_dna);
-        let (rna, revc_rna) = (transcribe(&current_dna), transcribe(&revc_dna));
+        let (rna, revc_rna) = (transcribe(current_dna), transcribe(&revc_dna));
         match (
             translate_no_stop(&rna, &codons),
             translate_no_stop(&revc_rna, &codons),

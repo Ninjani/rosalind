@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_prot::translate;
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba4a(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba4a(filename: &Path) -> Result<(), Error> {
     let rna = utility::io::input_from_file(filename)?;
     let codons = utility::io::get_codon_to_aa()?;
     println!(
         "{}",
-        translate(&rna, &codons).ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?
+        translate(&rna, &codons).ok_or(utility::errors::RosalindOutputError::NoneError)?
     );
     Ok(())
 }

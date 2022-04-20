@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Longest Increasing Subsequence
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: A positive integer n≤10000 followed by a permutation π of length n.
 ///
 /// Return: A longest increasing subsequence of π, followed by a longest decreasing subsequence of π.
-pub fn rosalind_lgis(filename: &str) -> Result<(Vec<usize>, Vec<usize>), Error> {
+pub fn rosalind_lgis(filename: &Path) -> Result<(Vec<usize>, Vec<usize>), Error> {
     let input = utility::io::input_from_file(filename)?;
     let parts: Vec<_> = input.split('\n').collect();
     let length = parts[0].parse::<usize>()?;

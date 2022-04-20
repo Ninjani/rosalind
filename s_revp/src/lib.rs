@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Locating Restriction Sites
 ///
@@ -10,13 +10,13 @@ use utility;
 ///
 /// Return: The position and length of every reverse palindrome in the string having length
 /// between 4 and 12. You may return these pairs in any order.
-pub fn rosalind_revp(filename: &str) -> Result<HashSet<(usize, usize)>, Error> {
+pub fn rosalind_revp(filename: &Path) -> Result<HashSet<(usize, usize)>, Error> {
     let nucleotide_map: HashMap<_, _> = "ATCG".chars().zip("TAGC".chars()).collect();
     let fasta = utility::io::read_fasta_file(filename)?;
     let dna = fasta
         .values()
         .next()
-        .ok_or_else(|| utility::errors::RosalindOutputError::NoneError)?
+        .ok_or(utility::errors::RosalindOutputError::NoneError)?
         .chars()
         .collect::<Vec<_>>();
     let mut output = HashSet::new();

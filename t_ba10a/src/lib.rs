@@ -1,19 +1,17 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use hidden_markov_models::{
-    get_chars_and_index, HMM, HMMError, read_probability_matrix,
-};
-use utility;
+use hidden_markov_models::{get_chars_and_index, read_probability_matrix, HMMError, HMM};
+use std::path::Path;
 
 /// Compute the Probability of a Hidden Path
 ///
 /// Given: A hidden path π followed by the states States and transition matrix Transition of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The probability of this path, Pr(π). You may assume that initial probabilities are equal.
-pub fn rosalind_ba10a(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_ba10a(filename: &Path) -> Result<f64, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let hidden_path = sections
@@ -22,7 +20,7 @@ pub fn rosalind_ba10a(filename: &str) -> Result<f64, Error> {
         .trim()
         .to_owned();
     let (states, state_index) = get_chars_and_index(
-        &sections
+        sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
     )?;

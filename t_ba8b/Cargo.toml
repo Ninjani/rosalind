@@ -6,7 +6,7 @@ authors = ["Ninjani"]
 
 [dependencies]
 assert_approx_eq = "1.1.0"
-itertools = "0.8.2"
-failure ="0.1.3"
+itertools = "0.10.3"
+anyhow = "1.0"
 utility = {path = "../utility"}
 t_ba8a = {path = "../t_ba8a"}

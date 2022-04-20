@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Transitions and Transversions
 ///
 /// Given: Two DNA strings s1 and s2 of equal length (at most 1 kbp).
 ///
 /// Return: The transition/transversion ratio R(s1,s2).
-pub fn rosalind_tran(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_tran(filename: &Path) -> Result<f64, Error> {
     let fasta = utility::io::read_fasta_file(filename)?;
     let sequences = fasta.values().collect::<Vec<_>>();
     let sequence_1 = sequences[0];

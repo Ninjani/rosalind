@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Introduction to Set Operations
 ///
@@ -11,12 +11,12 @@ use utility;
 ///
 /// Return: Six sets: A∪B, A∩B, A−B, B−A, Ac, and Bc
 /// (where set complements are taken with respect to {1,2,…,n}).
-pub fn rosalind_seto(filename: &str) -> Result<Vec<HashSet<usize>>, Error> {
+pub fn rosalind_seto(filename: &Path) -> Result<Vec<HashSet<usize>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = input.split('\n').collect();
     let max_n = lines[0].parse::<usize>()?;
-    let set_a = utility::io::read_set(&lines[1])?;
-    let set_b = utility::io::read_set(&lines[2])?;
+    let set_a = utility::io::read_set(lines[1])?;
+    let set_b = utility::io::read_set(lines[2])?;
     let set_u = HashSet::from_iter(1..=max_n);
     let result = vec![
         set_a.union(&set_b).cloned().collect(),
@@ -27,7 +27,7 @@ pub fn rosalind_seto(filename: &str) -> Result<Vec<HashSet<usize>>, Error> {
         set_u.difference(&set_b).cloned().collect(),
     ];
     for set in &result {
-        println!("{}", utility::io::format_set(&set));
+        println!("{}", utility::io::format_set(set));
     }
     Ok(result)
 }
@@ -43,9 +43,9 @@ mod tests {
         for (i, set) in utility::io::input_from_file(&output_file)?
             .split('\n')
             .enumerate()
-            {
-                assert_eq!(result[i], utility::io::read_set(set)?);
-            }
+        {
+            assert_eq!(result[i], utility::io::read_set(set)?);
+        }
         Ok(())
     }
 }

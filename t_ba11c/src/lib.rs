@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 
-use t_ba4c::{get_prefix_masses, get_aa_to_mass_usize};
-use utility;
+use std::path::Path;
+use t_ba4c::{get_aa_to_mass_usize, get_prefix_masses};
 
 /// Convert a Peptide into a Peptide Vector
 ///
 /// Given: A peptide P.
 ///
 /// Return: The peptide vector of P.
-pub fn rosalind_ba11c(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba11c(filename: &Path) -> Result<(), Error> {
     let peptide = utility::io::input_from_file(filename)?;
     let aa_to_mass = get_aa_to_mass_usize()?;
     let peptide_masses: Vec<_> = peptide.trim().chars().map(|c| aa_to_mass[&c]).collect();

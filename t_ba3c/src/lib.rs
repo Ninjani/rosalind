@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba3c(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3c(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let kmers: Vec<_> = contents.split('\n').collect();
     let overlap_graph = get_overlap_graph(&kmers, kmers[0].len() - 1);

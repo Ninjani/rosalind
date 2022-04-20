@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Finding a motif in DNA
 ///
 /// Given: Two DNA strings s and t (each of length at most 1 kbp).
 ///
 /// Return: All locations of t as a substring of s.
-pub fn rosalind_subs(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_subs(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let dna_motif = input.split('\n').collect::<Vec<&str>>();
     let dna = dna_motif.get(0).ok_or_else(|| {

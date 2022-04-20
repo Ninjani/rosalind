@@ -1,11 +1,10 @@
-use failure::Error;
-
-use utility;
+use anyhow::Error;
+use std::path::Path;
 
 /// Given: A simple directed acyclic graph with n≤103 vertices in the edge list format.
 ///
 /// Return: A topological sorting (i.e., a permutation of vertices) of the graph.
-pub fn rosalind_ts(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ts(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -23,7 +22,7 @@ pub trait TopologicalSort {
 impl TopologicalSort for utility::graph::IntegerGraph {
     fn get_topological_sort(&self) -> Vec<usize> {
         let mut postvisit = self.postvisit.iter().enumerate().collect::<Vec<_>>();
-        postvisit.sort_by(|a, b| b.1.cmp(&a.1));
+        postvisit.sort_by(|a, b| b.1.cmp(a.1));
         postvisit.into_iter().map(|(i, _)| self.nodes[i]).collect()
     }
 }

@@ -5,8 +5,8 @@ edition = "2018"
 authors = ["Ninjani"]
 
 [dependencies]
-petgraph = "0.4.13"
-failure ="0.1.3"
+petgraph = "0.6.0"
+anyhow = "1.0"
 utility = {path = "../utility"}
 t_ba11a = {path = "../t_ba11a"}
 t_ba4c = {path = "../t_ba4c"}

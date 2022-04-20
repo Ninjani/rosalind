@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Mendel's First Law
@@ -11,7 +11,7 @@ use utility::io::Parseable;
 /// Return: The probability that two randomly selected mating organisms will produce an individual
 /// possessing a dominant allele (and thus displaying the dominant phenotype).
 /// Assume that any two organisms can mate.
-pub fn rosalind_iprb(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_iprb(filename: &Path) -> Result<f64, Error> {
     let contents = u64::parse_line(&utility::io::input_from_file(filename)?)?;
     let (k, m, n) = (contents[0], contents[1], contents[2]);
     let output = dominant_probability(k, m, n);

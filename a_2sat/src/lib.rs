@@ -1,8 +1,8 @@
 use std::collections::{btree_map::BTreeMap, HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// 2-Satisfiability
 ///
@@ -13,7 +13,7 @@ use utility;
 ///
 /// Return: For each formula, output 0 if it cannot be satisfied
 /// or 1 followed by a satisfying assignment otherwise.
-pub fn rosalind_2sat(filename: &str) -> Result<Vec<Option<Vec<isize>>>, Error> {
+pub fn rosalind_2sat(filename: &Path) -> Result<Vec<Option<Vec<isize>>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -45,13 +45,13 @@ pub fn rosalind_2sat(filename: &str) -> Result<Vec<Option<Vec<isize>>>, Error> {
 
 pub trait From2sat: Sized {
     fn from_2sat_adjacency_list(
-        lines: &mut dyn Iterator<Item=String>,
+        lines: &mut dyn Iterator<Item = String>,
         run_dfs: bool,
     ) -> Result<Self, Error>;
 }
 impl From2sat for utility::graph::IntegerGraph {
     fn from_2sat_adjacency_list(
-        lines: &mut dyn Iterator<Item=String>,
+        lines: &mut dyn Iterator<Item = String>,
         run_dfs: bool,
     ) -> Result<Self, Error> {
         let length_input = lines
@@ -113,7 +113,7 @@ fn get_negated_node(node: usize) -> usize {
     }
 }
 
-fn get_assignment(lines: &mut dyn Iterator<Item=String>) -> Result<Option<Vec<isize>>, Error> {
+fn get_assignment(lines: &mut dyn Iterator<Item = String>) -> Result<Option<Vec<isize>>, Error> {
     let mut graph = utility::graph::IntegerGraph::from_2sat_adjacency_list(lines, false)?;
     let graph_reverse = graph.get_reverse_graph(true);
     let mut node_order = graph_reverse

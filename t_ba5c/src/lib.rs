@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use utility;
+use std::path::Path;
 
 /// Find a Longest Common Subsequence of Two Strings
 ///
 /// Given: Two strings.
 ///
 /// Return: A longest common subsequence of these strings.
-pub fn rosalind_ba5c(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5c(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     println!("{}", get_longest_common_subsequence(lines[0], lines[1]));

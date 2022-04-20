@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Rabbits and Recurrence Relations
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: Positive integers n≤40 and k≤5.
 ///
 /// Return: The total number of rabbit pairs that will be present after n months, if we begin with 1 pair and in each generation, every pair of reproduction-age rabbits produces a litter of k rabbit pairs (instead of only 1 pair).
-pub fn rosalind_fib(filename: &str) -> Result<u64, Error> {
+pub fn rosalind_fib(filename: &Path) -> Result<u64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let contents = u64::parse_line(&input)?;
     let (n, k) = (contents[0], contents[1]);

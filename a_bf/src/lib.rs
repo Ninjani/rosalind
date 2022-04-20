@@ -1,8 +1,6 @@
-#[macro_use]
-extern crate failure;
-use failure::Error;
+use anyhow::{anyhow, Error};
 
-use utility;
+use std::path::Path;
 
 /// Bellman-Ford Algorithm
 ///
@@ -11,13 +9,13 @@ use utility;
 ///
 /// Return: An array D[1..n] where D[i] is the length of a shortest path
 /// from the vertex 1 to the vertex i (D[1]=0). If i is not reachable from 1 set D[i] to x.
-pub fn rosalind_bf(filename: &str) -> Result<Vec<Option<i32>>, Error> {
+pub fn rosalind_bf(filename: &Path) -> Result<Vec<Option<i32>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input.split('\n').map(|s| s.to_owned());
     let graph = utility::graph::WeightedGraph::from_weighted_edge_list(&mut lines)?;
     let distances = graph
         .bellman_ford(0)
-        .ok_or_else(|| format_err!("Negative cycle found"))?;
+        .ok_or_else(|| anyhow!("Negative cycle found"))?;
     let mut output = Vec::with_capacity(graph.num_nodes);
     for node in 0..graph.num_nodes {
         if distances[node] < ::std::i32::MAX {

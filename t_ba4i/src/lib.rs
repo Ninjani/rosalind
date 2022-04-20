@@ -1,9 +1,9 @@
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba4e::spectrum_list_to_counts;
 use t_ba4g::{get_top_with_ties, leaderboard_cyclo_peptide_sequencing};
 use t_ba4h::get_spectral_convolution;
-use utility;
 use utility::io::Parseable;
 
 /// Implement ConvolutionCyclopeptideSequencing
@@ -13,7 +13,7 @@ use utility::io::Parseable;
 /// Return: A cyclic peptide LeaderPeptide with amino acids taken only from the top M elements
 /// (and ties) of the convolution of Spectrum that fall between 57 and 200, and where the size
 /// of Leaderboard is restricted to the top N (and ties).
-pub fn rosalind_ba4i(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba4i(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
     let (m, n, spectrum) = (

@@ -1,13 +1,13 @@
 use std::collections::btree_map::BTreeMap;
 use std::collections::HashMap;
 
-use failure::Error;
-use petgraph::{Directed, Outgoing};
-use petgraph::stable_graph::{EdgeIndex, NodeIndex, EdgeReference, StableGraph};
+use anyhow::Error;
+use petgraph::stable_graph::{EdgeIndex, EdgeReference, NodeIndex, StableGraph};
 use petgraph::visit::{EdgeRef, IntoEdgeReferences};
+use petgraph::{Directed, Outgoing};
 
+use std::path::Path;
 use t_ba3m::MaximalNonbranching;
-use utility;
 
 /// Construct the Suffix Tree of a String
 ///
@@ -15,7 +15,7 @@ use utility;
 ///
 /// Return: The strings labeling the edges of SuffixTree(Text).
 /// (You may return these strings in any order.)
-pub fn rosalind_ba9c(filename: &str) -> Result<Vec<String>, Error> {
+pub fn rosalind_ba9c(filename: &Path) -> Result<Vec<String>, Error> {
     let text = utility::io::input_from_file(filename)?;
     let suffix_tree = SuffixTree::construct(&text);
     let strings = suffix_tree
@@ -64,21 +64,18 @@ impl SuffixTrie {
         let mut trie = StableGraph::new();
         let root = trie.add_node(None);
         let mut current_node;
-        let mut current_symbol;
         let text: Vec<_> = text.chars().collect();
         for i in 0..text.len() {
             current_node = root;
-            for j in i..text.len() {
-                current_symbol = text[j];
+            for (j, current_symbol) in text.iter().enumerate().skip(i) {
                 if let Some(edge) = trie
                     .edges_directed(current_node, Outgoing)
-                    .filter(|e: &EdgeReference<(char, usize), u32>| e.weight().0 == current_symbol)
-                    .next()
+                    .find(|e: &EdgeReference<(char, usize), u32>| e.weight().0 == *current_symbol)
                 {
                     current_node = edge.target();
                 } else {
                     let new_node = trie.add_node(None);
-                    trie.add_edge(current_node, new_node, (current_symbol, j));
+                    trie.add_edge(current_node, new_node, (*current_symbol, j));
                     current_node = new_node;
                 }
             }

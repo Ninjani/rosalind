@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Enumerating Gene Orders
 ///
@@ -8,7 +8,7 @@ use utility;
 ///
 /// Return: The total number of permutations of length n, followed by a list of all such permutations
 /// (in any order).
-pub fn rosalind_perm(filename: &str) -> Result<(usize, Vec<Vec<usize>>), Error> {
+pub fn rosalind_perm(filename: &Path) -> Result<(usize, Vec<Vec<usize>>), Error> {
     let input = utility::io::input_from_file(filename)?;
     let n = input.parse::<usize>()?;
     let total: usize = (1..=n).product();
@@ -26,10 +26,7 @@ pub fn rosalind_perm(filename: &str) -> Result<(usize, Vec<Vec<usize>>), Error> 
 pub fn get_permutations<T: PartialOrd + Clone>(array: &mut Vec<T>) -> Vec<Vec<T>> {
     let length = array.len();
     let mut permutations = Vec::new();
-    let mut c = Vec::with_capacity(length);
-    for _ in 0..length {
-        c.push(0);
-    }
+    let mut c = vec![0; length];
     permutations.push(array.clone());
     let mut i = 0;
     while i < length {

@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Speeding Up Motif Finding
 ///
 /// Given: A DNA string s (of length at most 100 kbp) in FASTA format.
 ///
 /// Return: The failure array of s.
-pub fn rosalind_kmp(filename: &str) -> Result<Vec<Vec<isize>>, Error> {
+pub fn rosalind_kmp(filename: &Path) -> Result<Vec<Vec<isize>>, Error> {
     let dna = utility::io::read_fasta_file(filename)?;
     let mut counts: Vec<Vec<_>> = Vec::with_capacity(dna.len());
     for (_, sequence) in dna {

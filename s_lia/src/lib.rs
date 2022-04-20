@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use num::ToPrimitive;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Independent Alleles
@@ -14,7 +14,7 @@ use utility::io::Parseable;
 /// Return: The probability that at least N Aa Bb organisms will belong to the k-th generation
 /// of Tom's family tree (don't count the Aa Bb mates at each level).
 /// Assume that Mendel's second law holds for the factors.
-pub fn rosalind_lia(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_lia(filename: &Path) -> Result<f64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let contents = u64::parse_line(&input)?;
     let k = contents[0];

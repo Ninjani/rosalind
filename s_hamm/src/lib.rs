@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::errors;
 
 /// Counting Point Mutations
@@ -8,7 +8,7 @@ use utility::errors;
 /// Given: Two DNA strings s and t of equal length (not exceeding 1 kbp).
 ///
 /// Return: The Hamming distance d_H(s,t).
-pub fn rosalind_hamm(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_hamm(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let sequences = input.split('\n').collect::<Vec<&str>>();
     let (sequence_1, sequence_2) = (

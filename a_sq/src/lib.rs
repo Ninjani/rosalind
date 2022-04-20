@@ -1,15 +1,15 @@
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Square in a Graph
 ///
 /// Given: A positive integer k≤20 and k simple undirected graphs with n≤400 vertices in the edge list format.
 ///
 /// Return: For each graph, output "1" if it contains a simple cycle (that is, a cycle which doesn’t intersect itself) of length 4 and "-1" otherwise.
-pub fn rosalind_sq(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_sq(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

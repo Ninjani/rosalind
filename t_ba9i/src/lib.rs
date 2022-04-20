@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba9i(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba9i(filename: &Path) -> Result<String, Error> {
     let input_string = utility::io::input_from_file(filename)?;
     let output_string = bwt(&input_string);
     println!("{}", output_string);

@@ -3,8 +3,9 @@ use std::fs::File;
 use std::io::Read;
 use std::iter::FromIterator;
 use std::num::{ParseFloatError, ParseIntError};
+use std::path::{Path, PathBuf};
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
 use crate::errors;
@@ -18,17 +19,22 @@ pub const STOP_CODON_AA: &str = "Stop";
 pub const START_CODON: &str = "AUG";
 
 /// Read problem input from file
-pub fn input_from_file(filename: &str) -> Result<String, Error> {
-    let mut f = File::open(filename)
-        .map_err(|e| errors::RosalindParseError::FileReadError(e, filename.to_owned()))?;
+pub fn input_from_file(filename: &Path) -> Result<String, Error> {
+    let mut f = File::open(filename).map_err(|e| errors::RosalindParseError::FileReadError {
+        source: e,
+        file: filename.to_owned(),
+    })?;
     let mut contents = String::new();
     f.read_to_string(&mut contents)
-        .map_err(|e| errors::RosalindParseError::FileReadError(e, filename.to_owned()))?;
+        .map_err(|e| errors::RosalindParseError::FileReadError {
+            source: e,
+            file: filename.to_owned(),
+        })?;
     Ok(contents.trim().to_owned())
 }
 
 /// Read fasta-formatted file into a hashmap
-pub fn read_fasta_file(filename: &str) -> Result<HashMap<String, String>, Error> {
+pub fn read_fasta_file(filename: &Path) -> Result<HashMap<String, String>, Error> {
     let contents = input_from_file(filename)?;
     let groups = contents
         .split('\n')
@@ -56,7 +62,7 @@ pub fn read_fasta_file(filename: &str) -> Result<HashMap<String, String>, Error>
 
 /// Read fasta-formatted file into a list of headers and a hashmap
 pub fn read_fasta_file_and_headers(
-    filename: &str,
+    filename: &Path,
 ) -> Result<(Vec<String>, HashMap<String, String>), Error> {
     let contents = input_from_file(filename)?;
     let groups = contents
@@ -90,7 +96,8 @@ pub fn read_fasta_file_and_headers(
 
 /// Codon to amino acid mapping
 pub fn get_codon_to_aa() -> Result<HashMap<String, String>, Error> {
-    let contents = input_from_file(CODON_FILE)?;
+    let codon_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), CODON_FILE].iter().collect();
+    let contents = input_from_file(&codon_file)?;
     let mut codons = HashMap::new();
     for line in contents.split('\n') {
         let mut codon_aas = line.split_whitespace();
@@ -101,7 +108,7 @@ pub fn get_codon_to_aa() -> Result<HashMap<String, String>, Error> {
                     codon.to_owned(),
                     codon_aas
                         .next()
-                        .ok_or_else(|| errors::RosalindParseError::BadCodonFileError)?
+                        .ok_or(errors::RosalindParseError::BadCodonFileError)?
                         .to_owned(),
                 ),
                 None => break,
@@ -124,7 +131,8 @@ pub fn get_aa_to_codon() -> Result<HashMap<String, Vec<String>>, Error> {
 /// Reads monoisotopic mass table
 pub fn get_aa_to_mass() -> Result<HashMap<char, f64>, Error> {
     let mut mass_table = HashMap::new();
-    let mass_contents = input_from_file(MASS_FILE)?;
+    let mass_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), MASS_FILE].iter().collect();
+    let mass_contents = input_from_file(&mass_file)?;
     for line in mass_contents.split('\n') {
         let mut aa_mass = line.split_whitespace();
         if let (Some(aa), Some(mass)) = (aa_mass.next(), aa_mass.next()) {
@@ -135,7 +143,8 @@ pub fn get_aa_to_mass() -> Result<HashMap<char, f64>, Error> {
 }
 
 pub fn get_mass_to_aa() -> Result<Vec<(f64, char)>, Error> {
-    let mass_contents = input_from_file(MASS_FILE)?;
+    let mass_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), MASS_FILE].iter().collect();
+    let mass_contents = input_from_file(&mass_file)?;
     let mut mass_aa = Vec::new();
     for line in mass_contents.split('\n') {
         let mut aa_mass = line.split_whitespace();
@@ -144,7 +153,7 @@ pub fn get_mass_to_aa() -> Result<Vec<(f64, char)>, Error> {
             let aa = aa
                 .chars()
                 .next()
-                .ok_or_else(|| errors::RosalindOutputError::NoneError)?;
+                .ok_or(errors::RosalindOutputError::NoneError)?;
             mass_aa.push((mass, aa));
         }
     }
@@ -154,7 +163,7 @@ pub fn get_mass_to_aa() -> Result<Vec<(f64, char)>, Error> {
 
 impl IntegerGraph {
     /// Reads in an adjacency_list of the form:
-    /// ```
+    /// ```text
     /// node_1 -> node_2,node_3
     /// node_2 -> node_4
     /// ...
@@ -188,19 +197,19 @@ impl IntegerGraph {
             adjacency_list.insert(node_1, nodes_2);
         }
         let mut nodes: Vec<_> = nodes.into_iter().collect();
-        nodes.sort();
+        nodes.sort_unstable();
         Ok(Self::new(adjacency_list, nodes, run_dfs))
     }
 
     /// Reads a Rosalind edge list into an adjacency matrix
-    /// ```
+    /// ```text
     /// num_nodes num_edges
     /// node_1 node_2
     /// node_1 node_2
     /// ...
     /// ```
     pub fn from_edge_list(
-        lines: &mut dyn Iterator<Item=String>,
+        lines: &mut dyn Iterator<Item = String>,
         directed: bool,
         run_dfs: bool,
     ) -> Result<Self, Error> {
@@ -265,13 +274,13 @@ impl IntegerGraph {
 
 impl WeightedGraph {
     /// Read a Rosalind weighted edge list of the form:
-    /// ```
+    /// ```text
     /// num_nodes num_edges
     /// node_1 node_2 weight
     /// node_1 node_2 weight
     /// ...
     /// ```
-    pub fn from_weighted_edge_list(lines: &mut dyn Iterator<Item=String>) -> Result<Self, Error> {
+    pub fn from_weighted_edge_list(lines: &mut dyn Iterator<Item = String>) -> Result<Self, Error> {
         let length_input = lines
             .next()
             .ok_or_else(|| {
@@ -421,24 +430,23 @@ impl Parseable for f32 {
 
 impl Parseable for char {
     fn parse_line(line: &str) -> Result<Vec<char>, errors::RosalindParseError> {
-        Ok(line
-            .trim()
+        line.trim()
             .split_whitespace()
             .map(|s| {
                 s.chars().next().ok_or_else(|| {
                     errors::RosalindParseError::InputFormatError(String::from("Empty string"))
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?)
+            .collect::<Result<Vec<_>, _>>()
     }
 }
 
 /// Read file of form:
-/// ```
+/// ```text
 /// length
 /// a1 a2 a3 ...
 /// ```
-pub fn read_isize_array(filename: &str) -> Result<(usize, Vec<isize>), Error> {
+pub fn read_isize_array(filename: &Path) -> Result<(usize, Vec<isize>), Error> {
     let contents = input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let length = lines
@@ -467,7 +475,7 @@ pub fn read_set(line: &str) -> Result<HashSet<usize>, Error> {
 }
 
 /// Input iterator to "separator"-separated string of items
-pub fn format_line<T: ToString>(items: impl Iterator<Item=T>, separator: &str) -> String {
+pub fn format_line<T: ToString>(items: impl Iterator<Item = T>, separator: &str) -> String {
     items
         .map(|c| c.to_string())
         .collect::<Vec<_>>()

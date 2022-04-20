@@ -1,9 +1,8 @@
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use std::path::Path;
 
-use failure::Error;
-
-use utility;
+use anyhow::Error;
 
 /// Introduction to Pattern Matching
 ///
@@ -14,7 +13,7 @@ use utility;
 /// through n in any order you like. Each edge of the adjacency list of T will be encoded by a triple
 /// containing the integer representing the edge's parent node, followed by the integer representing the
 /// edge's child node, and finally the symbol labeling the edge.
-pub fn rosalind_trie(filename: &str) -> Result<Vec<(usize, usize, char)>, Error> {
+pub fn rosalind_trie(filename: &Path) -> Result<Vec<(usize, usize, char)>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut trie = Trie::<usize, char>::new();
     for (i, line) in input.split('\n').enumerate() {
@@ -65,6 +64,7 @@ impl<T: Eq + Clone, U: Eq + Hash + Clone> Trie<T, U> {
         }
     }
 
+    #[allow(dead_code)]
     fn find(&self, query: &[U]) -> Option<T> {
         let node = query
             .iter()

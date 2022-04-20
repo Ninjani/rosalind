@@ -1,9 +1,8 @@
 use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array, Array2};
-
-use utility;
 
 /// Find a Highest-Scoring Alignment of Two Strings
 ///
@@ -12,17 +11,17 @@ use utility;
 /// Return: The maximum alignment score of these strings followed by an alignment achieving this
 /// maximum score. Use the BLOSUM62 scoring matrix and indel penalty σ = 5.
 /// (If multiple alignments achieving the maximum score exist, you may return any one.)
-pub fn rosalind_ba5e(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5e(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix("data/blosum62.txt")?;
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(&PathBuf::from("data/blosum62.txt"))?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);
     let (score, aln_string_1, aln_string_2) = global_align(lines[0], lines[1], &parameters);
     println!("{}\n{}\n{}", score, aln_string_1, aln_string_2);
     Ok(())
 }
 
-pub fn read_scoring_matrix(filename: &str) -> Result<(Array2<isize>, Vec<char>), Error> {
+pub fn read_scoring_matrix(filename: &Path) -> Result<(Array2<isize>, Vec<char>), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let amino_acids: Vec<_> = lines
@@ -31,7 +30,7 @@ pub fn read_scoring_matrix(filename: &str) -> Result<(Array2<isize>, Vec<char>),
         .trim_start()
         .trim_end()
         .split_whitespace()
-        .map(|s| s.chars().nth(0).unwrap())
+        .map(|s| s.chars().next().unwrap())
         .collect();
     let mut scoring_matrix = Array2::zeros((amino_acids.len(), amino_acids.len()));
     for (i, line) in lines.enumerate() {
@@ -91,9 +90,9 @@ pub fn global_alignment_backtrack(
                 (scores[(i, j - 1)] - parameters.gap_penalty),
                 (scores[(i - 1, j - 1)]
                     + parameters.scoring_matrix[(
-                    parameters.amino_acid_order[&chars_1[i - 1]],
-                    parameters.amino_acid_order[&chars_2[j - 1]],
-                )]),
+                        parameters.amino_acid_order[&chars_1[i - 1]],
+                        parameters.amino_acid_order[&chars_2[j - 1]],
+                    )]),
             ];
             let (max_index, max_value) = values
                 .into_iter()

@@ -1,15 +1,18 @@
-use failure::Error;
+use anyhow::Error;
 
-use t_ba5e::{AlignmentParameters, read_scoring_matrix};
+use std::path::{Path, PathBuf};
+use t_ba5e::{read_scoring_matrix, AlignmentParameters};
 use t_ba5k::LinearSpaceAlignment;
-use utility;
 
 /// W.I.P
 
-pub fn rosalind_ba5l(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5l(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
+    let blosum_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), utility::io::BLOSUM_FILE]
+        .iter()
+        .collect();
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(&blosum_file)?;
     //    scoring_matrix.fill(-1);
     //    scoring_matrix.diag_mut().fill(1);
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 5);

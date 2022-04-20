@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
-pub fn rosalind_ba1f(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1f(filename: &Path) -> Result<(), Error> {
     let genome = utility::io::input_from_file(filename)?;
     println!("{}", utility::io::format_array(&minimize_skews(&genome)));
     Ok(())
@@ -22,7 +22,7 @@ fn get_counts(text: &str, character: char) -> Vec<usize> {
     counts
 }
 
-fn minimize_skews(text: &str) -> Vec<(usize)> {
+fn minimize_skews(text: &str) -> Vec<usize> {
     let mut skews = vec![(0, 0)];
     let g_counts = get_counts(text, 'G');
     let c_counts = get_counts(text, 'C');

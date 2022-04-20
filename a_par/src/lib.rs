@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// 2-Way Partition
 ///
@@ -8,7 +8,7 @@ use utility;
 ///
 /// Return: A permuted array B[1..n] such that it is a permutation of A and there is an index 1≤q≤n
 /// such that B[i]≤A[1] for all 1≤i≤q−1, B[q]=A[1], and B[i]>A[1] for all q+1≤i≤n.
-pub fn rosalind_par(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_par(filename: &Path) -> Result<Vec<isize>, Error> {
     let (length, mut array) = utility::io::read_isize_array(filename)?;
     let pivot = array[0];
     partition(&mut array, length, pivot);

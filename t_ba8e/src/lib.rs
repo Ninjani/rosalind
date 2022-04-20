@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
+use petgraph::graph::NodeIndex;
 use petgraph::Directed;
 use petgraph::Graph;
-use petgraph::graph::NodeIndex;
 use petgraph::Incoming;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Implement Hierarchical Clustering
@@ -16,9 +16,9 @@ use utility::io::Parseable;
 ///
 /// Return: The result of applying HierarchicalClustering to this distance matrix (using Davg),
 /// with each newly created cluster listed on each line.
-pub fn rosalind_ba8e(filename: &str) -> Result<Vec<Vec<usize>>, Error> {
+pub fn rosalind_ba8e(filename: &Path) -> Result<Vec<Vec<usize>>, Error> {
     let contents = utility::io::input_from_file(filename)?;
-    let mut lines = contents.split("\n");
+    let mut lines = contents.split('\n');
     let _n = lines.next().unwrap().trim().parse::<usize>()?;
     let mut matrix = Vec::with_capacity(_n);
     for line in lines {
@@ -41,8 +41,8 @@ fn hierarchical_clustering(
     let mut remove_matrix = matrix.clone();
     fn cluster_distance_avg(cluster_1: &[usize], cluster_2: &[usize], matrix: &[Vec<f64>]) -> f64 {
         cluster_1
-            .into_iter()
-            .cartesian_product(cluster_2.into_iter())
+            .iter()
+            .cartesian_product(cluster_2.iter())
             .map(|(c1, c2)| matrix[*c1][*c2])
             .sum::<f64>()
             / (cluster_1.len() * cluster_2.len()) as f64
@@ -100,7 +100,7 @@ fn hierarchical_clustering(
             .collect();
         let mut new_row_col: Vec<f64> = clusters
             .iter()
-            .map(|c| cluster_distance_avg(&c, &cluster_new, &matrix))
+            .map(|c| cluster_distance_avg(c, &cluster_new, &matrix))
             .collect();
         remove_matrix = remove_matrix
             .into_iter()
@@ -116,8 +116,7 @@ fn hierarchical_clustering(
     }
     let root = graph
         .node_indices()
-        .filter(|node| graph.edges_directed(*node, Incoming).next().is_none())
-        .next()
+        .find(|node| graph.edges_directed(*node, Incoming).next().is_none())
         .unwrap();
     (root, graph, cluster_tracker)
 }

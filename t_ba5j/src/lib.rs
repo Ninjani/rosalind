@@ -2,11 +2,11 @@
 extern crate ndarray;
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array2, Array3};
 
+use std::path::{Path, PathBuf};
 use t_ba5e::read_scoring_matrix;
-use utility;
 
 /// Align Two Strings Using Affine Gap Penalties
 ///
@@ -15,10 +15,13 @@ use utility;
 /// Return: The maximum alignment score between v and w, followed by an alignment of v and w
 /// achieving this maximum score. Use the BLOSUM62 scoring matrix, a gap opening penalty of 11,
 /// and a gap extension penalty of 1.
-pub fn rosalind_ba5j(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5j(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = contents.split('\n').collect();
-    let (scoring_matrix, amino_acids) = read_scoring_matrix(utility::io::BLOSUM_FILE)?;
+    let blosum_file: PathBuf = [env!("CARGO_WORKSPACE_DIR"), utility::io::BLOSUM_FILE]
+        .iter()
+        .collect();
+    let (scoring_matrix, amino_acids) = read_scoring_matrix(&blosum_file)?;
     let parameters = AlignmentParameters::new(scoring_matrix, amino_acids, 11, 1);
     let (score, aln_string_1, aln_string_2) =
         affine_gap_penalties_align(lines[0], lines[1], &parameters);
@@ -58,7 +61,7 @@ fn get_max_index_max_value<T: Ord + Copy>(values: &[T]) -> (usize, T) {
     let (index, value) = values
         .iter()
         .enumerate()
-        .max_by(|a, b| a.1.cmp(&b.1))
+        .max_by(|a, b| a.1.cmp(b.1))
         .unwrap();
     (index, *value)
 }
@@ -108,9 +111,9 @@ pub fn affine_gap_penalties_alignment_backtrack(
                 scores[(i, j, 0)], // 0
                 (scores[(i - 1, j - 1, 1)]
                     + parameters.scoring_matrix[(
-                    parameters.amino_acid_order[&chars_1[i - 1]],
-                    parameters.amino_acid_order[&chars_2[j - 1]],
-                )]), // 1
+                        parameters.amino_acid_order[&chars_1[i - 1]],
+                        parameters.amino_acid_order[&chars_2[j - 1]],
+                    )]), // 1
                 scores[(i, j, 2)], // 2
             ]);
             scores[(i, j, 1)] = max_value;

@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 
+use std::path::Path;
 use t_ba8a::euclidean_distance;
-use utility;
 use utility::io::Parseable;
 
 /// Implement the Soft k-Means Clustering Algorithm
@@ -13,9 +13,9 @@ use utility::io::Parseable;
 /// Return: A set Centers consisting of k points (centers) resulting from applying the soft k-means
 /// clustering algorithm. Select the first k points from Data as the first centers for the algorithm
 /// and run the algorithm for 100 steps. Results should be accurate up to three decimal places.
-pub fn rosalind_ba8d(filename: &str) -> Result<Vec<Vec<f64>>, Error> {
+pub fn rosalind_ba8d(filename: &Path) -> Result<Vec<Vec<f64>>, Error> {
     let contents = utility::io::input_from_file(filename)?;
-    let mut lines = contents.split("\n");
+    let mut lines = contents.split('\n');
     let (k, _m) = lines
         .next()
         .unwrap()
@@ -69,7 +69,7 @@ fn soft_kmeans(points: &[Vec<f64>], k: usize, beta: f64, num_iter: usize) -> Vec
 fn get_pull(center_i: &[f64], point_j: &[f64], centers: &[Vec<f64>], beta: f64) -> f64 {
     (-beta * euclidean_distance(point_j, center_i)).exp()
         / centers
-        .into_iter()
-        .map(|c_i| (-beta * euclidean_distance(point_j, c_i)).exp())
-        .sum::<f64>()
+            .iter()
+            .map(|c_i| (-beta * euclidean_distance(point_j, c_i)).exp())
+            .sum::<f64>()
 }

@@ -2,14 +2,13 @@
 #[macro_use]
 extern crate inline_python;
 
-use failure::Error;
-use inline_python::{Context, pyo3, python};
+use anyhow::Error;
+use inline_python::{pyo3, python, Context};
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 pub type Polynomial = Vec<(i32, i32)>;
-
 
 fn polynomial_from_sympy(sympy_polynomial: Vec<i32>) -> Polynomial {
     sympy_polynomial
@@ -17,7 +16,8 @@ fn polynomial_from_sympy(sympy_polynomial: Vec<i32>) -> Polynomial {
         .rev()
         .enumerate()
         .filter(|(_, coef)| *coef != 0)
-        .map(|(i, coef)| (i as i32, coef)).collect()
+        .map(|(i, coef)| (i as i32, coef))
+        .collect()
 }
 
 fn factorize_polynomial(polynomial: Polynomial) -> Vec<Polynomial> {
@@ -50,23 +50,28 @@ fn factorize_polynomial(polynomial: Polynomial) -> Vec<Polynomial> {
     }
     let gil = pyo3::Python::acquire_gil();
     let py = gil.python();
-//    let factored_polynomials: Vec<Vec<(i32, i32)>> = context.get_global(py, "factored_polynomials").unwrap().unwrap_or(Vec::new());
-//    factored_polynomials
+    //    let factored_polynomials: Vec<Vec<(i32, i32)>> = context.get_global(py, "factored_polynomials").unwrap().unwrap_or(Vec::new());
+    //    factored_polynomials
     Vec::new()
 }
 
-
 fn points_from_polynomial(polynomial: &Polynomial) -> Vec<i32> {
-    let mut points: Vec<_> = polynomial.iter().flat_map(|(power, coef)| (0..*coef).map(move |_| *power)).collect();
+    let mut points: Vec<_> = polynomial
+        .iter()
+        .flat_map(|(power, coef)| (0..*coef).map(move |_| *power))
+        .collect();
     points.sort();
     points
 }
 
 /// W.I.P
 pub fn rosalind_pdpl(input: &str) -> Result<(), Error> {
-    let difference_multiset =
-        i32::parse_line(input)?;
-    let polynomial = difference_multiset.into_iter().enumerate().map(|(_, power)| (power, 1)).collect();
+    let difference_multiset = i32::parse_line(input)?;
+    let polynomial = difference_multiset
+        .into_iter()
+        .enumerate()
+        .map(|(_, power)| (power, 1))
+        .collect();
     let factored_polynomials = factorize_polynomial(polynomial);
     println!("{:?}", factored_polynomials);
     Ok(())

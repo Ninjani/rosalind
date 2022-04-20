@@ -1,23 +1,22 @@
 use std::collections::{HashMap, HashSet};
 use std::isize;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 
 // TODO change to utility::graph
-use petgraph::Directed;
-use petgraph::Direction::{Incoming, Outgoing};
 use petgraph::graph::{IndexType, NodeIndex};
 use petgraph::stable_graph::StableGraph;
 use petgraph::visit::EdgeRef;
-
-use utility;
+use petgraph::Directed;
+use petgraph::Direction::{Incoming, Outgoing};
 
 /// Find the Longest Path in a DAG
 ///
 /// Given: An integer representing the source node of a graph, followed by an integer representing the sink node of the graph, followed by an edge-weighted graph. The graph is represented by a modified adjacency list in which the notation "0->1:7" indicates that an edge connects node 0 to node 1 with weight 7.
 ///
 /// Return: The length of a longest path in the graph, followed by a longest path. (If multiple longest paths exist, you may return any one.)
-pub fn rosalind_ba5d(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5d(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let (source, sink) = (
@@ -40,7 +39,7 @@ pub fn rosalind_ba5d(filename: &str) -> Result<(), Error> {
 }
 
 pub fn read_edge_weighted_list(
-    lines: impl Iterator<Item=String>,
+    lines: impl Iterator<Item = String>,
 ) -> (
     StableGraph<usize, isize, Directed, u32>,
     HashMap<usize, NodeIndex<u32>>,

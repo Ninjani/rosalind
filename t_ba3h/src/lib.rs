@@ -1,10 +1,10 @@
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba3d::de_bruijn_graph;
 use t_ba3g::EulerianPath;
-use utility;
 
-pub fn rosalind_ba3h(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba3h(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let patterns: Vec<_> = contents.split('\n').skip(1).map(|s| s.to_owned()).collect();
     let adjacency_list = de_bruijn_graph(&patterns);

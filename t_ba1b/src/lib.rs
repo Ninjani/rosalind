@@ -1,10 +1,9 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
-
-pub fn rosalind_ba1b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let (text, k) = (lines[0], lines[1].parse::<usize>()?);

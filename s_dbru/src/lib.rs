@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 
-use failure::Error;
+use anyhow::Error;
 
 use s_revc::reverse_complement;
-use utility;
+use std::path::Path;
 
 /// Nodes of Bk
 /// correspond to all k-mers that are present as a substring of a (k+1)-mer from S∪Src.
@@ -15,7 +15,7 @@ use utility;
 /// (not exceeding 50 bp) corresponding to a set S of (k+1)-mers.
 ///
 /// Return: The adjacency list corresponding to the de Bruijn graph corresponding to S∪Src.
-pub fn rosalind_dbru(filename: &str) -> Result<HashSet<(String, String)>, Error> {
+pub fn rosalind_dbru(filename: &Path) -> Result<HashSet<(String, String)>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let set_s: HashSet<String> = input.split('\n').map(|s| s.to_owned()).collect();
     let set_s_rc: HashSet<_> = set_s.iter().map(|s| reverse_complement(s)).collect();

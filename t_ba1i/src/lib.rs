@@ -1,12 +1,12 @@
 use std::collections::{HashMap, HashSet};
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba1b::get_most_frequent_kmers;
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba1i(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba1i(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let lines = contents.split('\n').collect::<Vec<_>>();
     let numbers = usize::parse_line(lines[1])?;

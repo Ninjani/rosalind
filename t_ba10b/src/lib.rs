@@ -2,13 +2,11 @@
 extern crate ndarray;
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array1, Array2};
 
-use hidden_markov_models::{
-    get_chars_and_index, HMM, HMMError, read_probability_matrix,
-};
-use utility;
+use hidden_markov_models::{get_chars_and_index, read_probability_matrix, HMMError, HMM};
+use std::path::Path;
 
 /// Compute the Probability of an Outcome Given a Hidden Path
 ///
@@ -17,7 +15,7 @@ use utility;
 /// of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: The conditional probability Pr(x|π) that string x will be emitted by the HMM given the hidden path π.
-pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_ba10b(filename: &Path) -> Result<f64, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections
@@ -26,7 +24,7 @@ pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
         .trim()
         .to_owned();
     let (alphabet, alphabet_index) = get_chars_and_index(
-        &sections
+        sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing alphabet".into()))?,
     )?;
@@ -36,7 +34,7 @@ pub fn rosalind_ba10b(filename: &str) -> Result<f64, Error> {
         .trim()
         .to_owned();
     let (states, state_index) = get_chars_and_index(
-        &sections
+        sections
             .next()
             .ok_or_else(|| HMMError::InputFormatError("Missing states".into()))?,
     )?;

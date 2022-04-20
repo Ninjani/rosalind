@@ -1,12 +1,12 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2c(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba2c(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let (text, k) = (
@@ -16,13 +16,13 @@ pub fn rosalind_ba2c(filename: &str) -> Result<(), Error> {
     let matrix = Array2::from_shape_vec(
         (4, k),
         lines
-            .map(|line| f64::parse_line(line))
+            .map(f64::parse_line)
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .flat_map(|line| line.into_iter())
             .collect(),
     )?;
-    println!("{}", get_profile_most_probable_kmer(&text, k, &matrix));
+    println!("{}", get_profile_most_probable_kmer(text, k, &matrix));
     Ok(())
 }
 

@@ -1,8 +1,8 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::Array2;
 
-use hidden_markov_models::{HMM, HMMError};
-use utility;
+use hidden_markov_models::{HMMError, HMM};
+use std::path::Path;
 use utility::math::Comparable;
 
 /// Implement the Viterbi Algorithm
@@ -12,7 +12,7 @@ use utility::math::Comparable;
 /// and emission matrix Emission of an HMM (Σ, States, Transition, Emission).
 ///
 /// Return: A path that maximizes the (unconditional) probability Pr(x, π) over all possible paths π.
-pub fn rosalind_ba10c(filename: &str) -> Result<String, Error> {
+pub fn rosalind_ba10c(filename: &Path) -> Result<String, Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut sections = contents.split("--------");
     let sequence = sections

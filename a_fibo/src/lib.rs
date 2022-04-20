@@ -1,14 +1,14 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_fib::fibonacci;
-use utility;
+use std::path::Path;
 
 /// Fibonacci Numbers
 ///
 /// Given: A positive integer n≤25
 ///
 /// Return: The value of F_n.
-pub fn rosalind_fibo(filename: &str) -> Result<u64, Error> {
+pub fn rosalind_fibo(filename: &Path) -> Result<u64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let n = input.parse::<u64>()?;
     Ok(fibonacci(n, 1))

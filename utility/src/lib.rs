@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate failure;
-
 pub mod errors;
 pub mod graph;
 pub mod io;

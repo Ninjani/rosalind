@@ -1,16 +1,16 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Dijkstra's Algorithm
 ///
 /// Given: A simple directed graph with positive edge weights from 1 to 10^3 and n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the length of a shortest path from the vertex 1 to the vertex i (D[1]=0). If i is not reachable from 1 set D[i] to −1.
-pub fn rosalind_dij(filename: &str) -> Result<Vec<isize>, Error> {
+pub fn rosalind_dij(filename: &Path) -> Result<Vec<isize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -51,11 +51,19 @@ impl PartialOrd for State {
 }
 
 pub trait DijkstraStartToEnd {
-    fn get_dijkstra_start_to_end_distance(&self, start_node: usize, end_node: usize) -> Option<usize>;
+    fn get_dijkstra_start_to_end_distance(
+        &self,
+        start_node: usize,
+        end_node: usize,
+    ) -> Option<usize>;
 }
 /// Finds length of shortest (weighted) path from start_node to end_node using Dijkstra's Algorithm
 impl DijkstraStartToEnd for utility::graph::WeightedGraph {
-    fn get_dijkstra_start_to_end_distance(&self, start_node: usize, end_node: usize) -> Option<usize> {
+    fn get_dijkstra_start_to_end_distance(
+        &self,
+        start_node: usize,
+        end_node: usize,
+    ) -> Option<usize> {
         let mut distances = (0..self.num_nodes)
             .map(|_| ::std::usize::MAX)
             .collect::<Vec<_>>();

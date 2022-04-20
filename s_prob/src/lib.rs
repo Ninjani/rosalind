@@ -1,8 +1,8 @@
 use std::collections::HashMap;
+use std::path::Path;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
 use utility::io::Parseable;
 
 /// Introduction to Random Strings
@@ -13,7 +13,7 @@ use utility::io::Parseable;
 /// Return: An array B having the same length as A in which B[k] represents the common logarithm
 /// of the probability that a random string constructed with the GC-content found in A[k] will
 /// match s exactly.
-pub fn rosalind_prob(filename: &str) -> Result<Vec<f64>, Error> {
+pub fn rosalind_prob(filename: &Path) -> Result<Vec<f64>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let parts: Vec<_> = input.split('\n').collect();
     let sequence = parts[0];

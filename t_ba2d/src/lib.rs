@@ -1,14 +1,13 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 use itertools::Itertools;
 use ndarray::{Array1, Array2};
-use std::iter::FromIterator;
+use std::path::Path;
 use t_ba2c::get_profile_most_probable_kmer;
-use utility;
 use utility::io::Parseable;
 
-pub fn rosalind_ba2d(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba2d(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut lines = contents.split('\n');
     let numbers = usize::parse_line(lines.next().unwrap())?;

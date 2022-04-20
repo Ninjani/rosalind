@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Calculating Expected Offspring
@@ -24,7 +24,7 @@ use utility::io::Parseable;
 ///
 /// Return: The expected number of offspring displaying the dominant phenotype
 /// in the next generation, under the assumption that every couple has exactly two offspring.
-pub fn rosalind_iev(filename: &str) -> Result<f64, Error> {
+pub fn rosalind_iev(filename: &Path) -> Result<f64, Error> {
     let input = utility::io::input_from_file(filename)?;
     let contents = f64::parse_line(&input)?;
     let percentages = [1., 1., 1., 0.75, 0.5, 0.];

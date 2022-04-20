@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use failure::Error;
+use anyhow::Error;
 
+use std::path::Path;
 use t_ba9k::get_last_to_first_mapping;
-use utility;
 
 /// Implement BWMatching
 ///
@@ -12,12 +12,12 @@ use utility;
 ///
 /// Return: A list of integers, where the i-th integer corresponds to the number of substring
 /// matches of the i-th member of Patterns in Text.
-pub fn rosalind_ba9l(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_ba9l(filename: &Path) -> Result<Vec<usize>, Error> {
     let content = utility::io::input_from_file(filename)?;
     let lines: Vec<_> = content.split('\n').collect();
     let bwt_text: Vec<_> = lines[0].chars().collect();
     let mut first_column = bwt_text.clone();
-    first_column.sort();
+    first_column.sort_unstable();
     let mut counts = Vec::new();
     let last_to_first = get_last_to_first_mapping(&bwt_text, &first_column);
     for pattern in lines[1].split_whitespace() {
@@ -34,14 +34,14 @@ pub fn rosalind_ba9l(filename: &str) -> Result<Vec<usize>, Error> {
 }
 
 fn bwm_matching<T: Hash + Eq>(
-    first_column: &[T],
+    _first_column: &[T],
     last_column: &[T],
     pattern: &[T],
     last_to_first: &HashMap<usize, usize>,
 ) -> usize {
     let mut top = 0;
     let mut bottom = last_column.len() - 1;
-    let mut pattern = pattern.into_iter().rev();
+    let mut pattern = pattern.iter().rev();
     while top <= bottom {
         if let Some(last_letter) = pattern.next() {
             let indices: Vec<_> = (top..=bottom)

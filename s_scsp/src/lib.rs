@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 
 use s_lcsq::longest_common_subsequence;
-use utility;
+use std::path::Path;
 
 /// Interleaving Two Motifs
 ///
@@ -9,7 +9,7 @@ use utility;
 ///
 /// Return: A shortest common supersequence of s and t.
 /// If multiple solutions exist, you may output any one.
-pub fn rosalind_scsp(filename: &str) -> Result<String, Error> {
+pub fn rosalind_scsp(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let sequences: Vec<_> = input.split('\n').collect();
     let result = shortest_common_supersequence(sequences[0], sequences[1]);

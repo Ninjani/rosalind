@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Overlap Graphs
 ///
 /// Given: A collection of DNA strings in FASTA format having total length at most 10 kbp.
 ///
 /// Return: The adjacency list corresponding to O_3. You may return edges in any order.
-pub fn rosalind_grph(filename: &str) -> Result<Vec<(String, String)>, Error> {
+pub fn rosalind_grph(filename: &Path) -> Result<Vec<(String, String)>, Error> {
     let sequences = utility::io::read_fasta_file(filename)?;
     let overlap_length = 3;
     let output: Vec<(String, String)> = get_overlap_graph(&sequences, overlap_length)

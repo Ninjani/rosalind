@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Inferring Protein from Spectrum
 ///
@@ -9,7 +9,7 @@ use utility;
 /// Return: A protein string of length n−1 whose prefix spectrum is equal to L
 /// (if multiple solutions exist, you may output any one of them).
 /// Consult the monoisotopic mass table.
-pub fn rosalind_spec(filename: &str) -> Result<String, Error> {
+pub fn rosalind_spec(filename: &Path) -> Result<String, Error> {
     let input = utility::io::input_from_file(filename)?;
     let spectrum = input
         .split('\n')

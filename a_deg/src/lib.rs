@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Degree Array
 ///
 /// Given: A simple graph with n≤10^3 vertices in the edge list format.
 ///
 /// Return: An array D[1..n] where D[i] is the degree of vertex i.
-pub fn rosalind_deg(filename: &str) -> Result<Vec<usize>, Error> {
+pub fn rosalind_deg(filename: &Path) -> Result<Vec<usize>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

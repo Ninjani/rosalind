@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 use ndarray::{Array, Array2};
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// Find the Length of a Longest Path in a Manhattan-like Grid
@@ -11,7 +11,7 @@ use utility::io::Parseable;
 ///
 /// Return: The length of a longest path from source (0, 0) to sink (n, m) in the n × m rectangular
 /// grid whose edges are defined by the matrices Down and Right.
-pub fn rosalind_ba5b(filename: &str) -> Result<(), Error> {
+pub fn rosalind_ba5b(filename: &Path) -> Result<(), Error> {
     let contents = utility::io::input_from_file(filename)?;
     let mut parts = contents.split("\n-\n");
     let mut size_down = parts.next().unwrap().split('\n');

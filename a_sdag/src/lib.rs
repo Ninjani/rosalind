@@ -1,7 +1,7 @@
-use failure::Error;
+use anyhow::Error;
 
 use a_ts::TopologicalSort;
-use utility;
+use std::path::Path;
 
 /// Shortest Paths in DAG
 ///
@@ -11,7 +11,7 @@ use utility;
 /// Return: An array D[1..n] where D[i] is the length of a shortest path
 /// from the vertex 1 to the vertex i (D[1]=0).
 /// If i is not reachable from 1 set D[i] to x.
-pub fn rosalind_sdag(filename: &str) -> Result<Vec<Option<i32>>, Error> {
+pub fn rosalind_sdag(filename: &Path) -> Result<Vec<Option<i32>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')
@@ -37,11 +37,8 @@ pub fn rosalind_sdag(filename: &str) -> Result<Vec<Option<i32>>, Error> {
 }
 
 pub trait DAGShortestPath {
-    fn get_shortest_path_length(
-        &self,
-        source_node: usize,
-        topo_sort: &[usize],
-    ) -> Vec<Option<i32>>;
+    fn get_shortest_path_length(&self, source_node: usize, topo_sort: &[usize])
+        -> Vec<Option<i32>>;
 }
 
 impl DAGShortestPath for utility::graph::WeightedGraph {

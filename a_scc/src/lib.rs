@@ -1,13 +1,13 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 
 /// Strongly Connected Components
 ///
 /// Given: A simple directed graph with n≤103 vertices in the edge list format.
 ///
 /// Return: The number of strongly connected components in the graph.
-pub fn rosalind_scc(filename: &str) -> Result<usize, Error> {
+pub fn rosalind_scc(filename: &Path) -> Result<usize, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input
         .split('\n')

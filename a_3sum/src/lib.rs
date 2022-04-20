@@ -1,6 +1,6 @@
-use failure::Error;
+use anyhow::Error;
 
-use utility;
+use std::path::Path;
 use utility::io::Parseable;
 
 /// 3SUM
@@ -8,7 +8,7 @@ use utility::io::Parseable;
 /// Given: A positive integer k≤20, a postive integer n≤10^4, and k arrays of size n containing integers from −10^5 to 10^5.
 ///
 /// Return: For each array A[1..n], output three different indices 1≤p<q<r≤n such that A[p]+A[q]+A[r]=0 if exist, and "-1" otherwise.
-pub fn rosalind_3sum(filename: &str) -> Result<Vec<Option<(usize, usize, usize)>>, Error> {
+pub fn rosalind_3sum(filename: &Path) -> Result<Vec<Option<(usize, usize, usize)>>, Error> {
     let input = utility::io::input_from_file(filename)?;
     let mut lines = input.split('\n');
     let length_input = usize::parse_line(lines.next().unwrap())?;
@@ -29,7 +29,7 @@ pub fn rosalind_3sum(filename: &str) -> Result<Vec<Option<(usize, usize, usize)>
                     indices[index_2] + 1,
                     indices[index_3] + 1,
                 ];
-                real_indices.sort();
+                real_indices.sort_unstable();
                 println!("{}", utility::io::format_array(&real_indices));
                 output.push(Some((real_indices[0], real_indices[1], real_indices[2])));
             }
@@ -48,12 +48,10 @@ fn three_sum(length: usize, array: &[isize], target: isize) -> Option<(usize, us
         let (mut start, mut end) = (i + 1, length - 1);
         while start < end {
             let (b, c) = (array[start], array[end]);
-            if a + b + c == target {
-                return Some((i, start, end));
-            } else if a + b + c > target {
-                end -= 1;
-            } else {
-                start += 1;
+            match (a + b + c).cmp(&target) {
+                std::cmp::Ordering::Equal => return Some((i, start, end)),
+                std::cmp::Ordering::Less => start += 1,
+                std::cmp::Ordering::Greater => end -= 1,
             }
         }
     }
