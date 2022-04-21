@@ -4,8 +4,7 @@ use std::path::{Path, PathBuf};
 
 /// W.I.P
 pub fn rosalind_gs(filename: &Path) -> Result<(), Error> {
-    let contents =
-        utility::io::input_from_file(&PathBuf::from("data/algorithmic_heights/rosalind_gs.txt"))?;
+    let contents = utility::io::input_from_file(&filename)?;
     let mut lines = contents
         .split('\n')
         .filter(|s| !s.trim().is_empty())
