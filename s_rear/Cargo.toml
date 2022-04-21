@@ -1,0 +1,9 @@
+[package]
+name = "s_rear"
+version = "0.1.0"
+edition = "2018"
+authors = ["Ninjani"]
+
+[dependencies]
+anyhow = "1.0"
+utility = {path = "../utility"}
