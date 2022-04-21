@@ -31,15 +31,16 @@ pub fn get_edit_distances(string_1: &str, string_2: &str) -> Array2<usize> {
     for j in 0..=n {
         distances[(0, j)] = j;
     }
-    for j in 1..=n {
-        for i in 1..=m {
-            distances[(i, j)] = if string_1[i - 1] == string_2[j - 1] {
-                distances[(i - 1, j - 1)]
+    for i in 1..=m {
+        for j in 1..=n {
+            let cost = if string_1[i - 1] == string_2[j - 1] {
+                0
             } else {
-                (distances[(i - 1, j)] + 1)
-                    .min(distances[(i, j - 1)] + 1)
-                    .min(distances[(i - 1, j - 1)] + 1)
+                1
             };
+            distances[(i, j)] = (distances[(i - 1, j)] + 1)
+                .min(distances[(i, j - 1)] + 1)
+                .min(distances[(i - 1, j - 1)] + cost);
         }
     }
     distances

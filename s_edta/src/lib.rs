@@ -27,59 +27,35 @@ fn backtrack(string_1: &str, string_2: &str, distances: &Array2<usize>) -> (Stri
         (string_1.chars().collect(), string_2.chars().collect());
     let (mut m, mut n) = (string_1.len(), string_2.len());
     let (mut aln_1, mut aln_2) = (Vec::new(), Vec::new());
-    loop {
-        if m == 0 && n == 0 {
-            break;
-        } else if n == 0 {
-            m -= 1;
-            aln_1.push(string_1[m]);
-            aln_2.push('-')
-        } else if m == 0 {
-            n -= 1;
-            aln_1.push('-');
-            aln_2.push(string_2[n]);
+
+    while m != 0 && n != 0 {
+        let cost = if string_1[m - 1] == string_2[n - 1] {
+            0
         } else {
-            let indices = [(m - 1, n - 1), (m - 1, n), (m, n - 1)];
-            let (min_index, min_distance) = indices
-                .iter()
-                .enumerate()
-                .map(|(i, x)| (i, distances[*x]))
-                .min_by(|a, b| a.1.cmp(&b.1))
-                .unwrap();
-            println!(
-                "{} {} {:?} {} {} {}",
-                m,
-                n,
-                indices[min_index],
-                min_distance,
-                string_1[m - 1],
-                string_2[n - 1]
-            );
-            if indices[min_index].0 == m - 1 {
-                aln_1.push(string_1[m - 1]);
-            } else {
-                aln_1.push('-');
-            }
-            if indices[min_index].1 == n - 1 {
-                aln_2.push(string_2[n - 1]);
-            } else {
-                aln_2.push('-');
-            }
-            m = indices[min_index].0;
-            n = indices[min_index].1;
+            1
+        };
+        if distances[(m, n)] == distances[(m - 1, n - 1)] + cost {
+            aln_1.insert(0, string_1[m - 1]);
+            aln_2.insert(0, string_2[n - 1]);
+            m -= 1;
+            n -= 1;
+        } else if m > 0 && distances[(m, n)] == distances[(m - 1, n)] + 1 {
+            aln_1.insert(0, string_1[m - 1]);
+            aln_2.insert(0, '-');
+            m -= 1;
+        } else {
+            aln_1.insert(0, '-');
+            aln_2.insert(0, string_2[n - 1]);
+            n -= 1;
         }
     }
-    (
-        aln_1.into_iter().rev().collect(),
-        aln_2.into_iter().rev().collect(),
-    )
+    (aln_1.into_iter().collect(), aln_2.into_iter().collect())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[ignore]
     #[test]
     fn edta() -> Result<(), Error> {
         let (input_file, output_file) = utility::testing::get_input_output_file("rosalind_edta")?;

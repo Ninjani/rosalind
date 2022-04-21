@@ -73,7 +73,7 @@ fn get_question_names_from_folder(folder_name: &str) -> Result<Vec<String>, Erro
 }
 
 fn get_sample_data_dir() -> PathBuf {
-    [env!("CARGO_WORKSPACE_DIR"), "sample_data"]
+    [env!("CARGO_WORKSPACE_DIR"), "data/sample_data"]
         .iter()
         .collect()
 }
